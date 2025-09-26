@@ -1,10 +1,326 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/icons/favicon.png}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/iconic/css/material-design-iconic-font.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/linearicons-v1.0.0/icon-font.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/animate/animate.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/css-hamburgers/hamburgers.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/animsition/css/animsition.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/select2/select2.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/daterangepicker/daterangepicker.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/slick/slick.css}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/MagnificPopup/magnific-popup.css}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/perfect-scrollbar/perfect-scrollbar.css}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/util.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
 </head>
 <body>
-$END$
+
+<!-- Header -->
+<header class="header-v4">
+    <div th:replace="user/header::header"></div>
+</header>
+<!-- ================= MAIN ================= -->
+<main class="container my-5">
+    <h2 class="mb-4 text-center">📦 Lịch sử đặt hàng</h2>
+
+    <!-- Bảng hiển thị lịch sử đơn hàng -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark text-center">
+            <tr>
+                <th>Mã đơn</th>
+                <th>Ngày đặt</th>
+                <th>Sản phẩm</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Ví dụ dữ liệu cứng (sau này sẽ load từ DB) -->
+            <tr>
+                <td class="text-center">#1001</td>
+                <td class="text-center">20/09/2025</td>
+                <td>
+                    <ul class="list-unstyled mb-0">
+                        <li>Áo thể thao Nike x1</li>
+                        <li>Giày Adidas x2</li>
+                    </ul>
+                </td>
+                <td class="text-end">1.500.000₫</td>
+                <td class="text-center"><span class="badge bg-success">Hoàn thành</span></td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-primary">
+                        <i class="fa fa-eye"></i> Xem chi tiết
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">#1002</td>
+                <td class="text-center">22/09/2025</td>
+                <td>
+                    <ul class="list-unstyled mb-0">
+                        <li>Bóng rổ Spalding x1</li>
+                    </ul>
+                </td>
+                <td class="text-end">900.000₫</td>
+                <td class="text-center"><span class="badge bg-warning">Đang xử lý</span></td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-primary">
+                        <i class="fa fa-eye"></i> Xem chi tiết
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer th:replace="user/footer :: footer"></footer>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/animsition/js/animsition.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/bootstrap/js/popper.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/select2/select2.min.js}"></script>
+<script>
+    $(".js-select2").each(function(){
+        $(this).select2({
+            minimumResultsForSearch: 20,
+            dropdownParent: $(this).next('.dropDownSelect2')
+        });
+    })
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/daterangepicker/moment.min.js}"></script>
+<script th:src="@{/vendor/daterangepicker/daterangepicker.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/slick/slick.min.js}"></script>
+<script th:src="@{/js/slick-custom.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/parallax100/parallax100.js}"></script>
+<script>
+    $('.parallax100').parallax100();
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/MagnificPopup/jquery.magnific-popup.min.js}"></script>
+<script>
+    $('.gallery-lb').each(function() {
+        $(this).magnificPopup({
+            delegate: 'a',
+            type: 'image',
+            gallery: { enabled:true },
+            mainClass: 'mfp-fade'
+        });
+    });
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/isotope/isotope.pkgd.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/sweetalert/sweetalert.min.js}"></script>
+<script>
+    $('.js-addwish-b2, .js-addwish-detail').on('click', function(e){
+        e.preventDefault();
+    });
+
+    $('.js-addwish-b2').each(function(){
+        var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+        $(this).on('click', function(){
+            swal(nameProduct, "is added to wishlist !", "success");
+            $(this).addClass('js-addedwish-b2').off('click');
+        });
+    });
+
+    $('.js-addwish-detail').each(function(){
+        var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+        $(this).on('click', function(){
+            swal(nameProduct, "is added to wishlist !", "success");
+            $(this).addClass('js-addedwish-detail').off('click');
+        });
+    });
+
+    $('.js-addcart-detail').each(function(){
+        var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+        $(this).on('click', function(){
+            swal(nameProduct, "is added to cart !", "success");
+        });
+    });
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/vendor/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+<script>
+    $('.js-pscroll').each(function(){
+        $(this).css('position','relative');
+        $(this).css('overflow','hidden');
+        var ps = new PerfectScrollbar(this, {
+            wheelSpeed: 1,
+            scrollingThreshold: 1000,
+            wheelPropagation: false,
+        });
+
+        $(window).on('resize', function(){
+            ps.update();
+        })
+    });
+</script>
+<!--===============================================================================================-->
+<script th:src="@{/js/main.js}"></script>
+
+<!-- ================= CSS FIXED ================= -->
+<style>
+    .user-dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 8px;
+        min-width: 180px;
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 2001;
+        transition: all 0.3s ease;
+    }
+
+    .user-dropdown-content.show {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .dropdown-divider {
+        height: 1px;
+        background: #f0f0f0;
+        margin: 4px 0;
+    }
+
+    #user-dropdown {
+        position: relative;
+    }
+
+    .user-info {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+
+    .user-info:hover {
+        background-color: #f5f5f5;
+    }
+
+    .user-name {
+        margin-left: 8px;
+        color: #000;
+        font-weight: 500;
+    }
+</style>
+
+<!-- ================= JS FIXED ================= -->
+<script th:inline="javascript">
+    (function(){
+        // Prevent multiple initialization
+        if(window.__userDropdownInitialized) return;
+        window.__userDropdownInitialized = true;
+
+        console.log('🔄 Initializing user dropdown...');
+
+        function initUserDropdown(){
+            const dropdownParent = document.getElementById('user-dropdown');
+            const dropdown = document.getElementById('user-dropdown-content');
+            const trigger = document.getElementById('user-trigger');
+
+            // Only initialize if user is logged in and elements exist
+            if(!dropdownParent || !dropdown || !trigger) {
+                console.log('ℹ️ User not logged in or elements not found');
+                return;
+            }
+
+            console.log('✅ Dropdown elements found, initializing...');
+
+            function closeDropdown(){
+                dropdown.classList.remove('show');
+                dropdown.setAttribute('aria-hidden','true');
+                trigger.setAttribute('aria-expanded','false');
+            }
+
+            function openDropdown(){
+                dropdown.classList.add('show');
+                dropdown.setAttribute('aria-hidden','false');
+                trigger.setAttribute('aria-expanded','true');
+            }
+
+            function toggleDropdown(e){
+                if(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                if(dropdown.classList.contains('show')) {
+                    closeDropdown();
+                } else {
+                    openDropdown();
+                }
+            }
+
+            // Event listeners
+            trigger.addEventListener('click', toggleDropdown);
+
+            trigger.addEventListener('keydown', function(e){
+                if (e.key === 'Enter' || e.key === ' ') {
+                    toggleDropdown(e);
+                }
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', function(e){
+                if(!dropdownParent.contains(e.target)){
+                    closeDropdown();
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape') {
+                    closeDropdown();
+                }
+            });
+
+            // Close when clicking on dropdown links
+            dropdown.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    setTimeout(closeDropdown, 100);
+                }
+            });
+
+            console.log('✅ User dropdown initialized successfully');
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initUserDropdown);
+        } else {
+            initUserDropdown();
+        }
+
+    })();
+</script>
 </body>
 </html>

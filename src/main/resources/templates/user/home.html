@@ -654,7 +654,7 @@
         </div>
     </div>
 </div>
-
+------------------------------
 <script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script>
 
 <script th:src="@{/vendor/animsition/js/animsition.min.js}"></script>
@@ -748,8 +748,149 @@
         })
     });
 </script>
-
 <script th:src="@{/js/main.js}"></script>
 
+<!-- ================= CSS FIXED ================= -->
+<style>
+    .user-dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 8px;
+        min-width: 180px;
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 2001;
+        transition: all 0.3s ease;
+    }
+
+    .user-dropdown-content.show {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .dropdown-divider {
+        height: 1px;
+        background: #f0f0f0;
+        margin: 4px 0;
+    }
+
+    #user-dropdown {
+        position: relative;
+    }
+
+    .user-info {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+
+    .user-info:hover {
+        background-color: #f5f5f5;
+    }
+
+    .user-name {
+        margin-left: 8px;
+        color: #000;
+        font-weight: 500;
+    }
+</style>
+
+<!-- ================= JS FIXED ================= -->
+<script th:inline="javascript">
+    (function(){
+        // Prevent multiple initialization
+        if(window.__userDropdownInitialized) return;
+        window.__userDropdownInitialized = true;
+
+        console.log('🔄 Initializing user dropdown...');
+
+        function initUserDropdown(){
+            const dropdownParent = document.getElementById('user-dropdown');
+            const dropdown = document.getElementById('user-dropdown-content');
+            const trigger = document.getElementById('user-trigger');
+
+            // Only initialize if user is logged in and elements exist
+            if(!dropdownParent || !dropdown || !trigger) {
+                console.log('ℹ️ User not logged in or elements not found');
+                return;
+            }
+
+            console.log('✅ Dropdown elements found, initializing...');
+
+            function closeDropdown(){
+                dropdown.classList.remove('show');
+                dropdown.setAttribute('aria-hidden','true');
+                trigger.setAttribute('aria-expanded','false');
+            }
+
+            function openDropdown(){
+                dropdown.classList.add('show');
+                dropdown.setAttribute('aria-hidden','false');
+                trigger.setAttribute('aria-expanded','true');
+            }
+
+            function toggleDropdown(e){
+                if(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                if(dropdown.classList.contains('show')) {
+                    closeDropdown();
+                } else {
+                    openDropdown();
+                }
+            }
+
+            // Event listeners
+            trigger.addEventListener('click', toggleDropdown);
+
+            trigger.addEventListener('keydown', function(e){
+                if (e.key === 'Enter' || e.key === ' ') {
+                    toggleDropdown(e);
+                }
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', function(e){
+                if(!dropdownParent.contains(e.target)){
+                    closeDropdown();
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape') {
+                    closeDropdown();
+                }
+            });
+
+            // Close when clicking on dropdown links
+            dropdown.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    setTimeout(closeDropdown, 100);
+                }
+            });
+
+            console.log('✅ User dropdown initialized successfully');
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initUserDropdown);
+        } else {
+            initUserDropdown();
+        }
+
+    })();
+</script>
 </body>
 </html>

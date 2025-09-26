@@ -4,6 +4,7 @@ import com.library.sportshop.entity.Account;
 import com.library.sportshop.repository.AccountRepository;
 import com.library.sportshop.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,12 +31,11 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         if (Boolean.FALSE.equals(account.getStatus())) {
-            throw new UsernameNotFoundException("Account is disabled: " + username);
+            throw new DisabledException("Account is disabled: " + username);
         }
 
         String role = "ROLE_" + account.getRole().name();
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
-
         return org.springframework.security.core.userdetails.User.builder()
                 .username(account.getUsername())
                 .password(account.getPassword())
@@ -86,4 +86,10 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
         return true;
     }
+
+    @Override
+    public Account findByUsername(String username) {
+        return accountRepository.findByUsername(username).orElse(null);
+    }
+
 }

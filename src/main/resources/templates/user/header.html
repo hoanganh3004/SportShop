@@ -33,173 +33,81 @@
                         <i class="zmdi zmdi-shopping-cart"></i>
                     </div>
 
-                    <!-- User account - FIXED VERSION -->
+                    <!-- User account - ĐÃ FIX -->
                     <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 position-relative" id="user-dropdown">
-                        <!-- Khi chưa đăng nhập - HIỆN LINK LOGIN -->
+                        <!-- Khi đã đăng nhập -->
+                        <div th:if="${session.loggedInUsername != null}">
+                            <div id="user-trigger" class="user-info"
+                                 style="cursor: pointer; display: flex; align-items: center;"
+                                 tabindex="0" aria-haspopup="true" aria-expanded="false">
+                                <i class="zmdi zmdi-account" style="color: #000 !important;"></i>
+                                <span th:text="${session.loggedInUsername}" class="user-name ml-2"></span>
+                            </div>
+
+                            <!-- Dropdown content - ĐÃ SỬA CLASS -->
+                            <div id="user-dropdown-content"
+                                 class="user-dropdown-content"
+                                 aria-hidden="true">
+                                <a th:href="@{/profile}" class="d-block p-2 stext-107 cl2 hov-cl1">Tài khoản của tôi</a>
+                                <a th:href="@{/oderhistory}" class="d-block p-2 stext-107 cl2 hov-cl1">Đơn hàng</a>
+                                <div class="dropdown-divider"></div>
+                                <a th:href="@{/logout}" class="d-block p-2 stext-107 cl2 hov-cl1">Đăng xuất</a>
+                            </div>
+                        </div>
+
+                        <!-- Khi chưa đăng nhập -->
                         <a th:href="@{/login}" th:unless="${session.loggedInUsername != null}" class="dis-block">
                             <i class="zmdi zmdi-account" style="color: #000 !important;"></i>
                         </a>
-
-                        <!-- Khi đã đăng nhập - HIỆN TRIGGER + DROPDOWN -->
-                        <div th:if="${session.loggedInUsername != null}">
-                            <!-- Trigger button - CHỈ HIỆN ICON + TÊN -->
-                            <button id="user-trigger" class="user-trigger-btn"
-                                    style="background: none; border: none; cursor: pointer; display: flex; align-items: center;"
-                                    aria-haspopup="true" aria-expanded="false">
-                                <i class="zmdi zmdi-account" style="color: #000 !important;"></i>
-                                <span th:text="'Xin chào, ' + ${session.loggedInUsername}" class="user-name ml-2"></span>
-                            </button>
-
-                            <!-- Dropdown content - ẨN HOÀN TOÀN KHI CHƯA CLICK -->
-                            <div id="user-dropdown-content" class="user-dropdown p-2"
-                                 aria-hidden="true">
-                                <a th:href="@{/user/profile}" class="d-block p-2 stext-107 cl2 hov-cl1">
-                                    <i class="zmdi zmdi-account-box mr-2"></i>Tài khoản của tôi
-                                </a>
-                                <a th:href="@{/orders}" class="d-block p-2 stext-107 cl2 hov-cl1">
-                                    <i class="zmdi zmdi-assignment mr-2"></i>Đơn hàng
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a th:href="@{/logout}" class="d-block p-2 stext-107 cl2 hov-cl1 text-danger">
-                                    <i class="zmdi zmdi-power mr-2"></i>Đăng xuất
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </nav>
         </div>
     </div>
+
+    <!-- Modal Search -->
+    <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+        <div class="container-search-header">
+            <button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
+                <img th:src="@{/images/icons/icon-close2.png}" alt="CLOSE">
+            </button>
+            <form class="wrap-search-header flex-w p-l-15">
+                <button class="flex-c-m trans-04"><i class="zmdi zmdi-search"></i></button>
+                <input class="plh3" type="text" name="search" placeholder="Search...">
+            </form>
+        </div>
+    </div>
+
+    <!-- Cart -->
+    <div class="wrap-header-cart js-panel-cart">
+        <div class="s-full js-hide-cart"></div>
+        <div class="header-cart flex-col-l p-l-65 p-r-25">
+            <div class="header-cart-title flex-w flex-sb-m p-b-8">
+                <span class="mtext-103 cl2">Your Cart</span>
+                <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+                    <i class="zmdi zmdi-close"></i>
+                </div>
+            </div>
+            <div class="header-cart-content flex-w js-pscroll">
+                <ul class="header-cart-wrapitem w-full">
+                    <li class="header-cart-item flex-w flex-t m-b-12">
+                        <div class="header-cart-item-img">
+                            <img src="images/item-cart-01.jpg" alt="IMG">
+                        </div>
+                        <div class="header-cart-item-txt p-t-8">
+                            <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">White Shirt Pleat</a>
+                            <span class="header-cart-item-info">1 x $19.00</span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="w-full">
+                    <div class="header-cart-total w-full p-tb-40">Total: $75.00</div>
+                    <div class="header-cart-buttons flex-w w-full">
+                        <a th:href="@{/checkout}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">Xem giỏ hàng</a>
+                        <a th:href="@{/checkout}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">Thanh toán</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </header>
-
-<!-- ================= CSS FIXED ================= -->
-<style>
-    /* Đảm bảo dropdown ẨN HOÀN TOÀN khi chưa active */
-    #user-dropdown-content {
-        display: none !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        position: absolute !important;
-        right: 0 !important;
-        top: 100% !important;
-        margin-top: 8px !important;
-        min-width: 200px !important;
-        background: #fff !important;
-        border: 1px solid #e0e0e0 !important;
-        border-radius: 8px !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-        z-index: 2001 !important;
-        transition: all 0.2s ease !important;
-        transform: translateY(-5px) !important;
-    }
-
-    /* Khi dropdown được mở */
-    #user-dropdown-content.uc-open {
-        display: block !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        transform: translateY(0) !important;
-    }
-
-    /* Style cho trigger button */
-    .user-trigger-btn {
-        padding: 8px 12px !important;
-        border-radius: 4px !important;
-        transition: background-color 0.2s !important;
-    }
-
-    .user-trigger-btn:hover {
-        background-color: #f5f5f5 !important;
-    }
-
-    .dropdown-divider {
-        height: 1px;
-        background: #f0f0f0;
-        margin: 4px 0;
-    }
-
-    .text-danger {
-        color: #dc3545 !important;
-    }
-
-    .text-danger:hover {
-        background-color: #dc3545 !important;
-        color: white !important;
-    }
-
-    /* Đảm bảo parent có position relative */
-    #user-dropdown {
-        position: relative !important;
-    }
-</style>
-
-<!-- ================= JS FIXED ================= -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Đang khởi tạo user dropdown...');
-
-        // Chỉ chạy khi user đã đăng nhập
-        const trigger = document.getElementById('user-trigger');
-        const dropdown = document.getElementById('user-dropdown-content');
-
-        if (!trigger || !dropdown) {
-            console.log('User chưa đăng nhập hoặc không tìm thấy dropdown elements');
-            return;
-        }
-
-        console.log('Đã tìm thấy dropdown elements, khởi tạo...');
-
-        // ĐẢM BẢO DROPDOWN ĐƯỢC ĐÓNG HOÀN TOÀN KHI KHỞI TẠO
-        function closeDropdown() {
-            dropdown.classList.remove('uc-open');
-            dropdown.setAttribute('aria-hidden', 'true');
-            trigger.setAttribute('aria-expanded', 'false');
-            console.log('Đã đóng dropdown');
-        }
-
-        function openDropdown() {
-            dropdown.classList.add('uc-open');
-            dropdown.setAttribute('aria-hidden', 'false');
-            trigger.setAttribute('aria-expanded', 'true');
-            console.log('Đã mở dropdown');
-        }
-
-        // ĐÓNG DROPDOWN NGAY KHI KHỞI TẠO - QUAN TRỌNG!
-        closeDropdown();
-
-        // Xử lý click trên trigger
-        trigger.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            if (dropdown.classList.contains('uc-open')) {
-                closeDropdown();
-            } else {
-                openDropdown();
-            }
-        });
-
-        // Đóng dropdown khi click ra ngoài
-        document.addEventListener('click', function(e) {
-            if (!dropdown.contains(e.target) && !trigger.contains(e.target)) {
-                closeDropdown();
-            }
-        });
-
-        // Đóng dropdown khi click vào item (tùy chọn)
-        dropdown.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A') {
-                setTimeout(closeDropdown, 100); // Đóng sau 100ms để chuyển trang
-            }
-        });
-
-        // Đóng dropdown khi nhấn Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeDropdown();
-            }
-        });
-
-        console.log('User dropdown đã được khởi tạo thành công!');
-    });
-</script>

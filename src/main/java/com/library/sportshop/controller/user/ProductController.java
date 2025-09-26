@@ -10,4 +10,9 @@ public class ProductController {
     public String product() {
         return "user/product";  // Trả về file home.html trong /templates
     }
+
+    @GetMapping("/product-detail")   // khi truy cập localhost:8080/
+    public String productdetail() {
+        return "user/product-detail";  // Trả về file home.html trong /templates
+    }
 }

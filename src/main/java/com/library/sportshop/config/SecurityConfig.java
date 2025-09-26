@@ -5,16 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
 
 @Configuration
 @EnableWebSecurity
@@ -27,28 +29,56 @@ public class SecurityConfig {
     private PasswordEncoder passwordEncoder;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { http
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
-                                "/login", "/register", "/forgot-password", "/home", "/css/**", "/js/**", "/images/**", "/assets/**", "/fonts/**", "/img/**", "/libs/**", "/scss/**", "/tasks/**", "/vendor/**").permitAll()
-                        // Public access
-                        .requestMatchers("/admin/**").hasRole("ADMIN")  // Chỉ ADMIN vào trang admin
-                        .requestMatchers("/user/**").hasRole("USER")  // Chỉ USER vào trang user
-                        .anyRequest().authenticated()  // Các request khác cần login
+                                "/blog-detail", "/product-detail", "/blog", "/about", "/contact", "/product", "/login",
+                                "/register", "/forgot-password",
+                                "/css/**", "/js/**", "/images/**", "/assets/**", "/fonts/**", "/img/**",
+                                "/libs/**", "/scss/**", "/tasks/**", "/vendor/**"
+                        ).permitAll()
+                        // Trang home: cho phép ANONYMOUS hoặc USER, chặn ADMIN
+                        .requestMatchers("/home").access(new WebExpressionAuthorizationManager("isAnonymous() or hasRole('USER')"))
+                        // Các URL cho ADMIN
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Các URL cho USER, bao gồm
+                        .requestMatchers("/user/**").hasRole("USER")
+                        // Chặn tất cả các route khác nếu không có quyền
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")  // Trang login custom
-                        .loginProcessingUrl("/login") // Xử lý POST /login
-                        .successHandler(customAuthenticationSuccessHandler())  // Tùy chỉnh redirect dựa trên role
-                        .failureUrl("/login?error")  // Redirect khi login thất bại
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .successHandler(customAuthenticationSuccessHandler())
+                        .failureHandler((request, response, exception) -> {
+                            Throwable cursor = exception;
+                            boolean isLocked = false;
+                            while (cursor != null && !isLocked) {
+                                if (cursor instanceof DisabledException || cursor instanceof AccountStatusException) {
+                                    isLocked = true;
+                                    break;
+                                }
+                                String msg = cursor.getMessage();
+                                if (msg != null && msg.toLowerCase().contains("disabled")) {
+                                    isLocked = true;
+                                    break;
+                                }
+                                cursor = cursor.getCause();
+                            }
+                            response.sendRedirect(isLocked ? "/login?locked" : "/login?error");
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")  // URL để logout
-                        .logoutSuccessUrl("/home?logout")  // Redirect sau logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/home")
                         .permitAll()
                 )
-                .csrf(csrf -> csrf.disable())  // Disable CSRF cho test (bật lại production)
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(accessDeniedHandler())
+                )
+                .csrf(csrf -> csrf.disable())
                 .authenticationProvider(authenticationProvider(userDetailsService()));
 
         return http.build();
@@ -75,22 +105,27 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            String role = authentication.getAuthorities().stream()
-                    .filter(auth -> auth.getAuthority().equals("ROLE_ADMIN") || auth.getAuthority().equals("ROLE_USER"))
-                    .findFirst()
-                    .map(auth -> auth.getAuthority().replace("ROLE_", ""))
-                    .orElse("USER");  // Mặc định là USER nếu không xác định
+            // Kiểm tra role cụ thể
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-            // Lưu username vào session để view không truy cập thuộc tính null
+            boolean isUser = authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_USER"));
+
+            // Lưu username và role vào session
             request.getSession(true).setAttribute("loggedInUsername", authentication.getName());
+            request.getSession(true).setAttribute("userRole", isAdmin ? "ADMIN" : "USER");
 
-            if ("ADMIN".equals(role)) {
-                response.sendRedirect("/admin/ad");
+            if (isAdmin) {
+                response.sendRedirect("/admin");
+            } else if (isUser) {
+                response.sendRedirect("/home");
             } else {
-                response.sendRedirect("/user/home");
+                response.sendRedirect("/home");
             }
         };
     }
+
     @Bean
     AccessDeniedHandler accessDeniedHandler() {
         return (request, response, accessDeniedException) -> {

@@ -8,4 +8,5 @@ public interface AccountService {
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
     boolean registerAccount(Account account);  // Sử dụng Account object
     boolean resetPassword(String username, String code, String newPassword);
+    Account findByUsername(String username);
 }

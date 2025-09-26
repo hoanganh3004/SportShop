@@ -13,7 +13,7 @@
             </div>
             <ul class="navbar-nav flex-row align-items-center ms-auto">
                 <li class="nav-item lh-1 me-3">
-                    <span class="navbar-text fw-semibold">Xin chào, John Doe</span>
+                    <span th:text="${session.loggedInUsername}" class="user-name ml-2"></span>
                 </li>
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
