@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <h5 class="modal-title">Tạo đơn hàng mới</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<form th:action="@{/adorder/save}" method="post">
+    <div class="modal-body">
+        <div class="mb-3">
+            <label class="form-label">Tên khách hàng</label>
+            <input type="text" name="recipientName" class="form-control" required/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email khách hàng</label>
+            <input type="email" name="recipientEmail" class="form-control" required/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Số điện thoại</label>
+            <input type="text" name="recipientPhone" class="form-control" required/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Sản phẩm</label>
+            <select name="productId" class="form-select select2" required>
+                <option value="">-- Chọn sản phẩm --</option>
+                <option th:each="p : ${products}"
+                        th:value="${p.id}"
+                        th:text="${p.name}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Số lượng</label>
+            <input type="number" name="quantity" class="form-control" min="1" value="1" required/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Địa chỉ giao hàng</label>
+            <textarea name="recipientAddress" class="form-control" rows="3" required></textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Tạo đơn hàng</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+    </div>
+</form>

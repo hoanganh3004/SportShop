@@ -5,6 +5,7 @@ import java.util.List;
 
 public interface AdminAccountService {
     List<Account> getAllAccounts();
+    Account getAccountById(Long id);
     void updateRole(Long id, String role);
     void updateAccount(Long id, Account account);
     void updatePassword(Long id, String newPassword);

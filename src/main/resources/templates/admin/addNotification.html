@@ -1,0 +1,21 @@
+<div class="modal-header">
+    <h5 class="modal-title">Tạo thông báo mới</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+</div>
+<div class="modal-body">
+    <form th:action="@{/adnotification/save}" method="post" id="notificationForm">
+        <div class="mb-3">
+            <label for="userCode" class="form-label">Mã người dùng</label>
+            <input type="text" class="form-control" id="userCode" name="userCode" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="message" class="form-label">Nội dung</label>
+            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+    <button type="submit" form="notificationForm" class="btn btn-primary">Lưu thông báo</button>
+</div>

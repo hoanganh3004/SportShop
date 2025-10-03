@@ -1,94 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr"
+      data-theme="theme-default" data-assets-path="../assets/"
+      data-template="vertical-menu-template-free" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Quản lý danh mục</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/img/favicon/favicon.ico}" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600&display=swap" rel="stylesheet" />
+    <!-- Icons -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/fonts/boxicons.css}" />
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/core.css}" />
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/theme-default.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/demo.css}" />
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css}" />
+    <link rel="stylesheet" th:href="@{/assets/vendor/libs/apex-charts/apex-charts.css}" />
+    <!-- Helpers -->
+    <script th:src="@{/assets/vendor/js/helpers.js}"></script>
+    <script th:src="@{/assets/js/config.js}"></script>
+</head>
+<body>
+<div th:replace="~{admin/adHeader :: adHeader}"></div>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div th:replace="~{admin/sidebar :: sidebar}"></div>
 
+        <div class="layout-page">
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
 
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý danh mục</h4>
 
-<h1 class="h3 mb-4 text-gray-800">📦 Quản lý danh mục sản phẩm</h1>
+                    <!-- Tìm kiếm -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <form th:action="@{/adcategory}" method="get" class="row g-3 align-items-center">
+                                <div class="col-md-4">
+                                    <input type="text" name="keyword" class="form-control" placeholder="Tìm theo tên danh mục" th:value="${keyword ?: ''}">
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                                    <a th:href="@{/adcategory}" class="btn btn-secondary">Làm mới</a>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button type="button" class="btn btn-success btn-add">+ Thêm danh mục</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
-<!-- thồng báo -->
-<c:if test="${not empty param.error || not empty param.success}">
-  <div class="alert alert-dismissible fade show
-              ${not empty param.error ? 'alert-danger' : 'alert-success'}"
-       role="alert">
-    <strong>${not empty param.error ? 'Lỗi:' : 'Thành công:'}</strong>
-      ${not empty param.error ? param.error : param.success}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Đóng">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-</c:if>
+                    <!-- Danh sách danh mục -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Danh sách danh mục</h5>
+                        </div>
+                        <div class="table-responsive text-nowrap">
+                            <!-- Hiển thị thông báo -->
+                            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
 
-<!-- Tìm kiếm -->
-<form action="admin-category" method="get" class="form-inline mb-3">
-  <input type="text" name="keyword" class="form-control rounded-pill mr-2 shadow-sm" placeholder="Tìm danh mục..." value="${param.keyword}">
-  <button type="submit" class="btn btn-primary rounded-pill px-4"><i class="fas fa-search"></i> Tìm</button>
-  <button type="button" class="btn btn-success ml-2 rounded-pill px-4" onclick="loadAddCategoryForm()">
-    <i class="fas fa-plus"></i> Thêm danh mục
-  </button>
-</form>
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
 
-<!-- Danh sách danh mục -->
-<div class="table-responsive">
-  <table class="table table-bordered">
-    <thead class="thead-light">
-    <tr>
-      <th>STT</th>
-      <th>Tên danh mục</th>
-      <th>Mô tả</th>
-      <th>Hành động</th>
-    </tr>
-    </thead>
-    <tbody>
-    <c:set var="startIndex" value="${(currentPage - 1) * pageSize}" />
-    <c:forEach var="c" items="${categoryList}" varStatus="loop">
-      <tr>
-        <td>${startIndex + loop.index + 1}</td>
-        <td>${c.cname}</td>
-        <td>${c.description}</td>
-        <td>
-          <button type="button" class="btn btn-sm btn-warning mb-1" onclick="loadEditCategoryForm(${c.cid})">
-            <i class="fas fa-edit"></i> Sửa
-          </button>
-          <a href="delete-category?id=${c.cid}" class="btn btn-sm btn-danger mb-1"
-             onclick="return confirm('Bạn có chắc muốn xóa?')">
-            <i class="fas fa-trash"></i> Xóa
-          </a>
-        </td>
-      </tr>
-    </c:forEach>
-    </tbody>
-  </table>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã DM</th>
+                                    <th>Tên danh mục</th>
+                                    <th>Mô tả</th>
+                                    <th>Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="c, iterStat : ${categories.content}" th:unless="${categories == null or categories.content.isEmpty()}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${c.id} ?: 'N/A'"></td>
+                                    <td th:text="${c.name} ?: 'N/A'"></td>
+                                    <td th:text="${c.description} ?: '---'"></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info btn-edit" th:data-id="${c.id}">Sửa</button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${categories == null or categories.content.isEmpty()}">
+                                    <td colspan="5" class="text-center">Không có danh mục nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Phân trang -->
+                        <div class="card-footer d-flex justify-content-between align-items-center" th:unless="${categories == null or categories.content.isEmpty()}">
+                            <span> Trang <span th:text="${currentPage} ?: 0"></span> / <span th:text="${totalPages} ?: 0"></span></span>
+                            <ul class="pagination mb-0">
+                                <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/adcategory(page=${currentPage - 1}, keyword=${keyword})}">Trước</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                                    th:classappend="${i == currentPage} ? 'active'">
+                                    <a class="page-link" th:href="@{/adcategory(page=${i}, keyword=${keyword})}" th:text="${i}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/adcategory(page=${currentPage + 1}, keyword=${keyword})}">Sau</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal dùng chung -->
+                <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" id="categoryModalContent">
+                            <!-- Nội dung form sẽ được load bằng AJAX -->
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="content-footer footer bg-footer-theme">
+                    <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                        <div class="mb-2 mb-md-0">
+                            © <script>document.write(new Date().getFullYear());</script>, Admin
+                        </div>
+                        <div>
+                            <a href="#" class="footer-link me-4">Hỗ trợ</a>
+                            <a href="#" class="footer-link me-4">Tài liệu</a>
+                        </div>
+                    </div>
+                </footer>
+                <div class="content-backdrop fade"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layout-overlay layout-menu-toggle"></div>
 </div>
 
-<!-- Modal Thêm -->
-<div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-    <div class="modal-content" id="addCategoryContent"></div>
-  </div>
-</div>
+<!-- JS -->
+<script th:src="@{/assets/vendor/libs/jquery/jquery.js}"></script>
+<script th:src="@{/assets/vendor/libs/popper/popper.js}"></script>
+<script th:src="@{/assets/vendor/js/bootstrap.js}"></script>
+<script th:src="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js}"></script>
+<script th:src="@{/assets/vendor/js/menu.js}"></script>
+<script th:src="@{/assets/js/main.js}"></script>
 
-<!-- Modal Sửa -->
-<div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-    <div class="modal-content" id="editCategoryContent"></div>
-  </div>
-</div>
+<!-- Script AJAX -->
+<script th:inline="javascript">
+    var contextPath = /*[[@{/}]]*/ "";
+    $(document).ready(function () {
+        // Sửa danh mục
+        $(document).on("click", ".btn-edit", function () {
+            var id = $(this).data("id");
+            $.ajax({
+                url: contextPath + "adcategory/edit/" + id,
+                type: "GET",
+                success: function (data) {
+                    $("#categoryModalContent").html(data);
+                    $("#categoryModal").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    alert("Không thể tải form sửa danh mục! Lỗi: " + error);
+                }
+            });
+        });
 
-<!-- Scripts -->
-<script src="${pageContext.request.contextPath}/vendor/jquery/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<script>
-  function loadAddCategoryForm() {
-    $.get("add-category", function (data) {
-      $('#addCategoryContent').html(data);
-      $('#addCategoryModal').modal('show');
+        // Thêm danh mục
+        $(document).on("click", ".btn-add", function () {
+            $.ajax({
+                url: contextPath + "adcategory/new",
+                type: "GET",
+                success: function (data) {
+                    $("#categoryModalContent").html(data);
+                    $("#categoryModal").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    alert("Không thể tải form thêm danh mục! Lỗi: " + error);
+                }
+            });
+        });
     });
-  }
-
-  function loadEditCategoryForm(id) {
-    $.get("edit-category?id=" + id, function (data) {
-      $('#editCategoryContent').html(data);
-      $('#editCategoryModal').modal('show');
-    });
-  }
 </script>
+</body>
+</html>

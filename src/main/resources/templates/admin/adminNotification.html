@@ -1,119 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr"
+      data-theme="theme-default" data-assets-path="../assets/"
+      data-template="vertical-menu-template-free">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <title>Quản lý thông báo</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/img/favicon/favicon.ico}"/>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+    <!-- Icons -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/fonts/boxicons.css}"/>
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/core.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/theme-default.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/demo.css}"/>
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css}"/>
+    <!-- Helpers -->
+    <script th:src="@{/assets/vendor/js/helpers.js}"></script>
+    <script th:src="@{/assets/js/config.js}"></script>
+</head>
+<body>
+<div th:replace="~{admin/adHeader :: adHeader}"></div>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div th:replace="~{admin/sidebar :: sidebar}"></div>
 
+        <div class="layout-page">
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
 
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý thông báo</h4>
 
-<h1 class="h3 mb-4 text-gray-800">📢 Quản lý thông báo</h1>
+                    <!-- Tìm kiếm -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <form th:action="@{/adnotification}" method="get" class="row g-3 align-items-center">
+                                <div class="col-md-4">
+                                    <input type="text" name="keyword" class="form-control"
+                                           placeholder="Tìm theo mã người dùng hoặc nội dung" th:value="${keyword ?: ''}">
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                                    <a th:href="@{/adnotification}" class="btn btn-secondary">Làm mới</a>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button type="button" class="btn btn-success btn-add">+ Tạo thông báo</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
-<!-- ✅ Thông báo khi gửi thành công -->
-<c:if test="${not empty sessionScope.msg}">
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <i class="fas fa-check-circle mr-2"></i> ${sessionScope.msg}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <c:remove var="msg" scope="session" />
-</c:if>
+                    <!-- Danh sách thông báo -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Danh sách thông báo</h5>
+                        </div>
+                        <div class="table-responsive text-nowrap">
+                            <!-- Hiển thị thông báo thành công/thất bại -->
+                            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
 
-<!-- Form tìm kiếm -->
-<form action="admin-notification" method="get" class="form-inline mb-3">
-  <input type="text" name="keyword" class="form-control rounded-pill mr-2 shadow-sm"
-         placeholder="Tìm theo nội dung..." value="${param.keyword}">
-  <button type="submit" class="btn btn-primary rounded-pill px-4">
-    <i class="fas fa-search"></i> Tìm kiếm
-  </button>
-  <button type="button" class="btn btn-success ml-2 rounded-pill px-4" onclick="openCreateNotificationModal()">
-    <i class="fas fa-plus"></i> Tạo thông báo
-  </button>
-</form>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã người dùng</th>
+                                    <th>Nội dung</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="n, iterStat : ${notifications.content}"
+                                    th:unless="${notifications == null or notifications.content.isEmpty()}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${n.userCode} ?: 'N/A'"></td>
+                                    <td th:text="${n.message} ?: 'N/A'"></td>
+                                    <td th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
+                                    <td>
+                                        <span th:text="${n.read} ? 'Đã đọc' : 'Chưa đọc'"></span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info btn-view" th:data-id="${n.id}">Xem chi tiết</button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${notifications == null or notifications.content.isEmpty()}">
+                                    <td colspan="6" class="text-center">Không có thông báo nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-<!-- Danh sách thông báo -->
-<div class="table-responsive">
-  <table class="table table-bordered">
-    <thead class="thead-light">
-    <tr>
-      <th>STT</th>
-      <th>Người nhận</th>
-      <th>Nội dung</th>
-      <th>Ngày tạo</th>
-      <th>Đã đọc</th>
-    </tr>
-    </thead>
-    <tbody>
-    <c:set var="startIndex" value="${(currentPage - 1) * pageSize}" />
-    <c:forEach var="n" items="${notificationList}" varStatus="loop">
-      <tr>
-        <td>${startIndex + loop.index + 1}</td>
-        <td>${n.fullName}</td>
-        <td>${n.message}</td>
-        <td>${n.createdAt}</td>
-        <td>
-          <c:choose>
-            <c:when test="${n.read}">✔️</c:when>
-            <c:otherwise>❌</c:otherwise>
-          </c:choose>
-        </td>
-      </tr>
-    </c:forEach>
-    </tbody>
-  </table>
-</div>
-<!-- Phân trang -->
-<c:set var="start" value="${currentPage - 2 < 1 ? 1 : currentPage - 2}" />
-<c:set var="end" value="${currentPage + 2 > totalPage ? totalPage : currentPage + 2}" />
+                        <!-- Phân trang -->
+                        <div class="card-footer d-flex justify-content-between align-items-center" th:unless="${notifications == null or notifications.content.isEmpty()}">
+                            <span> Trang <span th:text="${currentPage} ?: 0"></span> / <span th:text="${totalPages} ?: 0"></span></span>
+                            <ul class="pagination mb-0">
+                                <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/adnotification(page=${currentPage - 1}, keyword=${keyword})}">Trước</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                                    th:classappend="${i == currentPage} ? 'active'">
+                                    <a class="page-link" th:href="@{/adnotification(page=${i}, keyword=${keyword})}" th:text="${i}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/adnotification(page=${currentPage + 1}, keyword=${keyword})}">Sau</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-<nav>
-  <ul class="pagination justify-content-center">
-    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-      <a class="page-link" href="admin-notification?page=${currentPage - 1}&keyword=${keyword}">«</a>
-    </li>
+                <!-- Modal -->
+                <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content" id="notificationModalContent">
+                            <!-- Nội dung load bằng AJAX -->
+                        </div>
+                    </div>
+                </div>
 
-    <c:if test="${start > 1}">
-      <li class="page-item"><a class="page-link" href="admin-notification?page=1&keyword=${keyword}">1</a></li>
-      <li class="page-item disabled"><span class="page-link">...</span></li>
-    </c:if>
-
-    <c:forEach begin="${start}" end="${end}" var="i">
-      <li class="page-item ${i == currentPage ? 'active' : ''}">
-        <a class="page-link" href="admin-notification?page=${i}&keyword=${keyword}">${i}</a>
-      </li>
-    </c:forEach>
-
-    <c:if test="${end < totalPage}">
-      <li class="page-item disabled"><span class="page-link">...</span></li>
-      <li class="page-item"><a class="page-link" href="admin-notification?page=${totalPage}&keyword=${keyword}">${totalPage}</a></li>
-    </c:if>
-
-    <li class="page-item ${currentPage == totalPage ? 'disabled' : ''}">
-      <a class="page-link" href="admin-notification?page=${currentPage + 1}&keyword=${keyword}">»</a>
-    </li>
-  </ul>
-</nav>
-
-<!-- Modal tạo thông báo -->
-<div class="modal fade" id="createNotificationModal" tabindex="-1" role="dialog"
-     aria-labelledby="createModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <!-- AJAX sẽ load nội dung vào đây -->
-      <div class="modal-body" id="createNotificationContent"></div>
+                <footer class="content-footer footer bg-footer-theme">
+                    <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                        <div class="mb-2 mb-md-0">
+                            © <script>document.write(new Date().getFullYear());</script>, Admin
+                        </div>
+                        <div>
+                            <a href="#" class="footer-link me-4">Hỗ trợ</a>
+                            <a href="#" class="footer-link me-4">Tài liệu</a>
+                        </div>
+                    </div>
+                </footer>
+                <div class="content-backdrop fade"></div>
+            </div>
+        </div>
     </div>
-  </div>
+    <div class="layout-overlay layout-menu-toggle"></div>
 </div>
 
-<!-- jQuery & Bootstrap JS -->
-<script src="${pageContext.request.contextPath}/vendor/jquery/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- JS -->
+<script th:src="@{/assets/vendor/libs/jquery/jquery.js}"></script>
+<script th:src="@{/assets/vendor/libs/popper/popper.js}"></script>
+<script th:src="@{/assets/vendor/js/bootstrap.js}"></script>
+<script th:src="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js}"></script>
+<script th:src="@{/assets/vendor/js/menu.js}"></script>
+<script th:src="@{/assets/js/main.js}"></script>
 
-<script>
-  const contextPath = '${pageContext.request.contextPath}/';
+<!-- AJAX -->
+<script th:inline="javascript">
+    var contextPath = /*[[@{/}]]*/ "";
+    $(document).ready(function () {
+        // Xem chi tiết
+        $(document).on("click", ".btn-view", function () {
+            var id = $(this).data("id");
+            $.ajax({
+                url: contextPath + "adnotification/detail/" + id,
+                type: "GET",
+                success: function (data) {
+                    $("#notificationModalContent").html(data);
+                    $("#notificationModal").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    alert("Không thể tải thông tin thông báo! Lỗi: " + error);
+                }
+            });
+        });
 
-  function openCreateNotificationModal() {
-    $.get(contextPath + "create-notification", function (data) {
-      $('#createNotificationContent').html(data);
-      $('#createNotificationModal').modal('show');
-    }).fail(function () {
-      alert('Không thể tải form tạo thông báo. Vui lòng thử lại.');
+        // Thêm thông báo
+        $(document).on("click", ".btn-add", function () {
+            $.ajax({
+                url: contextPath + "adnotification/new",
+                type: "GET",
+                success: function (data) {
+                    $("#notificationModalContent").html(data);
+                    $("#notificationModal").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    alert("Không thể tải form tạo thông báo! Lỗi: " + error);
+                }
+            });
+        });
     });
-  }
 </script>
+</body>
+</html>

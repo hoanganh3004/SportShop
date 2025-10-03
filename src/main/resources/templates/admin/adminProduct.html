@@ -1,158 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr"
+      data-theme="theme-default" data-assets-path="../assets/"
+      data-template="vertical-menu-template-free" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Quản lý sản phẩm</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/img/favicon/favicon.ico}" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600&display=swap" rel="stylesheet" />
+    <!-- Icons -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/fonts/boxicons.css}" />
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/core.css}" />
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/theme-default.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/demo.css}" />
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css}" />
+    <link rel="stylesheet" th:href="@{/assets/vendor/libs/apex-charts/apex-charts.css}" />
+    <!-- Helpers -->
+    <script th:src="@{/assets/vendor/js/helpers.js}"></script>
+    <script th:src="@{/assets/js/config.js}"></script>
+</head>
+<body>
+<div th:replace="~{admin/adHeader :: adHeader}"></div>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div th:replace="~{admin/sidebar :: sidebar}"></div>
 
+        <div class="layout-page">
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
 
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý sản phẩm</h4>
 
+                    <!-- Tìm kiếm -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <form th:action="@{/adproduct}" method="get" class="row g-3 align-items-center">
+                                <div class="col-md-3">
+                                    <input type="text" name="keyword" class="form-control" placeholder="Tìm theo mã hoặc tên" th:value="${keyword ?: ''}">
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-select" name="categoryId">
+                                        <option value="">-- Tất cả danh mục --</option>
+                                        <option th:each="cate : ${categories}" th:value="${cate.id}" th:text="${cate.name}"
+                                                th:selected="${cate.id == categoryId}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                                    <a th:href="@{/adproduct}" class="btn btn-secondary">Làm mới</a>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button type="button" class="btn btn-success btn-add">+ Thêm sản phẩm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
+                    <!-- Danh sách sản phẩm -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Danh sách sản phẩm</h5>
+                        </div>
+                        <div class="table-responsive text-nowrap">
+                            <!-- Hiển thị thông báo -->
+                            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
 
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
 
-<style>
-  td.description-cell {
-    max-width: 300px;
-    max-height: 80px;
-    overflow-y: auto;
-    white-space: pre-line;
-    word-break: break-word;
-  }
-</style>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã SP</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Danh mục</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="p, iterStat : ${products.content}" th:unless="${products == null or products.content.isEmpty()}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${p.masp} ?: 'N/A'"></td>
+                                    <td th:text="${p.name} ?: 'N/A'"></td>
+                                    <td th:text="${p.category != null ? p.category.name : 'Chưa có danh mục'}"></td>
+                                    <td th:text="${p.price != null ? #numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT') + '₫' : 'N/A'}"></td>
+                                    <td th:text="${p.quantity} ?: 0"></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info btn-view" th:data-id="${p.id}">Xem chi tiết</button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${products == null or products.content.isEmpty()}">
+                                    <td colspan="7" class="text-center">Không có sản phẩm nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-<h1 class="h3 mb-4 text-gray-800">🛍️ Quản lý sản phẩm</h1>
+                        <!-- Phân trang -->
+                        <div class="card-footer d-flex justify-content-between align-items-center" th:unless="${products == null or products.content.isEmpty()}">
+                            <span> Trang <span th:text="${currentPage} ?: 0"></span> / <span th:text="${totalPages} ?: 0"></span></span>
+                            <ul class="pagination mb-0">
+                                <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/adproduct(page=${currentPage - 1}, keyword=${keyword}, categoryId=${categoryId})}">Trước</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                                    th:classappend="${i == currentPage} ? 'active'">
+                                    <a class="page-link" th:href="@{/adproduct(page=${i}, keyword=${keyword}, categoryId=${categoryId})}" th:text="${i}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/adproduct(page=${currentPage + 1}, keyword=${keyword}, categoryId=${categoryId})}">Sau</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-<!-- Thông báo -->
-<c:if test="${not empty sessionScope.msg}">
-  <div class="alert alert-${sessionScope.msgType} alert-dismissible fade show" role="alert">
-      ${sessionScope.msg}
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-  </div>
-  <c:remove var="msg" scope="session"/>
-  <c:remove var="msgType" scope="session"/>
-</c:if>
+                <!-- Modal dùng chung -->
+                <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content" id="productModalContent">
+                            <!-- Nội dung form sẽ được load bằng AJAX -->
+                        </div>
+                    </div>
+                </div>
 
-<!-- Tìm kiếm sản phẩm -->
-<form action="admin-product" method="get" class="form-inline mb-3">
-  <input type="text" name="keyword" class="form-control rounded-pill mr-2 shadow-sm" placeholder="Tìm theo mã, tên, mô tả" value="${keyword}">
-  <button type="submit" class="btn btn-primary rounded-pill px-4"><i class="fas fa-search"></i> Tìm kiếm</button>
-  <button type="button" class="btn btn-success ml-2 rounded-pill px-4" onclick="loadAddProductForm()">
-    <i class="fas fa-plus"></i> Thêm sản phẩm
-  </button>
-</form>
-
-<!-- Danh sách sản phẩm -->
-<div class="table-responsive">
-  <table class="table table-bordered">
-    <thead class="thead-light">
-    <tr>
-      <th>STT</th>
-      <th>Mã SP</th>
-      <th>Tên sản phẩm</th>
-      <th>Mô tả</th>
-      <th>Giá</th>
-      <th>Hình ảnh</th>
-      <th>Hành động</th>
-    </tr>
-    </thead>
-    <tbody>
-    <c:set var="startIndex" value="${(currentPage - 1) * pageSize}" />
-    <c:forEach var="p" items="${productList}" varStatus="loop">
-      <tr>
-        <td>${startIndex + loop.index + 1}</td>
-        <td>${p.masp}</td>
-        <td>${p.name}</td>
-        <td class="description-cell">${p.description}</td>
-        <td><fmt:formatNumber value="${p.price}" type="number" maxFractionDigits="0"/>$</td>
-        <td>
-          <img src="${pageContext.request.contextPath}/image?file=${fn:substringAfter(p.image, 'image\\')}" alt="${p.name}" width="60" height="60" />
-        </td>
-        <td>
-          <a href="javascript:void(0);" class="btn btn-sm btn-info mb-1" onclick="openEditProductModal(${p.id})">
-            <i class="fas fa-edit"></i> Chi tiết
-          </a>
-        </td>
-      </tr>
-    </c:forEach>
-    </tbody>
-  </table>
+                <footer class="content-footer footer bg-footer-theme">
+                    <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                        <div class="mb-2 mb-md-0">
+                            © <script>document.write(new Date().getFullYear());</script>, Admin
+                        </div>
+                        <div>
+                            <a href="#" class="footer-link me-4">Hỗ trợ</a>
+                            <a href="#" class="footer-link me-4">Tài liệu</a>
+                        </div>
+                    </div>
+                </footer>
+                <div class="content-backdrop fade"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layout-overlay layout-menu-toggle"></div>
 </div>
 
-<!-- Phân trang -->
-<c:set var="start" value="${currentPage - 2 < 1 ? 1 : currentPage - 2}" />
-<c:set var="end" value="${currentPage + 2 > totalPage ? totalPage : currentPage + 2}" />
+<!-- JS -->
+<script th:src="@{/assets/vendor/libs/jquery/jquery.js}"></script>
+<script th:src="@{/assets/vendor/libs/popper/popper.js}"></script>
+<script th:src="@{/assets/vendor/js/bootstrap.js}"></script>
+<script th:src="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js}"></script>
+<script th:src="@{/assets/vendor/js/menu.js}"></script>
+<script th:src="@{/assets/js/main.js}"></script>
 
-<nav>
-  <ul class="pagination justify-content-center">
-    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-      <a class="page-link" href="admin-product?page=${currentPage - 1}&keyword=${keyword}&size=${pageSize}">«</a>
-    </li>
+<!-- Script AJAX -->
+// Script AJAX
+<script th:inline="javascript">
+    var contextPath = /*[[@{/}]]*/ "";
+    $(document).ready(function () {
+        // Xem chi tiết sản phẩm
+        $(document).on("click", ".btn-view", function () {
+            var id = $(this).data("id");
+            console.log("AJAX: Loading product detail for ID: " + id);
+            console.log("AJAX: URL: " + contextPath + "adproduct/detail/" + id);
 
-    <c:if test="${start > 1}">
-      <li class="page-item">
-        <a class="page-link" href="admin-product?page=1&keyword=${keyword}&size=${pageSize}">1</a>
-      </li>
-      <li class="page-item disabled"><span class="page-link">...</span></li>
-    </c:if>
+            $.ajax({
+                url: contextPath + "adproduct/detail/" + id,
+                type: "GET",
+                success: function (data) {
+                    console.log("AJAX: Success - Data received");
+                    $("#productModalContent").html(data);
+                    $("#productModal").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    console.log("AJAX: Error - Status: " + status + ", Error: " + error);
+                    console.log("AJAX: Response: ", xhr.responseText);
+                    alert("Không thể tải thông tin sản phẩm! Lỗi: " + error + "\nChi tiết: " + xhr.responseText);
+                }
+            });
+        });
 
-    <c:forEach begin="${start}" end="${end}" var="i">
-      <li class="page-item ${i == currentPage ? 'active' : ''}">
-        <a class="page-link" href="admin-product?page=${i}&keyword=${keyword}&size=${pageSize}">${i}</a>
-      </li>
-    </c:forEach>
-
-    <c:if test="${end < totalPage}">
-      <li class="page-item disabled"><span class="page-link">...</span></li>
-      <li class="page-item">
-        <a class="page-link" href="admin-product?page=${totalPage}&keyword=${keyword}&size=${pageSize}">${totalPage}</a>
-      </li>
-    </c:if>
-
-    <li class="page-item ${currentPage == totalPage ? 'disabled' : ''}">
-      <a class="page-link" href="admin-product?page=${currentPage + 1}&keyword=${keyword}&size=${pageSize}">»</a>
-    </li>
-  </ul>
-</nav>
-
-<!-- sp hiển thị -->
-<form method="get" action="admin-product" style="display:inline-block;">
-  <input type="hidden" name="keyword" value="${param.keyword}" />
-  <select name="size" onchange="this.form.submit()">
-    <option value="5" ${pageSize == 5 ? 'selected' : ''}>5 sản phẩm/trang</option>
-    <option value="10" ${pageSize == 10 ? 'selected' : ''}>10 sản phẩm/trang</option>
-    <option value="20" ${pageSize == 20 ? 'selected' : ''}>20 sản phẩm/trang</option>
-  </select>
-</form>
-
-<!-- Modal thêm sản phẩm -->
-<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content" id="addProductContent"></div>
-  </div>
-</div>
-
-<!-- Modal sửa sản phẩm -->
-<div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content" id="editProductContent"></div>
-  </div>
-</div>
-
-<!-- Scripts -->
-<script src="${pageContext.request.contextPath}/vendor/jquery/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}/vendor/jquery-easing/jquery.easing.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/sb-admin-2.min.js"></script>
-
-<script>
-  function loadAddProductForm() {
-    $.get("add-product", function(data) {
-      const formHtml = $('<div>').html(data).find('form').parent().html();
-      $('#addProductContent').html(formHtml);
-      $('#addProductModal').modal('show');
+        // Thêm sản phẩm
+        $(document).on("click", ".btn-add", function () {
+            $.ajax({
+                url: contextPath + "adproduct/new",
+                type: "GET",
+                success: function (data) {
+                    $("#productModalContent").html(data);
+                    $("#productModal").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    alert("Không thể tải form thêm sản phẩm! Lỗi: " + error + "\nChi tiết: " + xhr.responseText);
+                }
+            });
+        });
     });
-  }
-
-  function openEditProductModal(productId) {
-    $.get("edit-product?id=" + productId, function(data) {
-      const formHtml = $('<div>').html(data).find('form').parent().html();
-      $('#editProductContent').html(formHtml);
-      $('#editProductModal').modal('show');
-    });
-  }
 </script>
+</body>
+</html>

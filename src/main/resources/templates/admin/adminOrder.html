@@ -1,205 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr"
+      data-theme="theme-default" data-assets-path="../assets/"
+      data-template="vertical-menu-template-free" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Quản lý đơn hàng</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/img/favicon/favicon.ico}" />
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600&display=swap" rel="stylesheet" />
 
+    <!-- Icons -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/fonts/boxicons.css}" />
 
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/core.css}" />
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/theme-default.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/demo.css}" />
 
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css}" />
+    <link rel="stylesheet" th:href="@{/assets/vendor/libs/apex-charts/apex-charts.css}" />
 
-<h1 class="h3 mb-4 text-gray-800">🧾 Quản lý đơn hàng</h1>
+    <!-- Select2 CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 
-<!-- Form tìm kiếm -->
-<form action="admin-order" method="get" class="form-inline mb-3">
-  <input type="text" name="customer" class="form-control rounded-pill mr-2 shadow-sm" placeholder="Tên khách hàng..." value="${param.customer}">
-  <input type="date" name="orderDate" class="form-control rounded-pill mr-2 shadow-sm" value="${param.orderDate}">
-  <select name="status" class="form-control rounded-pill mr-2 shadow-sm">
-    <option value="">Tất cả trạng thái</option>
-    <option value="Chờ xác nhận" ${param.status == 'Chờ xác nhận' ? 'selected' : ''}>Chờ xác nhận</option>
-    <option value="Xác nhận" ${param.status == 'Xác nhận' ? 'selected' : ''}>Xác nhận</option>
-    <option value="Đang giao" ${param.status == 'Đang giao' ? 'selected' : ''}>Đang giao</option>
-    <option value="Hoàn thành" ${param.status == 'Hoàn thành' ? 'selected' : ''}>Hoàn thành</option>
-    <option value="Đã hủy" ${param.status == 'Đã hủy' ? 'selected' : ''}>Đã hủy</option>
-  </select>
-  <button type="submit" class="btn btn-primary rounded-pill px-4"><i class="fas fa-search"></i> Tìm kiếm</button>
-  <button type="button" class="btn btn-success ml-2 rounded-pill px-4" onclick="openCreateOrderModal()"><i class="fas fa-plus"></i> Tạo đơn hàng</button>
-</form>
+    <!-- Helpers -->
+    <script th:src="@{/assets/vendor/js/helpers.js}"></script>
+    <script th:src="@{/assets/js/config.js}"></script>
 
-<!-- Danh sách đơn hàng -->
-<div class="table-responsive">
-  <table class="table table-bordered shadow-sm">
-    <thead class="thead-light">
-    <tr>
-      <th>STT</th>
-      <th>Khách hàng</th>
-      <th>Ngày đặt</th>
-      <th>Tổng tiền</th>
-      <th>Trạng thái</th>
-      <th>Thao tác</th>
-    </tr>
-    </thead>
-    <tbody>
-    <c:set var="startIndex" value="${(currentPage - 1) * pageSize}" />
-    <c:forEach var="o" items="${orderList}" varStatus="loop">
-      <tr>
-        <td>${startIndex + loop.index + 1}</td>
-        <td>${o.customer != null ? o.customer.fullName : o.recipientName}</td>
-        <td>${o.orderDate}</td>
-        <td><fmt:formatNumber value="${o.total}" type="number" maxFractionDigits="0"/> $</td>
-        <td>
-          <form action="${pageContext.request.contextPath}/updateOrderStatus" method="post" class="form-inline">
-            <input type="hidden" name="orderId" value="${o.id}" />
-            <select name="status" class="form-control form-control-sm mr-2 rounded-pill" onchange="toggleReason(this, ${o.id})">
-              <option value="Chờ xác nhận" ${o.status == 'Chờ xác nhận' ? 'selected' : ''}>Chờ xác nhận</option>
-              <option value="Xác nhận" ${o.status == 'Xác nhận' ? 'selected' : ''}>Xác nhận</option>
-              <option value="Đang giao" ${o.status == 'Đang giao' ? 'selected' : ''}>Đang giao</option>
-              <option value="Hoàn thành" ${o.status == 'Hoàn thành' ? 'selected' : ''}>Hoàn thành</option>
-              <option value="Đã hủy" ${o.status == 'Đã hủy' ? 'selected' : ''}>Đã hủy</option>
-            </select>
+    <style>
+        /* Tweak nhỏ cho select2 hiển thị trong layout của bạn */
+        .select2-container--default .select2-selection--single {
+            height: calc(1.5em + 0.75rem + 2px);
+            padding: .25rem .5rem;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{admin/adHeader :: adHeader}"></div>
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div th:replace="~{admin/sidebar :: sidebar}"></div>
 
-            <input type="text" name="cancelReason" id="cancelReason-${o.id}"
-                   class="form-control form-control-sm mr-2 rounded-pill"
-                   placeholder="Nhập lý do hủy..."
-                   value="${o.cancelReason}"
-                   style="display: ${o.status == 'Đã hủy' && empty o.cancelReason ? 'inline-block' : 'none'};" />
+        <div class="layout-page">
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
 
-            <button type="submit" class="btn btn-sm btn-primary rounded-pill">Cập nhật</button>
-          </form>
-        </td>
-        <td>
-          <button type="button" class="btn btn-sm btn-info mb-1 rounded-pill" onclick="openOrderDetail(${o.id})">
-            <i class="fas fa-eye"></i> Chi tiết
-          </button>
-        </td>
-      </tr>
-    </c:forEach>
-    </tbody>
-  </table>
-</div>
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý đơn hàng</h4>
 
-<!-- Modal xem chi tiết đơn hàng -->
-<div class="modal fade" id="orderDetailModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content" id="orderDetailContent">
-      <!-- Nội dung AJAX sẽ load vào đây -->
+                    <!-- Tìm kiếm -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <form th:action="@{/adorder}" method="get" class="row g-3 align-items-center">
+                                <div class="col-md-6">
+                                    <input type="text" name="keyword" class="form-control"
+                                           placeholder="Tìm theo KH/Email" th:value="${keyword ?: ''}">
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                                    <a th:href="@{/adorder}" class="btn btn-secondary">Làm mới</a>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button type="button" class="btn btn-success btn-add">+ Tạo đơn hàng</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách đơn hàng -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Danh sách đơn hàng</h5>
+                        </div>
+                        <div class="table-responsive text-nowrap">
+                            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Email</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="o, iterStat : ${orders.content}" th:unless="${orders == null or orders.content.isEmpty()}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${o.id}"></td>
+                                    <td th:text="${o.recipientName}"></td>
+                                    <td th:text="${o.recipientEmail}"></td>
+                                    <td th:text="${#temporals.format(o.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+                                    <td th:text="${#numbers.formatDecimal(o.totalAmount,0,'COMMA',0,'POINT')} + '₫'"></td>
+                                    <td><span class="badge bg-label-info" th:text="${o.status}"></span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info btn-view" th:data-id="${o.id}">Chi tiết</button>
+                                        <button class="btn btn-sm btn-warning btn-edit" th:data-id="${o.id}">Cập nhật</button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${orders == null or orders.content.isEmpty()}">
+                                    <td colspan="8" class="text-center">Không có đơn hàng nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Phân trang -->
+                        <div class="card-footer d-flex justify-content-between align-items-center" th:unless="${orders == null or orders.content.isEmpty()}">
+                            <span> Trang <span th:text="${currentPage} ?: 0"></span> / <span th:text="${totalPages} ?: 0"></span></span>
+                            <ul class="pagination mb-0">
+                                <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/adorder(page=${currentPage - 1}, keyword=${keyword})}">Trước</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                                    th:classappend="${i == currentPage} ? 'active'">
+                                    <a class="page-link" th:href="@{/adorder(page=${i}, keyword=${keyword})}" th:text="${i}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/adorder(page=${currentPage + 1}, keyword=${keyword})}">Sau</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content" id="orderModalContent">
+                            <!-- Nội dung sẽ load bằng AJAX -->
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="content-footer footer bg-footer-theme">
+                    <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                        <div class="mb-2 mb-md-0">
+                            © <script>document.write(new Date().getFullYear());</script>, Admin
+                        </div>
+                        <div>
+                            <a href="#" class="footer-link me-4">Hỗ trợ</a>
+                            <a href="#" class="footer-link me-4">Tài liệu</a>
+                        </div>
+                    </div>
+                </footer>
+
+                <div class="content-backdrop fade"></div>
+            </div>
+        </div>
     </div>
-  </div>
+    <div class="layout-overlay layout-menu-toggle"></div>
 </div>
 
-<!-- Phân trang -->
-<c:set var="start" value="${currentPage - 2 < 1 ? 1 : currentPage - 2}" />
-<c:set var="end" value="${currentPage + 2 > totalPage ? totalPage : currentPage + 2}" />
+<!-- ================== SCRIPTS ================== -->
+<!-- jQuery -->
+<script th:src="@{/assets/vendor/libs/jquery/jquery.js}"></script>
+<!-- Popper (nếu bootstrap cần) -->
+<script th:src="@{/assets/vendor/libs/popper/popper.js}"></script>
+<!-- Bootstrap JS -->
+<script th:src="@{/assets/vendor/js/bootstrap.js}"></script>
+<!-- Perfect Scrollbar, Menu, Main -->
+<script th:src="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js}"></script>
+<script th:src="@{/assets/vendor/js/menu.js}"></script>
+<script th:src="@{/assets/js/main.js}"></script>
 
-<c:if test="${totalPage > 1}">
-  <nav>
-    <ul class="pagination justify-content-center">
-      <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-        <a class="page-link" href="admin-order?page=${currentPage - 1}&customer=${customer}&orderDate=${orderDate}&status=${status}">«</a>
-      </li>
+<!-- Select2 JS (CDN) - phải sau jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-      <c:forEach begin="${start}" end="${end}" var="i">
-        <li class="page-item ${i == currentPage ? 'active' : ''}">
-          <a class="page-link" href="admin-order?page=${i}&customer=${customer}&orderDate=${orderDate}&status=${status}">${i}</a>
-        </li>
-      </c:forEach>
+<script th:inline="javascript">
+    /* Context path */
+    var contextPath = /*[[@{/}]]*/ "";
 
-      <li class="page-item ${currentPage == totalPage ? 'disabled' : ''}">
-        <a class="page-link" href="admin-order?page=${currentPage + 1}&customer=${customer}&orderDate=${orderDate}&status=${status}">»</a>
-      </li>
-    </ul>
-  </nav>
-</c:if>
-
-<!-- Modal tạo đơn hàng -->
-<div class="modal fade" id="createOrderModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content" id="createOrderContent">
-      <!-- Nội dung AJAX sẽ load vào đây -->
-    </div>
-  </div>
-</div>
-
-<!-- JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-<script>
-  function toggleReason(selectElem, orderId) {
-    const input = document.getElementById('cancelReason-' + orderId);
-    if (!input) return;
-    if (selectElem.value === 'Đã hủy') {
-      input.style.display = 'inline-block';
-      input.focus();
-    } else {
-      input.style.display = 'none';
-      input.value = '';
+    /* Utility: init select2 for selects inside a container (usually modal content) */
+    function initSelect2In(containerSelector) {
+        try {
+            var $sel = $(containerSelector).find('.select2');
+            if ($sel && $sel.length) {
+                $sel.each(function () {
+                    // avoid double init: destroy first if needed
+                    if ($(this).hasClass("select2-hidden-accessible")) {
+                        $(this).select2('destroy');
+                    }
+                    $(this).select2({
+                        dropdownParent: $('#orderModal'),
+                        width: '100%',
+                        placeholder: "Chọn sản phẩm"
+                    });
+                });
+            }
+        } catch (e) {
+            // nếu select2 chưa load hoặc lỗi khác, log để dev debug
+            console.error('initSelect2In error:', e);
+        }
     }
-  }
 
-  function openOrderDetail(orderId) {
-    $.ajax({
-      url: 'order-detail',
-      type: 'GET',
-      data: { id: orderId },
-      success: function (data) {
-        $('#orderDetailContent').html(data);
-        $('#orderDetailModal').modal('show');
-      },
-      error: function () {
-        alert('Không thể tải chi tiết đơn hàng.');
-      }
-    });
-  }
+    $(document).ready(function () {
+        // Khi click tạo đơn hàng -> load form
+        $(document).on('click', '.btn-add', function () {
+            $.get(contextPath + "adorder/new")
+                .done(function (data) {
+                    $("#orderModalContent").html(data);
+                    $("#orderModal").modal("show");
+                    // init select2 cho nội dung vừa load
+                    initSelect2In('#orderModalContent');
+                })
+                .fail(function () {
+                    alert("Không thể tải form tạo đơn hàng!");
+                });
+        });
 
-  function openCreateOrderModal(page = 1) {
-    $.ajax({
-      url: 'create-order?page=' + page,
-      headers: { 'X-Requested-With': 'XMLHttpRequest' },
-      success: function (data) {
-        $('#createOrderContent').html(data);
-        $('#createOrderModal').modal('show');
-        attachCreateOrderEvents();
-      },
-      error: function () {
-        alert('Không thể tải form tạo đơn hàng.');
-      }
-    });
-  }
+        // Xem chi tiết
+        $(document).on('click', '.btn-view', function () {
+            var id = $(this).data('id');
+            $.get(contextPath + "adorder/detail/" + id)
+                .done(function (data) {
+                    $("#orderModalContent").html(data);
+                    $("#orderModal").modal("show");
+                    // nếu detail có select2 (thường không) thì init
+                    initSelect2In('#orderModalContent');
+                })
+                .fail(function () {
+                    alert("Không thể tải chi tiết đơn hàng!");
+                });
+        });
 
-  function loadModalPage(url) {
-    $.ajax({
-      url: url,
-      headers: { 'X-Requested-With': 'XMLHttpRequest' },
-      success: function (data) {
-        $('#createOrderContent').html(data);
-        attachCreateOrderEvents();
-      },
-      error: function () {
-        alert('Không thể tải trang sản phẩm.');
-      }
-    });
-  }
+        // Edit / update form
+        $(document).on('click', '.btn-edit', function () {
+            var id = $(this).data('id');
+            $.get(contextPath + "adorder/edit/" + id)
+                .done(function (data) {
+                    $("#orderModalContent").html(data);
+                    $("#orderModal").modal("show");
+                    initSelect2In('#orderModalContent');
+                })
+                .fail(function () {
+                    alert("Không thể tải form cập nhật đơn hàng!");
+                });
+        });
 
-  function attachCreateOrderEvents() {
-    $('#createOrderContent').find('.load-modal-page').off('click').on('click', function (e) {
-      e.preventDefault();
-      const url = $(this).attr('href');
-      loadModalPage(url);
+        // Khi modal đóng -> bỏ select2 instances (tránh lỗi khi modal load lại)
+        $('#orderModal').on('hidden.bs.modal', function () {
+            try {
+                $('#orderModalContent .select2').each(function () {
+                    if ($(this).hasClass("select2-hidden-accessible")) {
+                        $(this).select2('destroy');
+                    }
+                });
+                // clear content nếu muốn:
+                // $("#orderModalContent").html('');
+            } catch (e) {
+                console.error('error destroying select2:', e);
+            }
+        });
     });
-
-    $('#createOrderContent').find('#searchProduct').off('keyup').on('keyup', function () {
-      const keyword = $(this).val().toLowerCase();
-      $('#createOrderContent').find('#productTable tbody tr').each(function () {
-        const name = $(this).find('.product-name').text().toLowerCase();
-        $(this).toggle(name.includes(keyword));
-      });
-    });
-
-    $('#createOrderContent').find('.goto-button').off('click').on('click', function () {
-      const page = $('#createOrderContent').find('#gotoPage').val();
-      const max = parseInt($('#createOrderContent').find('#gotoPage').attr('max'));
-      if (page >= 1 && page <= max) {
-        loadModalPage('create-order?page=' + page);
-      } else {
-        alert("Vui lòng nhập số từ 1 đến " + max);
-      }
-    });
-  }
 </script>
+</body>
+</html>

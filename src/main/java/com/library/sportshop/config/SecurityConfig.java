@@ -36,15 +36,21 @@ public class SecurityConfig {
                                 "/blog-detail", "/product-detail", "/blog", "/about", "/contact", "/product", "/login",
                                 "/register", "/forgot-password",
                                 "/css/**", "/js/**", "/images/**", "/assets/**", "/fonts/**", "/img/**",
-                                "/libs/**", "/scss/**", "/tasks/**", "/vendor/**"
+                                "/libs/**", "/scss/**", "/tasks/**", "/vendor/**",
+                                "/403"
                         ).permitAll()
-                        // Trang home: cho phép ANONYMOUS hoặc USER, chặn ADMIN
-                        .requestMatchers("/home").access(new WebExpressionAuthorizationManager("isAnonymous() or hasRole('USER')"))
-                        // Các URL cho ADMIN
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        // Các URL cho USER, bao gồm
+
+                        // Trang home: cho phép ANONYMOUS hoặc USER hoặc ADMIN
+                        .requestMatchers("/home")
+                        .access(new WebExpressionAuthorizationManager("isAnonymous() or hasRole('USER') or hasRole('ADMIN')"))
+
+                        // ✅ Chặn cả /admin và /admin/**
+                        .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
+
+                        // Các URL cho USER
                         .requestMatchers("/user/**").hasRole("USER")
-                        // Chặn tất cả các route khác nếu không có quyền
+
+                        // Các route còn lại yêu cầu đăng nhập
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

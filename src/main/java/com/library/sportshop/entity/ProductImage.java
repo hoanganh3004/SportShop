@@ -61,6 +61,15 @@ public class ProductImage {
         this.product = product;
     }
 
+    // Utility method để lấy tên file từ đường dẫn đầy đủ
+    public String getFileName() {
+        if (imageUrl != null) {
+            // Lấy tên file từ đường dẫn đầy đủ (D:\image\s1.jpg -> s1.jpg)
+            return imageUrl.substring(imageUrl.lastIndexOf("\\") + 1);
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "ProductImage{" +

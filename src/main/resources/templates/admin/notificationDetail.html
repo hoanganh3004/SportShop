@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <h5 class="modal-title">Chi tiết thông báo</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+</div>
+<div class="modal-body">
+    <p><strong>Mã người dùng:</strong> <span th:text="${notification.userCode}"></span></p>
+    <p><strong>Nội dung:</strong> <span th:text="${notification.message}"></span></p>
+    <p><strong>Ngày tạo:</strong>
+        <span th:text="${notification.createdAt != null ? #temporals.format(notification.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}"></span>
+    </p>
+    <p><strong>Trạng thái:</strong> <span th:text="${notification.read} ? 'Đã đọc' : 'Chưa đọc'"></span></p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+</div>

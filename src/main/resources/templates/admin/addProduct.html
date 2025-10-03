@@ -1,81 +1,234 @@
-
-
-
-<form action="add-product" method="post" enctype="multipart/form-data">
-    <div class="modal-header bg-gradient-success text-white">
-        <h5 class="modal-title">➕ Thêm sản phẩm mới</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-        </button>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm sản phẩm</title>
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/core.css}" />
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/theme-default.css}" />
+    <style>
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .image-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .file-input-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-input-label {
+            display: block;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .file-input-label:hover {
+            background-color: #0056b3;
+        }
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="modal-header">
+    <h5 class="modal-title">Thêm sản phẩm mới</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <!-- Hiển thị thông báo -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <div class="modal-body px-4 pt-3 pb-1">
-        <!-- Mã sản phẩm -->
-        <div class="form-group">
-            <label for="masp" class="font-weight-bold">🔢 Mã sản phẩm</label>
-            <input type="text" id="masp" name="masp"
-                   class="form-control shadow-sm rounded-pill px-4"
-                   placeholder="Nhập mã sản phẩm..." required>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <form th:action="@{/adproduct/save}" method="post" enctype="multipart/form-data" id="addProductForm">
+        <div class="mb-3">
+            <label class="form-label">Mã sản phẩm</label>
+            <input type="text" class="form-control" name="masp" maxlength="50" required/>
         </div>
 
-        <!-- Tên sản phẩm -->
-        <div class="form-group">
-            <label for="name" class="font-weight-bold">📱 Tên sản phẩm</label>
-            <input type="text" id="name" name="name"
-                   class="form-control shadow-sm rounded-pill px-4"
-                   placeholder="Nhập tên sản phẩm..." required>
+        <div class="mb-3">
+            <label class="form-label">Tên sản phẩm</label>
+            <input type="text" class="form-control" name="name" maxlength="255" required/>
         </div>
 
-        <!-- Giá -->
-        <div class="form-group">
-            <label for="price" class="font-weight-bold">💲 Giá</label>
-            <input type="number" id="price" name="price" min="0"
-                   class="form-control shadow-sm rounded-pill px-4"
-                   placeholder="Nhập giá..." required>
+        <div class="mb-3">
+            <label class="form-label">Giá</label>
+            <input type="number" class="form-control" name="price" step="0.01" min="0" max="999999999" required/>
         </div>
 
-        <!-- Số lượng -->
-        <div class="form-group">
-            <label for="quantity" class="font-weight-bold">📦 Số lượng</label>
-            <input type="number" id="quantity" name="quantity" min="1"
-                   class="form-control shadow-sm rounded-pill px-4"
-                   placeholder="Nhập số lượng..." required>
+        <div class="mb-3">
+            <label class="form-label">Mô tả</label>
+            <textarea class="form-control" name="description" rows="3" maxlength="1000"></textarea>
         </div>
 
-        <!-- Mô tả -->
-        <div class="form-group">
-            <label for="description" class="font-weight-bold">📝 Mô tả</label>
-            <textarea id="description" name="description"
-                      class="form-control shadow-sm rounded px-3"
-                      placeholder="Nhập mô tả..." rows="3"></textarea>
+        <div class="mb-3">
+            <label class="form-label">Size</label>
+            <input type="text" class="form-control" name="size" maxlength="20"/>
         </div>
 
-        <!-- Danh mục (loại hàng) -->
-        <div class="form-group">
-            <label for="category_id" class="font-weight-bold">📂 Danh mục</label>
-            <select id="category_id" name="category_id" class="form-control shadow-sm rounded-pill px-4" required>
+        <div class="mb-3">
+            <label class="form-label">Màu sắc</label>
+            <input type="text" class="form-control" name="color" maxlength="50"/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Số lượng</label>
+            <input type="number" class="form-control" name="quantity" min="0" max="999999" required/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Danh mục</label>
+            <select class="form-select" name="categoryId">
                 <option value="">-- Chọn danh mục --</option>
-                <c:forEach var="category" items="${categories}">
-                    <option value="${category.cid}">${category.cname}</option>
-                </c:forEach>
+                <option th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.name}"></option>
             </select>
         </div>
 
-        <!-- Hình ảnh -->
-        <div class="form-group">
-            <label for="image" class="font-weight-bold">🖼️ Hình ảnh</label>
-            <input type="file" id="image" name="image"
-                   class="form-control-file" required>
+        <div class="mb-3">
+            <label class="form-label">Hình ảnh sản phẩm</label>
+            <div class="file-input-container">
+                <label for="newImages" class="file-input-label">
+                    📷 Chọn nhiều ảnh (Ctrl + Click để chọn nhiều)
+                </label>
+                <input type="file"
+                       id="newImages"
+                       name="newImages"
+                       class="file-input"
+                       multiple
+                       accept="image/*"
+                       onchange="previewImages(this)"/>
+            </div>
+            <small class="form-text text-muted">
+                Chấp nhận: JPG, PNG, GIF, BMP, WEBP. Tối đa 5MB mỗi file.
+            </small>
+            <div id="imagePreview" class="image-preview"></div>
         </div>
 
-        <!-- Nút -->
-        <div class="modal-footer border-0 px-0 pt-3">
-            <button type="submit" class="btn btn-success rounded-pill px-4">
-                <i class="fas fa-plus-circle"></i> Thêm mới
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="fas fa-plus-circle"></i> Thêm sản phẩm
             </button>
-            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-dismiss="modal">
-                <i class="fas fa-times-circle"></i> Hủy
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="fas fa-times"></i> Đóng
             </button>
         </div>
-    </div>
-</form>
+    </form>
+</div>
+
+<script>
+    function previewImages(input) {
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = file.name;
+                        img.title = file.name;
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Cập nhật label
+        const label = document.querySelector('.file-input-label');
+        const fileCount = input.files.length;
+        if (fileCount > 0) {
+            label.textContent = `📷 Đã chọn ${fileCount} ảnh`;
+        } else {
+            label.textContent = '📷 Chọn nhiều ảnh (Ctrl + Click để chọn nhiều)';
+        }
+    }
+
+    // Xử lý form submission
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('addProductForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            // Hiển thị loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang thêm...';
+
+            // Validate form trước khi submit
+            const name = form.querySelector('input[name="name"]').value.trim();
+            const masp = form.querySelector('input[name="masp"]').value.trim();
+            const price = form.querySelector('input[name="price"]').value;
+            const quantity = form.querySelector('input[name="quantity"]').value;
+            const images = form.querySelector('input[name="newImages"]').files;
+
+            if (!name) {
+                e.preventDefault();
+                alert('Vui lòng nhập tên sản phẩm!');
+                resetSubmitButton();
+                return;
+            }
+
+            if (!masp) {
+                e.preventDefault();
+                alert('Vui lòng nhập mã sản phẩm!');
+                resetSubmitButton();
+                return;
+            }
+
+            if (!price || parseFloat(price) <= 0) {
+                e.preventDefault();
+                alert('Vui lòng nhập giá sản phẩm hợp lệ!');
+                resetSubmitButton();
+                return;
+            }
+
+            if (!quantity || parseInt(quantity) < 0) {
+                e.preventDefault();
+                alert('Vui lòng nhập số lượng hợp lệ!');
+                resetSubmitButton();
+                return;
+            }
+
+            if (!images || images.length === 0) {
+                e.preventDefault();
+                alert('Vui lòng chọn ít nhất một ảnh!');
+                resetSubmitButton();
+                return;
+            }
+        });
+
+        function resetSubmitButton() {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Thêm sản phẩm';
+        }
+    });
+</script>
+</body>
+</html>

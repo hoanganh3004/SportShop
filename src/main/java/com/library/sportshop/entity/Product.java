@@ -172,6 +172,18 @@ public class Product {
         this.orderItems = orderItems;
     }
 
+    // Utility method để lấy tên file ảnh đầu tiên
+    public String getFirstImageFileName() {
+        if (images != null && !images.isEmpty()) {
+            String imageUrl = images.get(0).getImageUrl();
+            if (imageUrl != null) {
+                // Lấy tên file từ đường dẫn đầy đủ (D:\image\s1.jpg -> s1.jpg)
+                return imageUrl.substring(imageUrl.lastIndexOf("\\") + 1);
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "Product{" +

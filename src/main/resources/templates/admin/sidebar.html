@@ -1,4 +1,4 @@
-<div th:fragment="sidebar" class="layout-menu menu-vertical menu bg-menu-theme">
+<div th:fragment="sidebar" class="layout-menu menu-vertical menu bg-menu-theme" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="app-brand demo">
         <a href="index.html" class="app-brand-link">
             <span class="app-brand-logo demo">
@@ -44,7 +44,7 @@
     <div class="menu-inner-shadow"></div>
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
-        <li class="menu-item active">
+        <li class="menu-item">
             <a href="index.html" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Dashboard">Dashboard</div>
@@ -59,28 +59,28 @@
         </li>
         <!-- Quản lý sản phẩm -->
         <li class="menu-item">
-            <a href="quan-ly-san-pham.html" class="menu-link">
+            <a th:href="@{/adproduct}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-box"></i>
                 <div data-i18n="Quản lý sản phẩm">Quản lý sản phẩm</div>
             </a>
         </li>
         <!-- Quản lý danh mục -->
         <li class="menu-item">
-            <a href="quan-ly-danh-muc.html" class="menu-link">
+            <a th:href="@{/adcategory}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-category"></i>
                 <div data-i18n="Quản lý danh mục">Quản lý danh mục</div>
             </a>
         </li>
         <!-- Quản lý đơn hàng -->
         <li class="menu-item">
-            <a href="quan-ly-don-hang.html" class="menu-link">
+            <a th:href="@{/adorder}"  class="menu-link">
                 <i class="menu-icon tf-icons bx bx-package"></i>
                 <div data-i18n="Quản lý đơn hàng">Quản lý đơn hàng</div>
             </a>
         </li>
         <!-- Thông báo -->
         <li class="menu-item">
-            <a href="thong-bao.html" class="menu-link">
+            <a th:href="@{/adnotification}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-bell"></i>
                 <div data-i18n="Thông báo">Thông báo</div>
             </a>
@@ -93,4 +93,50 @@
             </a>
         </li>
     </ul>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Lấy tất cả các mục menu
+            const menuItems = document.querySelectorAll('.menu-item');
+
+            // Xóa lớp active khỏi tất cả các mục menu
+            function removeActiveClass() {
+                menuItems.forEach(item => item.classList.remove('active'));
+            }
+
+            // Thêm sự kiện click cho từng mục menu
+            menuItems.forEach(item => {
+                const link = item.querySelector('a');
+                link.addEventListener('click', function (e) {
+                    e.preventDefault(); // Ngăn hành vi mặc định (reload trang)
+                    removeActiveClass();
+                    item.classList.add('active');
+
+                    // Lấy href từ link và điều hướng thủ công
+                    let href = link.getAttribute('href');
+                    if (href && href.startsWith('@{/')) {
+                        href = href.replace('@{/', '').replace('}', ''); // Lấy đường dẫn từ th:href
+                    }
+                    window.location.href = href || '/'; // Điều hướng tới đường dẫn
+                });
+            });
+
+            // Tự động thêm lớp active cho mục tương ứng với trang hiện tại
+            const currentPath = window.location.pathname;
+            menuItems.forEach(item => {
+                const link = item.querySelector('a');
+                if (link) {
+                    let href = link.getAttribute('href');
+                    if (href && href.endsWith('.html')) {
+                        href = '/' + href.replace('.html', ''); // Chuyển .html thành path
+                    } else if (href && href.startsWith('@{/')) {
+                        href = href.replace('@{/', '').replace('}', ''); // Lấy path từ th:href
+                    }
+                    if (href === currentPath || (href === '/' && (currentPath === '/' || currentPath === '/index'))) {
+                        removeActiveClass();
+                        item.classList.add('active');
+                    }
+                }
+            });
+        });
+    </script>
 </div>

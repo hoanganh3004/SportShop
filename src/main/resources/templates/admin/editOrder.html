@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <h5 class="modal-title">Cập nhật trạng thái đơn hàng</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<form th:action="@{/adorder/update}" method="post">
+    <div class="modal-body">
+        <input type="hidden" name="id" th:value="${order.id}"/>
+        <div class="mb-3">
+            <label class="form-label">Trạng thái hiện tại</label>
+            <input type="text" class="form-control" th:value="${order.status}" readonly/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Chọn trạng thái mới</label>
+            <select name="status" class="form-select" id="statusSelect">
+                <option value="Chờ xác nhận">Chờ xác nhận</option>
+                <option value="Xác nhận">Xác nhận</option>
+                <option value="Đang giao">Đang giao</option>
+                <option value="Hoàn thành">Hoàn thành</option>
+                <option value="Đã hủy">Đã hủy</option>
+            </select>
+        </div>
+        <div class="mb-3" id="cancelReasonGroup" style="display: none;">
+            <label class="form-label">Lý do hủy đơn</label>
+            <textarea name="cancelReason" class="form-control" rows="3"></textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#statusSelect').on('change', function () {
+            if ($(this).val() === 'Đã hủy') {
+                $('#cancelReasonGroup').show();
+            } else {
+                $('#cancelReasonGroup').hide();
+            }
+        });
+    });
+</script>

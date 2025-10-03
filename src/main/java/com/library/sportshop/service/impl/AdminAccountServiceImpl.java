@@ -83,9 +83,17 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         accountRepository.save(acc);
     }
 
+    @Override
+    public Account getAccountById(Long id) {
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+    }
+
     private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (authentication != null) ? authentication.getName() : null;
     }
+
+
 
 }
