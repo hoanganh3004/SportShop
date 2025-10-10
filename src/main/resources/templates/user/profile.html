@@ -15,11 +15,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{/vendor/select2/select2.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/vendor/daterangepicker/daterangepicker.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/vendor/slick/slick.css}">
-
     <link rel="stylesheet" type="text/css" th:href="@{/vendor/MagnificPopup/magnific-popup.css}">
-
     <link rel="stylesheet" type="text/css" th:href="@{/vendor/perfect-scrollbar/perfect-scrollbar.css}">
-
     <link rel="stylesheet" type="text/css" th:href="@{/css/util.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
 </head>
@@ -29,32 +26,57 @@
 <header class="header-v4">
     <div th:replace="user/header::header"></div>
 </header>
+
 <!-- Profile Section -->
 <section class="bg0 p-t-75 p-b-120">
     <div class="container">
         <h2 class="text-center m-b-50">Thông tin tài khoản</h2>
 
-        <div class="row">
-            <div class="col-md-6">
-                <h4>Thông tin cá nhân</h4>
-                <p><strong>Họ tên:</strong> <span th:text="${user.fullName}">Nguyễn Văn A</span></p>
-                <p><strong>Email:</strong> <span th:text="${user.email}">abc@gmail.com</span></p>
-                <p><strong>Số điện thoại:</strong> <span th:text="${user.phone}">0123456789</span></p>
-                <p><strong>Địa chỉ:</strong> <span th:text="${user.address}">Hà Nội</span></p>
-            </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Form cập nhật thông tin cá nhân -->
+                <form th:action="@{/profile/update-info}" method="post" class="border rounded p-4 shadow-sm">
+                    <div th:if="${param.updated}" class="alert alert-success mb-3">Cập nhật thông tin thành công!</div>
+                    <div th:if="${param.passwordChanged}" class="alert alert-success mb-3">Đổi mật khẩu thành công!</div>
+                    <h4 class="mb-4">Thông tin cá nhân</h4>
 
-            <div class="col-md-6">
-                <h4>Cập nhật mật khẩu</h4>
-                <form th:action="@{/profile/change-password}" method="post">
-                    <div class="form-group">
+                    <div class="form-group mb-3">
+                        <label>Họ tên</label>
+                        <input type="text" name="fullName" th:value="${user.fullName}" class="form-control" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Email</label>
+                        <input type="email" name="email" th:value="${user.email}" class="form-control" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Số điện thoại</label>
+                        <input type="text" name="phone" th:value="${user.phone}" class="form-control" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Địa chỉ</label>
+                        <input type="text" name="address" th:value="${user.address}" class="form-control" required/>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Lưu thay đổi</button>
+                </form>
+
+                <div class="form-check mb-3 mt-4">
+                    <input type="checkbox" class="form-check-input" id="togglePasswordForm">
+                    <label class="form-check-label" for="togglePasswordForm">Tôi muốn đổi mật khẩu</label>
+                </div>
+
+                <!-- Form đổi mật khẩu (độc lập, không lồng trong form khác) -->
+                <form id="passwordForm" th:action="@{/profile/update-password}" method="post" class="border rounded p-4 shadow-sm" style="display:none;">
+                    <h2 class="text-center m-b-50">Đổi mật khẩu</h2>
+                    <div class="form-group mb-3">
                         <label>Mật khẩu hiện tại</label>
                         <input type="password" name="oldPassword" class="form-control"/>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label>Mật khẩu mới</label>
-                        <input type="password" name="newPassword" class="form-control"/>
+                        <input type="password" name="newPassword" class="form-control" required/>
                     </div>
-                    <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+                    <button type="submit" class="btn btn-warning">Đổi mật khẩu</button>
                 </form>
             </div>
         </div>
@@ -63,100 +85,45 @@
 
 <!-- Footer -->
 <footer th:replace="user/footer :: footer"></footer>
-<!--===============================================================================================-->
+
+<!-- JS -->
 <script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script>
-<!--===============================================================================================-->
-<script th:src="@{/vendor/animsition/js/animsition.min.js}"></script>
-<!--===============================================================================================-->
-<script th:src="@{/vendor/bootstrap/js/popper.js}"></script>
 <script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
-<!--===============================================================================================-->
 <script th:src="@{/vendor/select2/select2.min.js}"></script>
-<script>
-    $(".js-select2").each(function(){
-        $(this).select2({
-            minimumResultsForSearch: 20,
-            dropdownParent: $(this).next('.dropDownSelect2')
-        });
-    })
-</script>
-<!--===============================================================================================-->
 <script th:src="@{/vendor/daterangepicker/moment.min.js}"></script>
 <script th:src="@{/vendor/daterangepicker/daterangepicker.js}"></script>
-<!--===============================================================================================-->
 <script th:src="@{/vendor/slick/slick.min.js}"></script>
-<script th:src="@{/js/slick-custom.js}"></script>
-<!--===============================================================================================-->
-<script th:src="@{/vendor/parallax100/parallax100.js}"></script>
-<script>
-    $('.parallax100').parallax100();
-</script>
-<!--===============================================================================================-->
 <script th:src="@{/vendor/MagnificPopup/jquery.magnific-popup.min.js}"></script>
-<script>
-    $('.gallery-lb').each(function() {
-        $(this).magnificPopup({
-            delegate: 'a',
-            type: 'image',
-            gallery: { enabled:true },
-            mainClass: 'mfp-fade'
-        });
-    });
-</script>
-<!--===============================================================================================-->
-<script th:src="@{/vendor/isotope/isotope.pkgd.min.js}"></script>
-<!--===============================================================================================-->
-<script th:src="@{/vendor/sweetalert/sweetalert.min.js}"></script>
-<script>
-    $('.js-addwish-b2, .js-addwish-detail').on('click', function(e){
-        e.preventDefault();
-    });
-
-    $('.js-addwish-b2').each(function(){
-        var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-        $(this).on('click', function(){
-            swal(nameProduct, "is added to wishlist !", "success");
-            $(this).addClass('js-addedwish-b2').off('click');
-        });
-    });
-
-    $('.js-addwish-detail').each(function(){
-        var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
-        $(this).on('click', function(){
-            swal(nameProduct, "is added to wishlist !", "success");
-            $(this).addClass('js-addedwish-detail').off('click');
-        });
-    });
-
-    $('.js-addcart-detail').each(function(){
-        var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-        $(this).on('click', function(){
-            swal(nameProduct, "is added to cart !", "success");
-        });
-    });
-</script>
-<!--===============================================================================================-->
 <script th:src="@{/vendor/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
-<script>
-    $('.js-pscroll').each(function(){
-        $(this).css('position','relative');
-        $(this).css('overflow','hidden');
-        var ps = new PerfectScrollbar(this, {
-            wheelSpeed: 1,
-            scrollingThreshold: 1000,
-            wheelPropagation: false,
-        });
-
-        $(window).on('resize', function(){
-            ps.update();
-        })
-    });
-</script>
-<!--===============================================================================================-->
 <script th:src="@{/js/main.js}"></script>
 
-<!-- ================= CSS FIXED ================= -->
+<!-- Toggle password form -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('togglePasswordForm');
+        const form = document.getElementById('passwordForm');
+
+        toggle.addEventListener('change', function() {
+            form.style.display = this.checked ? 'block' : 'none';
+        });
+    });
+</script>
 <style>
+    .product-img-frame {
+        width: 100%;
+        height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        overflow: hidden;
+    }
+    .product-img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        display: block;
+    }
     .user-dropdown-content {
         display: none;
         position: absolute;
@@ -295,6 +262,149 @@
             initUserDropdown();
         }
 
+    })();
+</script>
+<!-- ======= Notification Dropdown Style & Script ======= -->
+<style>
+    .notification-dropdown {
+        display: none;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-radius: 8px;
+        width: 280px;
+        z-index: 999;
+        overflow: hidden;
+    }
+    .notification-item:hover {
+        background: #f8f8f8;
+    }
+</style>
+
+<script>
+    const bell = document.getElementById("notification-bell");
+    const dropdown = document.getElementById("notification-dropdown");
+
+    bell.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!bell.contains(e.target)) {
+            dropdown.style.display = "none";
+        }
+    });
+</script>
+<script>
+    (function() {
+        function formatVND(n){ try { return (Number(n)||0).toLocaleString('vi-VN') + 'đ'; } catch(e){ return n; } }
+        function updateBadge(total){
+            try {
+                var el = document.querySelector('.icon-header-noti.js-show-cart');
+                if (el) el.setAttribute('data-notify', Number(total||0));
+            } catch(e){}
+        }
+        function renderCart(items){
+            var list = document.getElementById('header-cart-list');
+            var totalEl = document.getElementById('header-cart-total');
+            if (!list || !totalEl) return;
+            list.innerHTML = '';
+            var total = 0;
+            if (Array.isArray(items) && items.length){
+                items.forEach(function(it){
+                    var p = it && it.product ? it.product : {};
+                    var qty = Number(it.quantity||0);
+                    var price = Number(p.price||0);
+                    total += qty * price;
+                    var img = p.firstImageFileName ? ('/images/' + p.firstImageFileName) : '/images/product-01.jpg';
+                    var li = document.createElement('li');
+                    li.className = 'header-cart-item flex-w flex-t m-b-12';
+                    li.setAttribute('data-product-id', p.id || '');
+                    li.innerHTML = ''+
+                        '<div class="header-cart-item-img">\n'+
+                        '  <img src="'+img+'" alt="IMG">\n'+
+                        '</div>\n'+
+                        '<div class="header-cart-item-txt p-t-8">\n'+
+                        '  <a href="#" class="header-cart-item-name m-b-12 hov-cl1 trans-04">'+ (p.name||'Sản phẩm') +'</a>\n'+
+                        '  <span class="header-cart-item-info d-block m-b-8">'+ qty +' x '+ formatVND(price) +'</span>\n'+
+                        '  <div class="header-cart-item-actions flex-w flex-m">\n'+
+                        '    <button class="btn-dec cl2 hov-cl1 trans-04 bor13 size-28 m-r-8" aria-label="Giảm">−</button>\n'+
+                        '    <input class="num-product stext-104 cl3 size-28 bor13 m-r-8 text-center" type="text" value="'+ qty +'" readonly>\n'+
+                        '    <button class="btn-inc cl2 hov-cl1 trans-04 bor13 size-28 m-r-12" aria-label="Tăng">+</button>\n'+
+                        '    <button class="btn-remove cl2 hov-cl1 trans-04" aria-label="Xóa"><i class="zmdi zmdi-delete"></i></button>\n'+
+                        '  </div>\n'+
+                        '</div>';
+                    list.appendChild(li);
+                });
+            } else {
+                var empty = document.createElement('li');
+                empty.className = 'p-2 text-muted';
+                empty.textContent = 'Giỏ hàng trống';
+                list.appendChild(empty);
+            }
+            totalEl.textContent = 'Total: ' + formatVND(total);
+        }
+        function loadCart(){
+            fetch('/cart/items', { method: 'GET', credentials: 'same-origin' })
+                .then(function(r){ return r.text(); })
+                .then(function(t){ try { return JSON.parse(t); } catch(e){ return []; } })
+                .then(function(items){
+                    renderCart(items);
+                    var sum = 0; if (Array.isArray(items)) items.forEach(function(it){ sum += Number(it.quantity||0); });
+                    updateBadge(sum);
+                })
+                .catch(function(){});
+        }
+        function post(url, data){
+            var form = new URLSearchParams();
+            Object.keys(data||{}).forEach(function(k){ if (data[k] !== undefined) form.append(k, data[k]); });
+            return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: form, credentials: 'same-origin' })
+                .then(function(r){ return r.text(); })
+                .then(function(t){ var n = Number(t); return isNaN(n) ? 0 : n; });
+        }
+        document.addEventListener('click', function(e){
+            var inc = e.target.closest && e.target.closest('.btn-inc');
+            var dec = e.target.closest && e.target.closest('.btn-dec');
+            var rm  = e.target.closest && e.target.closest('.btn-remove');
+            if (!(inc||dec||rm)) return;
+            e.preventDefault();
+            var itemEl = e.target.closest('.header-cart-item');
+            if (!itemEl) return;
+            var productId = itemEl.getAttribute('data-product-id');
+            if (!productId) return;
+            if (inc) {
+                post('/cart/increase', { productId: productId })
+                    .then(function(){ loadCart(); })
+                    .catch(function(){});
+                return;
+            }
+            if (dec) {
+                var qtyInput = itemEl.querySelector('input.num-product');
+                var current = Number((qtyInput && qtyInput.value) || '1');
+                if (current <= 1) { return; } // chặn giảm < 1 ở client
+                post('/cart/decrease', { productId: productId })
+                    .then(function(){ loadCart(); })
+                    .catch(function(){});
+                return;
+            }
+            if (rm) {
+                if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+                post('/cart/remove', { productId: productId })
+                    .then(function(){ loadCart(); })
+                    .catch(function(){});
+                return;
+            }
+        }, false);
+        // Load when panel opens
+        document.addEventListener('click', function(e){
+            var btn = e.target.closest && e.target.closest('.js-show-cart');
+            if (btn) { setTimeout(loadCart, 0); }
+        }, false);
+        // Initial sync
+        try { setTimeout(loadCart, 0); } catch(e) {}
     })();
 </script>
 </body>

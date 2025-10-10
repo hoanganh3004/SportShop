@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "products")
@@ -23,9 +24,6 @@ public class Product {
     private String color;
     private Integer quantity;
 
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -37,16 +35,18 @@ public class Product {
     private List<ProductImage> images;
 
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<CartItem> cartItems;
 
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<OrderItem> orderItems;
 
     public Product() {}
 
     public Product(Integer id, String name, String masp, BigDecimal price,
                    String description, String size, String color, Integer quantity,
-                   Boolean isDeleted, LocalDateTime createdAt, Category category) {
+                   LocalDateTime createdAt, Category category) {
         this.id = id;
         this.name = name;
         this.masp = masp;
@@ -55,7 +55,6 @@ public class Product {
         this.size = size;
         this.color = color;
         this.quantity = quantity;
-        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.category = category;
     }
@@ -124,13 +123,7 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public Boolean getDeleted() {
-        return isDeleted;
-    }
 
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
-    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -195,7 +188,7 @@ public class Product {
                 ", size='" + size + '\'' +
                 ", color='" + color + '\'' +
                 ", quantity=" + quantity +
-                ", isDeleted=" + isDeleted +
+
                 ", createdAt=" + createdAt +
                 ", category=" + category +
                 ", images=" + images +

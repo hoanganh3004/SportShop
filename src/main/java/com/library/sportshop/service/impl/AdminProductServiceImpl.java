@@ -85,7 +85,6 @@ public class AdminProductServiceImpl implements AdminProductService {
         try {
             if (product.getId() == null) {
                 product.setCreatedAt(LocalDateTime.now());
-                product.setDeleted(false);
             }
             Product savedProduct = productRepository.save(product);
             if (images != null && images.length > 0) {

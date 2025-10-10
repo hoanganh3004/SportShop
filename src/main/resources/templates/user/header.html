@@ -1,5 +1,5 @@
 <!-- ================= HEADER ================= -->
-<header>
+<header th:fragment="header">
     <!-- Header desktop -->
     <div class="container-menu-desktop">
         <div class="wrap-menu-desktop">
@@ -23,17 +23,42 @@
 
                 <!-- Icon header -->
                 <div class="wrap-icon-header flex-w flex-r-m">
-                    <!-- Search -->
-                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-                        <i class="zmdi zmdi-search"></i>
-                    </div>
 
                     <!-- Cart -->
-                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2">
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
+                         th:attr="data-notify=${session.cartQty != null ? session.cartQty : 0}">
                         <i class="zmdi zmdi-shopping-cart"></i>
                     </div>
 
-                    <!-- User account - ĐÃ FIX -->
+                    <!-- Notification bell -->
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 position-relative"
+                         th:attr="data-notify=${session.notificationCount != null ? session.notificationCount : 0}"
+                         id="notification-bell"
+                         style="cursor: pointer;">
+                        <i class="zmdi zmdi-notifications"></i>
+
+                        <!-- Dropdown notifications -->
+                        <div id="notification-dropdown" class="notification-dropdown">
+                            <h6 class="p-3 m-0 border-bottom text-center">Thông báo</h6>
+
+                            <div class="notification-list" th:if="${session.notifications != null}">
+                                <div th:each="n : ${session.notifications}" class="notification-item p-2 border-bottom hov-cl1">
+                                    <span th:text="${n.message}">Nội dung thông báo</span>
+                                    <small class="d-block text-muted" th:text="${#dates.format(n.createdAt, 'dd/MM/yyyy HH:mm')}"></small>
+                                </div>
+                            </div>
+
+                            <div th:unless="${session.notifications != null}" class="p-3 text-center text-muted">
+                                Không có thông báo nào
+                            </div>
+
+                            <div class="text-center p-2 border-top">
+                                <a th:href="@{/notifications}" class="stext-107 cl2 hov-cl1">Xem tất cả</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User account -->
                     <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 position-relative" id="user-dropdown">
                         <!-- Khi đã đăng nhập -->
                         <div th:if="${session.loggedInUsername != null}">
@@ -44,7 +69,7 @@
                                 <span th:text="${session.loggedInUsername}" class="user-name ml-2"></span>
                             </div>
 
-                            <!-- Dropdown content - ĐÃ SỬA CLASS -->
+                            <!-- Dropdown content -->
                             <div id="user-dropdown-content"
                                  class="user-dropdown-content"
                                  aria-hidden="true">
@@ -73,7 +98,6 @@
             </button>
             <form class="wrap-search-header flex-w p-l-15">
                 <button class="flex-c-m trans-04"><i class="zmdi zmdi-search"></i></button>
-                <input class="plh3" type="text" name="search" placeholder="Search...">
             </form>
         </div>
     </div>
@@ -83,31 +107,142 @@
         <div class="s-full js-hide-cart"></div>
         <div class="header-cart flex-col-l p-l-65 p-r-25">
             <div class="header-cart-title flex-w flex-sb-m p-b-8">
-                <span class="mtext-103 cl2">Your Cart</span>
+                <span class="mtext-103 cl2">Giỏ hàng của bạn</span>
                 <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
                     <i class="zmdi zmdi-close"></i>
                 </div>
             </div>
             <div class="header-cart-content flex-w js-pscroll">
-                <ul class="header-cart-wrapitem w-full">
-                    <li class="header-cart-item flex-w flex-t m-b-12">
-                        <div class="header-cart-item-img">
-                            <img src="images/item-cart-01.jpg" alt="IMG">
-                        </div>
-                        <div class="header-cart-item-txt p-t-8">
-                            <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">White Shirt Pleat</a>
-                            <span class="header-cart-item-info">1 x $19.00</span>
-                        </div>
-                    </li>
+                <ul id="header-cart-list" class="header-cart-wrapitem w-full">
+                    <!-- Items sẽ được render bằng JS từ /cart/items -->
                 </ul>
                 <div class="w-full">
-                    <div class="header-cart-total w-full p-tb-40">Total: $75.00</div>
+                    <div id="header-cart-total" class="header-cart-total w-full p-tb-40"></div>
                     <div class="header-cart-buttons flex-w w-full">
                         <a th:href="@{/checkout}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">Xem giỏ hàng</a>
-                        <a th:href="@{/checkout}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">Thanh toán</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </header>
+
+<script>
+    (function() {
+        function formatVND(n){ try { return (Number(n)||0).toLocaleString('vi-VN') + 'đ'; } catch(e){ return n; } }
+        function updateBadge(total){
+            try {
+                var el = document.querySelector('.icon-header-noti.js-show-cart');
+                if (el) el.setAttribute('data-notify', Number(total||0));
+            } catch(e){}
+        }
+        function renderCart(items){
+            var list = document.getElementById('header-cart-list');
+            var totalEl = document.getElementById('header-cart-total');
+            if (!list || !totalEl) return;
+            list.innerHTML = '';
+            var total = 0;
+            if (Array.isArray(items) && items.length){
+                items.forEach(function(it){
+                    var p = it && it.product ? it.product : {};
+                    var qty = Number(it.quantity||0);
+                    var price = Number(p.price||0);
+                    total += qty * price;
+                    var img = p.firstImageFileName ? ('/images/' + p.firstImageFileName) : '/images/product-01.jpg';
+                    var li = document.createElement('li');
+                    li.className = 'header-cart-item flex-w flex-t m-b-12';
+                    li.setAttribute('data-product-id', p.id || '');
+                    li.innerHTML = ''+
+                        '<div class="header-cart-item-img">\n'+
+                        '  <img src="'+img+'" alt="IMG">\n'+
+                        '</div>\n'+
+                        '<div class="header-cart-item-txt p-t-8">\n'+
+                        '  <a href="#" class="header-cart-item-name m-b-12 hov-cl1 trans-04">'+ (p.name||'Sản phẩm') +'</a>\n'+
+                        '  <span class="header-cart-item-info d-block m-b-8">'+ qty +' x '+ formatVND(price) +'</span>\n'+
+                        '  <div class="header-cart-item-actions flex-w flex-m">\n'+
+                        '    <button class="btn-dec cl2 hov-cl1 trans-04 bor13 size-28 m-r-8" aria-label="Giảm">−</button>\n'+
+                        '    <input class="num-product stext-104 cl3 size-28 bor13 m-r-8 text-center" type="text" value="'+ qty +'" readonly>\n'+
+                        '    <button class="btn-inc cl2 hov-cl1 trans-04 bor13 size-28 m-r-12" aria-label="Tăng">+</button>\n'+
+                        '    <button class="btn-remove cl2 hov-cl1 trans-04" aria-label="Xóa"><i class="zmdi zmdi-delete"></i></button>\n'+
+                        '  </div>\n'+
+                        '</div>';
+                    list.appendChild(li);
+                });
+            } else {
+                var empty = document.createElement('li');
+                empty.className = 'p-2 text-muted';
+                empty.textContent = 'Giỏ hàng trống';
+                list.appendChild(empty);
+            }
+            totalEl.textContent = 'Tổng cộng: ' + formatVND(total);
+        }
+        function loadCart(){
+            fetch('/cart/items', { method: 'GET', credentials: 'same-origin' })
+                .then(function(r){ return r.text(); })
+                .then(function(t){ try { return JSON.parse(t); } catch(e){ return []; } })
+                .then(function(items){
+                    renderCart(items);
+                    var sum = 0; if (Array.isArray(items)) items.forEach(function(it){ sum += Number(it.quantity||0); });
+                    updateBadge(sum);
+                })
+                .catch(function(){});
+        }
+        function post(url, data){
+            var form = new URLSearchParams();
+            Object.keys(data||{}).forEach(function(k){ if (data[k] !== undefined) form.append(k, data[k]); });
+            return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: form, credentials: 'same-origin' })
+                .then(function(r){
+                    if (!r.ok) {
+                        return r.text().then(function(t){
+                            if (r.status === 409) {
+                                alert('Không thể vượt quá sản phẩm trong kho');
+                            }
+                            return '0';
+                        });
+                    }
+                    return r.text();
+                })
+                .then(function(t){ var n = Number(t); return isNaN(n) ? 0 : n; });
+        }
+        document.addEventListener('click', function(e){
+            var inc = e.target.closest && e.target.closest('.btn-inc');
+            var dec = e.target.closest && e.target.closest('.btn-dec');
+            var rm  = e.target.closest && e.target.closest('.btn-remove');
+            if (!(inc||dec||rm)) return;
+            e.preventDefault();
+            var itemEl = e.target.closest('.header-cart-item');
+            if (!itemEl) return;
+            var productId = itemEl.getAttribute('data-product-id');
+            if (!productId) return;
+            if (inc) {
+                post('/cart/increase', { productId: productId })
+                    .then(function(){ loadCart(); })
+                    .catch(function(){});
+                return;
+            }
+            if (dec) {
+                var qtyInput = itemEl.querySelector('input.num-product');
+                var current = Number((qtyInput && qtyInput.value) || '1');
+                if (current <= 1) { alert('Không thể giảm dưới 1'); return; } // chặn giảm < 1 ở client + thông báo
+                post('/cart/decrease', { productId: productId })
+                    .then(function(){ loadCart(); })
+                    .catch(function(){});
+                return;
+            }
+            if (rm) {
+                if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+                post('/cart/remove', { productId: productId })
+                    .then(function(){ loadCart(); })
+                    .catch(function(){});
+                return;
+            }
+        }, false);
+        // Load when panel opens
+        document.addEventListener('click', function(e){
+            var btn = e.target.closest && e.target.closest('.js-show-cart');
+            if (btn) { setTimeout(loadCart, 0); }
+        }, false);
+        // Initial sync
+        try { setTimeout(loadCart, 0); } catch(e) {}
+    })();
+</script>

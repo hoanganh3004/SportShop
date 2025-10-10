@@ -33,7 +33,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
-                                "/blog-detail", "/product-detail", "/blog", "/about", "/contact", "/product", "/login",
+                                "/blog-detail", "/product-detail", "/product-detail/**", "/blog", "/about", "/contact", "/product", "/login",
                                 "/register", "/forgot-password",
                                 "/css/**", "/js/**", "/images/**", "/assets/**", "/fonts/**", "/img/**",
                                 "/libs/**", "/scss/**", "/tasks/**", "/vendor/**",
@@ -44,7 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/home")
                         .access(new WebExpressionAuthorizationManager("isAnonymous() or hasRole('USER') or hasRole('ADMIN')"))
 
-                        // ✅ Chặn cả /admin và /admin/**
+                        //  Chặn cả /admin và /admin/**
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
 
                         // Các URL cho USER

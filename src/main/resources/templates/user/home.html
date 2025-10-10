@@ -213,37 +213,15 @@
         <div class="flex-w flex-sb-m p-b-52">
             <div class="flex-w flex-l-m filter-tope-group m-tb-10">
                 <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-                    All Products
+                    Tất cả sản phẩm
                 </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-                    Women
-                </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-                    Men
-                </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
-                    Bag
-                </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".shoes">
-                    Shoes
-                </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".watches">
-                    Watches
-                </button>
+                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
+                        th:each="c : ${homeCategories}"
+                        th:attr="data-filter=${'.cat-' + c.id}"
+                        th:text="${c.name}">Category</button>
             </div>
 
             <div class="flex-w flex-c-m m-tb-10">
-                <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
-                    <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
-                    <i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-                    Filter
-                </div>
-
                 <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
                     <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
                     <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
@@ -253,226 +231,42 @@
 
             <!-- Search product -->
             <div class="dis-none panel-search w-full p-t-10 p-b-15">
-                <div class="bor8 dis-flex p-l-15">
-                    <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+                <form class="bor8 dis-flex p-l-15" method="get" th:action="@{/home}">
+                    <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04" type="submit">
                         <i class="zmdi zmdi-search"></i>
                     </button>
-
-                    <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
-                </div>
-            </div>
-
-            <!-- Filter -->
-            <div class="dis-none panel-filter w-full p-t-10">
-                <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
-                    <div class="filter-col1 p-r-15 p-b-27">
-                        <div class="mtext-102 cl2 p-b-15">
-                            Sort By
-                        </div>
-
-                        <ul>
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Default
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Popularity
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Average rating
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-                                    Newness
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Price: Low to High
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Price: High to Low
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="filter-col2 p-r-15 p-b-27">
-                        <div class="mtext-102 cl2 p-b-15">
-                            Price
-                        </div>
-
-                        <ul>
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-                                    All
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $0.00 - $50.00
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $50.00 - $100.00
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $100.00 - $150.00
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $150.00 - $200.00
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $200.00+
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="filter-col3 p-r-15 p-b-27">
-                        <div class="mtext-102 cl2 p-b-15">
-                            Color
-                        </div>
-
-                        <ul>
-                            <li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #222;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Black
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #4272d7;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-                                <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-                                    Blue
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Grey
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #00ad5f;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Green
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #fa4251;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Red
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #aaa;">
-										<i class="zmdi zmdi-circle-o"></i>
-									</span>
-
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    White
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="filter-col4 p-b-27">
-                        <div class="mtext-102 cl2 p-b-15">
-                            Tags
-                        </div>
-
-                        <div class="flex-w p-t-4 m-r--5">
-                            <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Fashion
-                            </a>
-
-                            <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Lifestyle
-                            </a>
-
-                            <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Denim
-                            </a>
-
-                            <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Streetstyle
-                            </a>
-
-                            <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Crafts
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                    <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="q" placeholder="Search" th:value="${q}">
+                </form>
             </div>
         </div>
 
         <div class="row isotope-grid">
-            <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+            <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item"
+                 th:each="p : ${homeProducts}"
+                 th:classappend="${' cat-' + (p.category != null ? p.category.id : 0)}">
                 <!-- Block2 -->
                 <div class="block2">
-                    <div class="block2-pic hov-img0">
-                        <img th:src="@{/images/product-01.jpg}" alt="IMG-PRODUCT">
+                    <div class="block2-pic hov-img0 product-img-frame">
+                        <img class="product-img"
+                             th:if="${p.firstImageFileName != null}"
+                             th:src="@{/images/{f}(f=${p.firstImageFileName})}"
+                             alt="IMG-PRODUCT">
+                        <img class="product-img"
+                             th:unless="${p.firstImageFileName != null}"
+                             th:src="@{/images/product-01.jpg}"
+                             alt="IMG-PRODUCT">
 
-                        <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                            Xem nhanh
-                        </a>
                     </div>
 
                     <div class="block2-txt flex-w flex-t p-t-14">
                         <div class="block2-txt-child1 flex-col-l ">
-                            <a th:href="@{/product-detail}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                Esprit Ruffle Shirt
-                            </a>
+                            <a th:href="@{/product-detail/{id}(id=${p.id})}"
+                               class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
+                               th:text="${p.name}">Product Name</a>
 
-                            <span class="stext-105 cl3">
-                    $16.64
-                </span>
+                            <span class="stext-105 cl3" th:text="${p.price != null ? #numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT') + '₫' : 'N/A'}">
+                                0.00
+                            </span>
                         </div>
 
                         <div class="block2-txt-child2 flex-r p-t-3">
@@ -484,12 +278,10 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Load more -->
-        <div class="flex-c-m flex-w w-full p-t-45">
-            <a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-                Load More
-            </a>
+
+            <div class="col-12" th:if="${homeProducts == null or #lists.isEmpty(homeProducts)}">
+                <p class="text-center text-muted">Hiện chưa có sản phẩm để hiển thị.</p>
+            </div>
         </div>
     </div>
 </section>
@@ -756,6 +548,22 @@
 
 <!-- ================= CSS FIXED ================= -->
 <style>
+    /* Khung ảnh sản phẩm đồng nhất */
+    .product-img-frame {
+        width: 100%;
+        height: 260px; /* giữ chiều cao cố định để grid đều */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        overflow: hidden;
+    }
+    .product-img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; /* đảm bảo không méo ảnh, căn giữa */
+        display: block;
+    }
     .user-dropdown-content {
         display: none;
         position: absolute;
@@ -894,6 +702,150 @@
             initUserDropdown();
         }
 
+    })();
+</script>
+<!-- ======= Notification Dropdown Style & Script ======= -->
+<style>
+    .notification-dropdown {
+        display: none;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-radius: 8px;
+        width: 280px;
+        z-index: 999;
+        overflow: hidden;
+    }
+    .notification-item:hover {
+        background: #f8f8f8;
+    }
+</style>
+
+<script>
+    const bell = document.getElementById("notification-bell");
+    const dropdown = document.getElementById("notification-dropdown");
+
+    bell.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!bell.contains(e.target)) {
+            dropdown.style.display = "none";
+        }
+    });
+
+</script>
+<script>
+    (function() {
+        function formatVND(n){ try { return (Number(n)||0).toLocaleString('vi-VN') + 'đ'; } catch(e){ return n; } }
+        function updateBadge(total){
+            try {
+                var el = document.querySelector('.icon-header-noti.js-show-cart');
+                if (el) el.setAttribute('data-notify', Number(total||0));
+            } catch(e){}
+        }
+        function renderCart(items){
+            var list = document.getElementById('header-cart-list');
+            var totalEl = document.getElementById('header-cart-total');
+            if (!list || !totalEl) return;
+            list.innerHTML = '';
+            var total = 0;
+            if (Array.isArray(items) && items.length){
+                items.forEach(function(it){
+                    var p = it && it.product ? it.product : {};
+                    var qty = Number(it.quantity||0);
+                    var price = Number(p.price||0);
+                    total += qty * price;
+                    var img = p.firstImageFileName ? ('/images/' + p.firstImageFileName) : '/images/product-01.jpg';
+                    var li = document.createElement('li');
+                    li.className = 'header-cart-item flex-w flex-t m-b-12';
+                    li.setAttribute('data-product-id', p.id || '');
+                    li.innerHTML = ''+
+                        '<div class="header-cart-item-img">\n'+
+                        '  <img src="'+img+'" alt="IMG">\n'+
+                        '</div>\n'+
+                        '<div class="header-cart-item-txt p-t-8">\n'+
+                        '  <a href="#" class="header-cart-item-name m-b-12 hov-cl1 trans-04">'+ (p.name||'Sản phẩm') +'</a>\n'+
+                        '  <span class="header-cart-item-info d-block m-b-8">'+ qty +' x '+ formatVND(price) +'</span>\n'+
+                        '  <div class="header-cart-item-actions flex-w flex-m">\n'+
+                        '    <button class="btn-dec cl2 hov-cl1 trans-04 bor13 size-28 m-r-8" aria-label="Giảm">−</button>\n'+
+                        '    <input class="num-product stext-104 cl3 size-28 bor13 m-r-8 text-center" type="text" value="'+ qty +'" readonly>\n'+
+                        '    <button class="btn-inc cl2 hov-cl1 trans-04 bor13 size-28 m-r-12" aria-label="Tăng">+</button>\n'+
+                        '    <button class="btn-remove cl2 hov-cl1 trans-04" aria-label="Xóa"><i class="zmdi zmdi-delete"></i></button>\n'+
+                        '  </div>\n'+
+                        '</div>';
+                    list.appendChild(li);
+                });
+            } else {
+                var empty = document.createElement('li');
+                empty.className = 'p-2 text-muted';
+                empty.textContent = 'Giỏ hàng trống';
+                list.appendChild(empty);
+            }
+            totalEl.textContent = 'Total: ' + formatVND(total);
+        }
+        function loadCart(){
+            fetch('/cart/items', { method: 'GET', credentials: 'same-origin' })
+                .then(function(r){ return r.text(); })
+                .then(function(t){ try { return JSON.parse(t); } catch(e){ return []; } })
+                .then(function(items){
+                    renderCart(items);
+                    var sum = 0; if (Array.isArray(items)) items.forEach(function(it){ sum += Number(it.quantity||0); });
+                    updateBadge(sum);
+                })
+                .catch(function(){});
+        }
+        function post(url, data){
+            var form = new URLSearchParams();
+            Object.keys(data||{}).forEach(function(k){ if (data[k] !== undefined) form.append(k, data[k]); });
+            return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: form, credentials: 'same-origin' })
+                .then(function(r){ return r.text(); })
+                .then(function(t){ var n = Number(t); return isNaN(n) ? 0 : n; });
+        }
+        document.addEventListener('click', function(e){
+            var inc = e.target.closest && e.target.closest('.btn-inc');
+            var dec = e.target.closest && e.target.closest('.btn-dec');
+            var rm  = e.target.closest && e.target.closest('.btn-remove');
+            if (!(inc||dec||rm)) return;
+            e.preventDefault();
+            var itemEl = e.target.closest('.header-cart-item');
+            if (!itemEl) return;
+            var productId = itemEl.getAttribute('data-product-id');
+            if (!productId) return;
+            if (inc) {
+                post('/cart/increase', { productId: productId })
+                    .then(function(){ loadCart(); })
+                    .catch(function(){});
+                return;
+            }
+            if (dec) {
+                var qtyInput = itemEl.querySelector('input.num-product');
+                var current = Number((qtyInput && qtyInput.value) || '1');
+                if (current <= 1) { return; } // chặn giảm < 1 ở client
+                post('/cart/decrease', { productId: productId })
+                    .then(function(){ loadCart(); })
+                    .catch(function(){});
+                return;
+            }
+            if (rm) {
+                if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+                post('/cart/remove', { productId: productId })
+                    .then(function(){ loadCart(); })
+                    .catch(function(){});
+                return;
+            }
+        }, false);
+        // Load when panel opens
+        document.addEventListener('click', function(e){
+            var btn = e.target.closest && e.target.closest('.js-show-cart');
+            if (btn) { setTimeout(loadCart, 0); }
+        }, false);
+        // Initial sync
+        try { setTimeout(loadCart, 0); } catch(e) {}
     })();
 </script>
 </body>

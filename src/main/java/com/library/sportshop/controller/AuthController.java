@@ -10,11 +10,16 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class AuthController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private com.library.sportshop.repository.CartItemRepository cartItemRepository;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -86,9 +91,15 @@ public class AuthController {
     }
 
     @GetMapping("/user/home")
-    public String userHome(Model model, Authentication authentication) {
+    public String userHome(Model model, Authentication authentication, HttpSession session) {
         if (authentication != null && authentication.isAuthenticated()) {
             model.addAttribute("username", authentication.getName());
+            Account account = accountService.findByUsername(authentication.getName());
+            if (account != null) {
+                session.setAttribute("loggedInUsername", account.getCode());
+                Integer totalQty = cartItemRepository.countQuantityByUserCode(account.getCode());
+                session.setAttribute("cartQty", totalQty == null ? 0 : totalQty);
+            }
         }
         return "user/home";
     }
