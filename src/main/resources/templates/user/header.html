@@ -44,9 +44,12 @@
                             <div class="notification-list" th:if="${session.notifications != null}">
                                 <div th:each="n : ${session.notifications}"
                                      class="notification-item p-2 border-bottom hov-cl1"
-                                     th:classappend="${n.read} ? ' read' : ' unread'">
-                                    <span th:text="${n.message}">Nội dung thông báo</span>
-                                    <small class="d-block text-muted" th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></small>
+                                     th:classappend="${n.read} ? ' read' : ' unread'"
+                                     th:attr="data-id=${n.id}">
+                                    <a th:href="@{/no/{id}(id=${n.id})}" class="d-block text-left" style="text-decoration: none; color: inherit;">
+                                        <span th:text="${n.message}">Nội dung thông báo</span>
+                                        <small class="d-block text-muted" th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></small>
+                                    </a>
                                 </div>
                             </div>
 
@@ -125,9 +128,50 @@
         </div>
     </div>
 </header>
+<script th:inline="javascript">
+    (function(){
+        if (window.__hdrNotifyInit) return; window.__hdrNotifyInit = true;
+        try { console.log('[header-inline] init'); } catch(_){ }
+        var ctx = (function(){ try { return /*[[@{/}]]*/ ""; } catch(e){ return ""; } })();
+        if (ctx && ctx.endsWith('/') === false) ctx = ctx + '/';
+        var bell = document.getElementById('notification-bell');
+        var dd = document.getElementById('notification-dropdown');
+        if (bell && dd) {
+            try {
+                bell.addEventListener('click', function(ev){ try{ ev.stopPropagation(); }catch(_){ } dd.classList.toggle('show'); }, false);
+                document.addEventListener('click', function(){ try { dd.classList.remove('show'); } catch(_){ } }, false);
+            } catch(_){ }
+        }
+        document.addEventListener('click', function(e){
+            var item = e.target.closest && e.target.closest('#notification-dropdown .notification-item');
+            if (!item || !item.classList.contains('unread')) return;
+            var id = item.getAttribute('data-id'); if (!id) return;
+            try { console.log('[notify-inline] click id=', id); } catch(_){ }
+            fetch(ctx + 'nr', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain' },
+                body: 'id=' + encodeURIComponent(id),
+                credentials: 'same-origin'
+            })
+            .then(function(r){ return r.text(); })
+            .then(function(t){
+                var remain = Number(t); if (isNaN(remain)) remain = 0;
+                try {
+                    item.classList.remove('unread');
+                    item.classList.add('read');
+                    var b = document.getElementById('notification-bell');
+                    if (b) b.setAttribute('data-notify', remain);
+                    console.log('[notify-inline] ok remain=', remain);
+                } catch(_){ }
+            })
+            .catch(function(err){ try { console.log('[notify-inline] error', err); } catch(_){ } });
+        }, false);
+    })();
+ </script>
 
-<script>
+<script th:inline="javascript">
     (function() {
+        try { console.log('[header] script loaded'); } catch(_){ }
         function formatVND(n){ try { return (Number(n)||0).toLocaleString('vi-VN') + 'đ'; } catch(e){ return n; } }
         function updateBadge(total){
             try {
@@ -241,6 +285,115 @@
             var btn = e.target.closest && e.target.closest('.js-show-cart');
             if (btn) { setTimeout(loadCart, 0); }
         }, false);
+        // Toggle notification dropdown visibility on bell click
+        (function(){
+            var bell = document.getElementById('notification-bell');
+            var dd = document.getElementById('notification-dropdown');
+            if (!bell || !dd) return;
+            bell.addEventListener('click', function(ev){
+                try { ev.stopPropagation(); } catch(_){}
+                dd.classList.toggle('show');
+            }, false);
+            document.addEventListener('click', function(){
+                try { dd.classList.remove('show'); } catch(_){}
+            }, false);
+        })();
+        // Compute context path ("/" or "/app/") for safe URL building
+        var ctx = (function(){ try { return /*[[@{/}]]*/ ""; } catch(e){ return ""; } })();
+        if (ctx && ctx.endsWith('/') === false) { ctx = ctx + '/'; }
+        // Mark notification as read on click (server-backed)
+        document.addEventListener('click', function(e){
+            var item = e.target.closest && e.target.closest('#notification-dropdown .notification-item');
+            if (!item || !item.classList.contains('unread')) return;
+            try { e.stopPropagation && e.stopPropagation(); } catch(_){ }
+            var id = item.getAttribute('data-id');
+            if (!id) return;
+            try { console.log('[notify] click unread item id=', id); } catch(_){ }
+            try { if (window.Toastify) { Toastify({ text: 'Đang cập nhật thông báo...', duration: 1500 }).showToast(); } } catch(_){ }
+            // Use ultra-short path first to avoid blockers, then fallbacks
+            post(ctx + 'nr', { id: id })
+                .then(function(remain){
+                    try {
+                        console.log('[notify] server ok, remain=', remain);
+                        item.classList.remove('unread');
+                        item.classList.add('read');
+                        var bell = document.getElementById('notification-bell');
+                        if (bell) bell.setAttribute('data-notify', Number(remain||0));
+                    } catch(e){}
+                })
+                .catch(function(err1){
+                    try { console.log('[notify] /nr failed:', err1); } catch(_){ }
+                    try { console.log('[notify] fallback to /user/notifications/read'); } catch(_){ }
+                    // second attempt
+                    return post(ctx + 'user/notifications/read', { id: id })
+                        .then(function(remain){
+                            try {
+                                console.log('[notify] fallback /user/notifications/read ok, remain=', remain);
+                                item.classList.remove('unread');
+                                item.classList.add('read');
+                                var bell = document.getElementById('notification-bell');
+                                if (bell) bell.setAttribute('data-notify', Number(remain||0));
+                            } catch(e){}
+                        })
+                        .catch(function(){
+                            try { console.log('[notify] fallback to /notifications/read'); } catch(_){ }
+                    // fallback in case some route rewriting is different
+                    post(ctx + 'notifications/read', { id: id })
+                        .then(function(remain){
+                            try {
+                                console.log('[notify] fallback /notifications/read ok, remain=', remain);
+                                item.classList.remove('unread');
+                                item.classList.add('read');
+                                var bell = document.getElementById('notification-bell');
+                                if (bell) bell.setAttribute('data-notify', Number(remain||0));
+                            } catch(e){}
+                        })
+                        .catch(function(){
+                            // final fallback using GET (in case POST is blocked)
+                            fetch(ctx + 'nr?id=' + encodeURIComponent(id), { method: 'GET', credentials: 'same-origin' })
+                                .then(function(r){ return r.text(); })
+                                .then(function(remain){
+                                    try {
+                                        console.log('[notify] final fallback ok, remain=', remain);
+                                        item.classList.remove('unread');
+                                        item.classList.add('read');
+                                        var bell = document.getElementById('notification-bell');
+                                        if (bell) bell.setAttribute('data-notify', Number(remain||0));
+                                    } catch(e){}
+                                })
+                                .catch(function(){ try { alert('Không thể cập nhật trạng thái thông báo. Vui lòng thử lại.'); } catch(_){} });
+                        });
+                });
+                });
+        }, false);
+        function post(url, data) {
+            const params = new URLSearchParams();
+            Object.keys(data || {}).forEach(k => {
+                if (data[k] !== undefined && data[k] !== null)
+                    params.append(k, data[k]);
+            });
+
+            return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'Accept': 'text/plain'
+                },
+                body: params.toString(),
+                credentials: 'same-origin',
+                cache: 'no-cache'
+            })
+                .then(r => r.text())
+                .then(t => {
+                    const n = Number(t);
+                    return isNaN(n) ? 0 : n;
+                })
+                .catch(err => {
+                    console.error('[notify] POST error:', err);
+                    return 0;
+                });
+        }
+
         // Initial sync
         try { setTimeout(loadCart, 0); } catch(e) {}
     })();
@@ -259,7 +412,9 @@
         box-shadow: 0 8px 24px rgba(0,0,0,0.12);
         z-index: 1000;
         overflow: hidden;
+        display: none; /* hidden by default */
     }
+    #notification-dropdown.notification-dropdown.show{ display: block; }
     #notification-dropdown .notification-list{
         max-height: 360px;
         overflow-y: auto;

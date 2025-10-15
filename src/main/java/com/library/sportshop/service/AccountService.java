@@ -9,4 +9,5 @@ public interface AccountService {
     boolean registerAccount(Account account);  // Sử dụng Account object
     boolean resetPassword(String username, String code, String newPassword);
     Account findByUsername(String username);
+    boolean resetPasswordByEmail(String email);
 }

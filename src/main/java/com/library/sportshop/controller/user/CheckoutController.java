@@ -89,30 +89,36 @@ public class CheckoutController {
             return "redirect:/login";
         }
 
-        // Tạo đơn từ toàn bộ giỏ hàng
-        var order = orderService.createOrderFromCart(
-                account.getCode(),
-                fullname,
-                phone,
-                address,
-                account.getEmail()
-        );
-
-        // Gửi thông báo vào DB cho người dùng
         try {
-            Notification userNoti = new Notification();
-            userNoti.setUserCode(account.getCode());
-            userNoti.setMessage("Bạn đã đặt hàng thành công. Mã đơn #" + order.getId());
-            notificationService.saveNotification(userNoti);
-        } catch (Exception ex) {
-            // Bỏ qua lỗi thông báo để không ảnh hưởng trải nghiệm đặt hàng
+            // Tạo đơn từ toàn bộ giỏ hàng
+            var order = orderService.createOrderFromCart(
+                    account.getCode(),
+                    fullname,
+                    phone,
+                    address,
+                    account.getEmail()
+            );
+
+            // Gửi thông báo vào DB cho người dùng (không chặn luồng nếu lỗi)
+            try {
+                Notification userNoti = new Notification();
+                userNoti.setUserCode(account.getCode());
+                userNoti.setMessage("Bạn đã đặt hàng thành công. Mã đơn #" + order.getId());
+                notificationService.saveNotification(userNoti);
+            } catch (Exception ex) {
+                // Bỏ qua lỗi thông báo để không ảnh hưởng trải nghiệm đặt hàng
+            }
+
+            // Đồng bộ badge giỏ hàng về 0
+            session.setAttribute("cartQty", 0);
+
+            // Đặt flash message và chuyển về trang chủ
+            redirectAttributes.addFlashAttribute("successMessage", "Đặt hàng thành công! Cảm ơn bạn đã mua sắm.");
+            return "redirect:/home";
+        } catch (IllegalStateException ex) {
+            // Hết hàng hoặc không đủ số lượng: trở lại trang checkout với thông báo
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/checkout";
         }
-
-        // Đồng bộ badge giỏ hàng về 0
-        session.setAttribute("cartQty", 0);
-
-        // Đặt flash message và chuyển về trang chủ
-        redirectAttributes.addFlashAttribute("successMessage", "Đặt hàng thành công! Cảm ơn bạn đã mua sắm.");
-        return "redirect:/home";
     }
 }

@@ -875,5 +875,68 @@
         try { setTimeout(loadCart, 0); } catch(e) {}
     })();
 </script>
+<style>
+    /* Dropdown thông báo: đẹp hơn, dễ đọc, không ảnh hưởng logic */
+    #notification-dropdown.notification-dropdown{
+        position: absolute;
+        right: 0;
+        top: 140%;
+        width: 320px;
+        background: #fff;
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        z-index: 1000;
+        overflow: hidden;
+    }
+    #notification-dropdown .notification-list{
+        max-height: 360px;
+        overflow-y: auto;
+    }
+    #notification-dropdown h6{
+        font-size: 14px;
+        font-weight: 600;
+        color: #444;
+        background: #f9fafb;
+    }
+    #notification-dropdown .notification-item{
+        background: #fff;
+        transition: background 0.2s ease;
+    }
+    #notification-dropdown .notification-item:hover{
+        background: #f6f7f9;
+    }
+    #notification-dropdown .notification-item span{
+        font-size: 13px; /* nhỏ hơn cho dễ nhìn */
+        color: #111;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    #notification-dropdown .notification-item small{
+        font-size: 12px;
+        color: #6b7280 !important;
+        margin-top: 4px;
+    }
+    /* Phân biệt đã đọc/chưa đọc */
+    #notification-dropdown .notification-item.unread{
+        background: #f0f7ff;
+        border-left: 3px solid #3b82f6; /* xanh nhấn */
+    }
+    #notification-dropdown .notification-item.read{
+        opacity: 0.8;
+    }
+    /* Badge số lượng trên chuông: thu nhỏ cho cân đối */
+    #notification-bell.icon-header-noti::after{
+        font-size: 10px;
+        min-width: 16px;
+        height: 16px;
+        line-height: 16px;
+        top: -6px;
+        right: -6px;
+    }
+</style>
 </body>
 </html>

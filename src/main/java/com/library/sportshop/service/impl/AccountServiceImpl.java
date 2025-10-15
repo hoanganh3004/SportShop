@@ -10,18 +10,36 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 public class AccountServiceImpl implements AccountService {
+
+    private static final Logger log = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     @Autowired
     private AccountRepository accountRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String mailFrom;
 
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]+$");
 
@@ -68,9 +86,68 @@ public class AccountServiceImpl implements AccountService {
 
         // Encode password
         account.setPassword(passwordEncoder.encode(account.getPassword()));
+        // Force active status for newly registered user
+        account.setStatus(true);
 
         accountRepository.save(account);
         return true;
+    }
+
+    @Override
+    public boolean resetPasswordByEmail(String email) {
+        var opt = accountRepository.findByEmail(email);
+        if (opt.isEmpty()) {
+            return false;
+        }
+        Account account = opt.get();
+        // generate random 8-char password including letters, digits, and special characters
+        String newPass = generatePassword(8);
+
+        // hash and save
+        account.setPassword(passwordEncoder.encode(newPass));
+        accountRepository.save(account);
+
+        // send email with sender name "SportShop"
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+            helper.setTo(email);
+            helper.setSubject("Khôi phục mật khẩu - SportShop");
+            helper.setText("Mật khẩu mới của bạn là: " + newPass + "\nVui lòng đăng nhập và đổi mật khẩu ngay sau khi vào hệ thống.", false);
+            if (mailFrom != null && !mailFrom.isBlank()) {
+                helper.setFrom(new InternetAddress(mailFrom, "SportShop"));
+            }
+            mailSender.send(mimeMessage);
+            log.info("[mail] Sent reset password email to {}", email);
+        } catch (Exception e) {
+            log.error("[mail] Failed to send reset password email to {}", email, e);
+        }
+        return true;
+    }
+
+    private String generatePassword(int length) {
+        final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String LOWER = "abcdefghijklmnopqrstuvwxyz";
+        final String DIGITS = "0123456789";
+        final String SPECIAL = "!@#$%^&*()-_=+[]{};:,.?/";
+        final String ALL = UPPER + LOWER + DIGITS + SPECIAL;
+
+        SecureRandom rnd = new SecureRandom();
+        ArrayList<Character> chars = new ArrayList<>();
+        // Ensure at least one from each category
+        chars.add(UPPER.charAt(rnd.nextInt(UPPER.length())));
+        chars.add(LOWER.charAt(rnd.nextInt(LOWER.length())));
+        chars.add(DIGITS.charAt(rnd.nextInt(DIGITS.length())));
+        chars.add(SPECIAL.charAt(rnd.nextInt(SPECIAL.length())));
+
+        for (int i = chars.size(); i < length; i++) {
+            chars.add(ALL.charAt(rnd.nextInt(ALL.length())));
+        }
+        Collections.shuffle(chars, rnd);
+
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) sb.append(chars.get(i));
+        return sb.toString();
     }
 
     @Override

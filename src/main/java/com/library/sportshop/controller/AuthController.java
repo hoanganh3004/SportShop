@@ -69,17 +69,15 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public String forgotPasswordSubmit(@RequestParam String username,
-                                       @RequestParam String code,
-                                       @RequestParam String newPassword,
+    public String forgotPasswordSubmit(@RequestParam("email") String email,
                                        Model model) {
-        boolean success = accountService.resetPassword(username, code, newPassword);
+        boolean success = accountService.resetPasswordByEmail(email);
         if (success) {
-            return "redirect:/login?resetSuccess";
+            model.addAttribute("success", "Mật khẩu mới đã được gửi về email của bạn. Vui lòng kiểm tra hộp thư (hoặc spam)");
         } else {
-            model.addAttribute("error", "Invalid username or code!");
-            return "acc/forgot-password";
+            model.addAttribute("error", "Email không tồn tại trong hệ thống");
         }
+        return "acc/forgot-password";
     }
 
     @GetMapping("/admin/ad")

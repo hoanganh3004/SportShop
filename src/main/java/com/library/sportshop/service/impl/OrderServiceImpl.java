@@ -4,16 +4,23 @@ import com.library.sportshop.entity.Order;
 import com.library.sportshop.entity.OrderItem;
 import com.library.sportshop.entity.Product;
 import com.library.sportshop.entity.CartItem;
+import com.library.sportshop.entity.Notification;
 import com.library.sportshop.repository.OrderItemRepository;
 import com.library.sportshop.repository.OrderRepository;
 import com.library.sportshop.repository.ProductRepository;
 import com.library.sportshop.repository.CartItemRepository;
 import com.library.sportshop.service.OrderService;
+import com.library.sportshop.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,6 +41,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String mailFrom;
 
     @Override
     public Page<Order> getAllOrders(String keyword, Pageable pageable) {
@@ -201,7 +217,31 @@ public class OrderServiceImpl implements OrderService {
             }
 
             Order updated = orderRepository.save(order);
-            // (Optional) gửi thông báo/email: để nguyên TODO hiện có
+
+            try {
+                String userCode = updated.getUserCode();
+                if (userCode != null && !userCode.isBlank()) {
+                    Notification n = new Notification();
+                    n.setUserCode(userCode);
+                    n.setMessage("Trạng thái đơn hàng #" + updated.getId() + " đã cập nhật: " + status);
+                    notificationService.saveNotification(n);
+                }
+            } catch (Exception ignored) {}
+
+            try {
+                String to = updated.getRecipientEmail();
+                if (to != null && !to.isBlank()) {
+                    MimeMessage mimeMessage = mailSender.createMimeMessage();
+                    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+                    helper.setTo(to);
+                    helper.setSubject("Cập nhật đơn hàng - SportShop");
+                    helper.setText("Đơn hàng #" + updated.getId() + " đã được cập nhật trạng thái: " + status, false);
+                    if (mailFrom != null && !mailFrom.isBlank()) {
+                        helper.setFrom(new InternetAddress(mailFrom, "SportShop"));
+                    }
+                    mailSender.send(mimeMessage);
+                }
+            } catch (Exception ignored) {}
             return updated;
         }
         throw new RuntimeException("Không tìm thấy đơn hàng với id " + id);
