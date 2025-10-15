@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -83,9 +84,9 @@ public class AdminOrderController {
     public String updateOrder(@RequestParam Integer id,
                               @RequestParam String status,
                               @RequestParam(required = false) String cancelReason,
-                              Model model) {
+                              RedirectAttributes redirectAttributes) {
         orderService.updateOrderStatus(id, status, cancelReason);
-        model.addAttribute("success", "Cập nhật trạng thái thành công!");
+        redirectAttributes.addFlashAttribute("success", "Cập nhật trạng thái thành công!");
         return "redirect:/adorder";
     }
 

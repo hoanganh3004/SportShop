@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Profile</title>
+    <title>Lịch sử đặt hàng</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
     <link rel="icon" type="image/png" th:href="@{/images/icons/favicon.png}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
@@ -33,6 +33,10 @@
 <main class="container my-5">
     <h2 class="mb-4 text-center">📦 Lịch sử đặt hàng</h2>
 
+    <!-- Flash messages -->
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
     <!-- Bảng hiển thị lịch sử đơn hàng -->
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle">
@@ -40,49 +44,52 @@
             <tr>
                 <th>Mã đơn</th>
                 <th>Ngày đặt</th>
-                <th>Sản phẩm</th>
                 <th>Tổng tiền</th>
                 <th>Trạng thái</th>
                 <th>Thao tác</th>
             </tr>
             </thead>
             <tbody>
-            <!-- Ví dụ dữ liệu cứng (sau này sẽ load từ DB) -->
-            <tr>
-                <td class="text-center">#1001</td>
-                <td class="text-center">20/09/2025</td>
-                <td>
-                    <ul class="list-unstyled mb-0">
-                        <li>Áo thể thao Nike x1</li>
-                        <li>Giày Adidas x2</li>
-                    </ul>
-                </td>
-                <td class="text-end">1.500.000₫</td>
-                <td class="text-center"><span class="badge bg-success">Hoàn thành</span></td>
+            <tr th:each="o : ${orders.content}" th:unless="${orders == null or orders.content.isEmpty()}">
+                <td class="text-center" th:text="'#' + ${o.id}"></td>
+                <td class="text-center" th:text="${#temporals.format(o.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(o.totalAmount,0,'COMMA',0,'POINT')} + '₫'"></td>
                 <td class="text-center">
-                    <button class="btn btn-sm btn-primary">
+                    <span class="badge bg-light text-dark border" th:text="${o.status}"></span>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-primary btn-view" th:data-id="${o.id}">
                         <i class="fa fa-eye"></i> Xem chi tiết
+                    </button>
+                    <button th:if="${o.status == 'Chờ xác nhận'}"
+                            type="button"
+                            class="btn btn-sm btn-danger btn-open-cancel"
+                            th:data-id="${o.id}">
+                        Hủy đơn
                     </button>
                 </td>
             </tr>
-            <tr>
-                <td class="text-center">#1002</td>
-                <td class="text-center">22/09/2025</td>
-                <td>
-                    <ul class="list-unstyled mb-0">
-                        <li>Bóng rổ Spalding x1</li>
-                    </ul>
-                </td>
-                <td class="text-end">900.000₫</td>
-                <td class="text-center"><span class="badge bg-warning">Đang xử lý</span></td>
-                <td class="text-center">
-                    <button class="btn btn-sm btn-primary">
-                        <i class="fa fa-eye"></i> Xem chi tiết
-                    </button>
-                </td>
+            <tr th:if="${orders == null or orders.content.isEmpty()}">
+                <td colspan="6" class="text-center">Bạn chưa có đơn hàng nào.</td>
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center" th:unless="${orders == null or orders.content.isEmpty()}">
+        <span>Trang <span th:text="${currentPage}"></span> / <span th:text="${totalPages}"></span></span>
+        <ul class="pagination mb-0">
+            <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/oderhistory(page=${currentPage - 1})}">Trước</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/oderhistory(page=${i})}" th:text="${i}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/oderhistory(page=${currentPage + 1})}">Sau</a>
+            </li>
+        </ul>
     </div>
 </main>
 
@@ -90,6 +97,98 @@
 <footer th:replace="user/footer :: footer"></footer>
 <!--===============================================================================================-->
 <script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script>
+
+<!-- Modal nhập lý do hủy đơn -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lý do hủy đơn</h5>
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="cancelOrderForm" method="post" action="#">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="cancelReason">Vui lòng nhập lý do hủy</label>
+                        <textarea id="cancelReason" name="reason" class="form-control" rows="3" ></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</div>
+<!-- Modal xem chi tiết đơn -->
+<div class="modal fade" id="userOrderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi tiết đơn hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="userOrderModalBody">
+                <!-- Nội dung chi tiết sẽ được tải vào đây -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    (function(){
+        var contextPath = /*[[@{/}]]*/ '';
+        $(document).on('click', '.btn-view', function(){
+            var id = $(this).data('id');
+            $.get(contextPath + 'oderhistory/detail/' + id)
+                .done(function(html){
+                    $('#userOrderModalBody').html(html);
+                    // Loại bỏ các nút đóng thừa bên trong nội dung chi tiết (không thuộc footer của modal người dùng)
+                    try {
+                        var $body = $('#userOrderModalBody');
+                        // 1) Xóa mọi phần tử có data-dismiss/data-bs-dismiss trong body
+                        $body.find('[data-dismiss="modal"], [data-bs-dismiss="modal"]').each(function(){
+                            var inFooter = $(this).closest('#userOrderModal .modal-footer').length > 0;
+                            if (!inFooter) $(this).remove();
+                        });
+                        // 2) Xóa button/a có text "Đóng" không thuộc footer chính
+                        $body.find('button, a').filter(function(){
+                            var t = ($(this).text()||'').trim();
+                            var inFooter = $(this).closest('#userOrderModal .modal-footer').length > 0;
+                            return t === 'Đóng' && !inFooter;
+                        }).remove();
+                    } catch(e) { /* ignore */ }
+                    $('#userOrderModal').modal('show');
+                })
+                .fail(function(){ alert('Không thể tải chi tiết đơn hàng!'); });
+        });
+
+        // Hủy đơn: mở modal nhập lý do
+        $(document).on('click', '.btn-open-cancel', function(){
+            var id = $(this).data('id');
+            var $form = $('#cancelOrderForm');
+            $form.attr('action', contextPath + 'oderhistory/cancel/' + id);
+            $('#cancelReason').val('');
+            $('#cancelOrderModal').modal('show');
+        });
+
+        // Validate lý do trước khi submit
+        $('#cancelOrderForm').on('submit', function(){
+            var v = $('#cancelReason').val().trim();
+            if (!v) {
+                alert('Vui lòng nhập lý do hủy đơn.');
+                return false;
+            }
+            return true;
+        });
+    })();
+    
+</script>
 <!--===============================================================================================-->
 <script th:src="@{/vendor/animsition/js/animsition.min.js}"></script>
 <!--===============================================================================================-->
@@ -341,7 +440,7 @@
     }
 </style>
 
-<script>
+<script th:inline="javascript">
     const bell = document.getElementById("notification-bell");
     const dropdown = document.getElementById("notification-dropdown");
 

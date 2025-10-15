@@ -11,4 +11,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findByRecipientNameContainingIgnoreCaseOrRecipientEmailContainingIgnoreCase(
             String name, String email, Pageable pageable
     );
+
+    // Lấy đơn hàng của 1 user theo userCode
+    Page<Order> findByUserCodeOrderByOrderDateDesc(String userCode, Pageable pageable);
 }

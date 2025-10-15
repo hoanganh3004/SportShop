@@ -13,6 +13,12 @@
         <span class="badge bg-label-info" th:text="${order.status}"></span>
     </p>
 
+    <!-- Lý do hủy: chỉ hiển thị khi đơn đã hủy và có lý do -->
+    <p th:if="${order.status == 'Đã hủy' and not #strings.isEmpty(order.cancelReason)}">
+        <strong>Lý do hủy:</strong>
+        <span th:text="${order.cancelReason}"></span>
+    </p>
+
     <h6 class="mt-3">Danh sách sản phẩm</h6>
     <table class="table table-bordered">
         <thead>

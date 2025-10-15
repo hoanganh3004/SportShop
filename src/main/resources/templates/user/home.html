@@ -28,6 +28,12 @@
 
 <div th:replace="user/header :: header"></div>
 
+<!-- Flash message -->
+<div class="container mt-3" th:if="${successMessage}">
+    <div class="alert alert-success" role="alert" th:text="${successMessage}">Đặt hàng thành công!</div>
+    
+</div>
+
 <!-- Slider -->
 <section class="section-slide">
     <div class="wrap-slick1">
