@@ -266,13 +266,35 @@
                 method: 'POST',
                 data: { productId: productId, quantity: qty }
             })
-                .done(function (totalQty) {
-                    updateCartBadge(totalQty);
-                    loadCart();
+                .done(function (resp, textStatus, jqXHR) {
+                    try {
+                        // Nếu bị Spring Security redirect 302 tới trang login, AJAX sẽ nhận HTML thay vì số
+                        var ct = (jqXHR && jqXHR.getResponseHeader) ? (jqXHR.getResponseHeader('Content-Type') || '') : '';
+                        var isHtml = typeof resp === 'string' && /<\s*html[\s\S]*>/i.test(resp);
+                        var redirectedToLogin = (jqXHR && jqXHR.responseURL && jqXHR.responseURL.indexOf('/login') >= 0);
+                        if (redirectedToLogin || (ct.indexOf('text/html') >= 0 && isHtml)) {
+                            var current = window.location.pathname + window.location.search + window.location.hash;
+                            window.location.href = '/login?redirect=' + encodeURIComponent(current);
+                            return;
+                        }
+                        var totalQty = resp;
+                        // Trường hợp server trả text số: đảm bảo là number
+                        if (typeof totalQty === 'string') {
+                            var n = Number(totalQty);
+                            totalQty = isNaN(n) ? 0 : n;
+                        }
+                        updateCartBadge(totalQty);
+                        loadCart();
+                    } catch (e) {
+                        // fallback: nếu lỗi parse, cứ load lại giỏ để đồng bộ
+                        try { loadCart(); } catch(_){}
+                    }
                 })
                 .fail(function (xhr) {
                     if (xhr.status === 401) {
-                        alert('Bạn cần đăng nhập để thêm vào giỏ hàng!');
+                        var current = window.location.pathname + window.location.search + window.location.hash;
+                        window.location.href = '/login?redirect=' + encodeURIComponent(current);
+                        return;
                     }
                 });
         });

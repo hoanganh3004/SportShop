@@ -64,29 +64,29 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean registerAccount(Account account) {
-        // Check username format
+        // Kiểm tra định dạng tên người dùng
         if (!USERNAME_PATTERN.matcher(account.getUsername()).matches()) {
             throw new IllegalArgumentException("Username chỉ được chứa chữ, số và dấu gạch dưới (_)");
         }
 
-        // Check username exists
+        // Kiểm tra tên người dùng có tồn tại không
         if (accountRepository.findByUsername(account.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username đã tồn tại");
         }
 
-        // Check email exists
+        // Kiểm tra email có tồn tại không
         if (accountRepository.findByEmail(account.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email đã tồn tại");
         }
 
-        // Set code nếu chưa có
+        // Set code
         if (account.getCode() == null) {
             account.setCode(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         }
 
-        // Encode password
+        // Mã hóa mật khẩu
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        // Force active status for newly registered user
+        // set trạng thái hoạt động cho người dùng mới đăng ký
         account.setStatus(true);
 
         accountRepository.save(account);

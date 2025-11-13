@@ -52,6 +52,7 @@ public class OrderServiceImpl implements OrderService {
     private String mailFrom;
 
     @Override
+    // lấy danh sách đơn hàng (có tìm kiếm theo tên/email người nhận)
     public Page<Order> getAllOrders(String keyword, Pageable pageable) {
         if (keyword != null && !keyword.isEmpty()) {
             return orderRepository.findByRecipientNameContainingIgnoreCaseOrRecipientEmailContainingIgnoreCase(
@@ -61,11 +62,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    // lấy đơn hàng theo id
     public Optional<Order> getOrderById(Integer id) {
         return orderRepository.findById(id);
     }
 
     @Override
+    // lưu đơn hàng (mặc định trạng thái Chờ xác nhận nếu chưa có)
     public Order saveOrder(Order order) {
         order.setOrderDate(LocalDateTime.now());
         if (order.getStatus() == null) {
@@ -76,6 +79,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    // tạo đơn với 1 sản phẩm cụ thể
     public Order createOrderWithItem(Order order, Integer productId, Integer quantity) {
         order.setOrderDate(LocalDateTime.now());
         if (order.getStatus() == null) {
@@ -88,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("Số lượng không hợp lệ");
         }
 
-        // Tính đơn giá và tổng tiền
+        // tính đơn giá và tổng tiền
         BigDecimal unitPrice = product.getPrice();
         BigDecimal total = unitPrice.multiply(BigDecimal.valueOf(quantity));
         order.setTotalAmount(total);
@@ -116,6 +120,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    // tạo đơn từ toàn bộ giỏ hàng của người dùng
     public Order createOrderFromCart(String userCode,
                                      String recipientName,
                                      String recipientPhone,
@@ -129,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalStateException("Giỏ hàng trống");
         }
 
-        // Trừ kho an toàn (atomic) cho từng sản phẩm trong giỏ: nếu không đủ hàng -> ném lỗi và rollback
+        // kiểm tra tồn kho
         for (CartItem ci : cartItems) {
             Product p = ci.getProduct();
             if (p == null || p.getId() == null) continue;
@@ -181,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
             orderItemRepository.save(item);
         }
 
-        // Xóa giỏ hàng sau khi tạo đơn
+        // xoá giỏ hàng sau khi tạo đơn
         cartItemRepository.deleteAll(cartItems);
 
         return saved;
@@ -189,6 +194,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    // cập nhật trạng thái đơn hàng
     public Order updateOrderStatus(Integer id, String status, String cancelReason) {
         Optional<Order> opt = orderRepository.findById(id);
         if (opt.isPresent()) {
@@ -202,7 +208,7 @@ public class OrderServiceImpl implements OrderService {
                 order.setCancelReason(null);
             }
 
-            // Nếu chuyển từ trạng thái KHÁC "Đã hủy" sang "Đã hủy" => hoàn trả tồn kho
+            // nếu chuyển từ trạng thái khác "Đã hủy" sang "Đã hủy" => hoàn trả tồn kho
             if (!"Đã hủy".equals(oldStatus) && "Đã hủy".equals(status)) {
                 if (order.getOrderItems() != null) {
                     for (OrderItem item : order.getOrderItems()) {
@@ -248,11 +254,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    // xoá đơn hàng theo id
     public void deleteOrder(Integer id) {
         orderRepository.deleteById(id);
     }
 
     @Override
+    // lấy danh sách đơn hàng theo user (mới nhất trước)
     public Page<Order> getOrdersByUser(String userCode, Pageable pageable) {
         if (userCode == null || userCode.isBlank()) {
             throw new IllegalArgumentException("userCode không hợp lệ");

@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 
 import com.library.sportshop.entity.Account;
 import com.library.sportshop.entity.Notification;
-import com.library.sportshop.dto.CartItemResponse;
+import com.library.sportshop.dto.CartItemResponseDTO;
 import com.library.sportshop.service.AccountService;
 import com.library.sportshop.service.CartService;
 import com.library.sportshop.service.OrderService;
@@ -37,8 +37,9 @@ public class CheckoutController {
     private NotificationService notificationService;
 
     @GetMapping("/checkout")
+    // trang checkout: hiển thị giỏ hàng và tổng tiền
     public String checkout(Model model, Principal principal, HttpSession session) {
-        // Yêu cầu đăng nhập
+        // yêu cầu đăng nhập
         if (principal == null) {
             return "redirect:/login";
         }
@@ -48,17 +49,17 @@ public class CheckoutController {
             return "redirect:/login";
         }
 
-        // Nạp cart từ DB
+        // nạp giỏ hàng từ DB
         String userCode = account.getCode();
         var items = cartService.findByUserCode(userCode);
-        List<CartItemResponse> cartItems = cartService.mapToDto(items);
+        List<CartItemResponseDTO> cartItems = cartService.mapToDto(items);
 
-        // Tính tổng số lượng và tiền
+        // tính tổng số lượng và tiền
         int totalQty = cartService.countQuantityByUserCode(userCode);
         session.setAttribute("cartQty", totalQty);
 
         long subtotal = 0L;
-        for (CartItemResponse it : cartItems) {
+        for (CartItemResponseDTO it : cartItems) {
             if (it.getProduct() != null) {
                 long price = it.getProduct().getPrice() == null ? 0L : it.getProduct().getPrice().longValue();
                 int qty = it.getQuantity() == null ? 0 : it.getQuantity();
@@ -75,6 +76,7 @@ public class CheckoutController {
     }
 
     @PostMapping("/checkout")
+    // đặt hàng toàn bộ giỏ hiện tại
     public String placeOrder(@RequestParam("fullname") String fullname,
                              @RequestParam("phone") String phone,
                              @RequestParam("address") String address,
@@ -90,7 +92,7 @@ public class CheckoutController {
         }
 
         try {
-            // Tạo đơn từ toàn bộ giỏ hàng
+            // tạo đơn từ toàn bộ giỏ hàng
             var order = orderService.createOrderFromCart(
                     account.getCode(),
                     fullname,
@@ -99,24 +101,24 @@ public class CheckoutController {
                     account.getEmail()
             );
 
-            // Gửi thông báo vào DB cho người dùng (không chặn luồng nếu lỗi)
+            // gửi thông báo vào DB cho người dùng
             try {
                 Notification userNoti = new Notification();
                 userNoti.setUserCode(account.getCode());
                 userNoti.setMessage("Bạn đã đặt hàng thành công. Mã đơn #" + order.getId());
                 notificationService.saveNotification(userNoti);
             } catch (Exception ex) {
-                // Bỏ qua lỗi thông báo để không ảnh hưởng trải nghiệm đặt hàng
+                // bỏ qua lỗi thông báo để không ảnh hưởng trải nghiệm đặt hàng
             }
 
-            // Đồng bộ badge giỏ hàng về 0
+            // đồng bộ badge giỏ hàng về 0
             session.setAttribute("cartQty", 0);
 
-            // Đặt flash message và chuyển về trang chủ
+            // đặt flash message và chuyển về trang chủ
             redirectAttributes.addFlashAttribute("successMessage", "Đặt hàng thành công! Cảm ơn bạn đã mua sắm.");
             return "redirect:/home";
         } catch (IllegalStateException ex) {
-            // Hết hàng hoặc không đủ số lượng: trở lại trang checkout với thông báo
+            // hết hàng hoặc không đủ số lượng: trở lại trang checkout với thông báo
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return "redirect:/checkout";
         }

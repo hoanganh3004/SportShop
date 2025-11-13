@@ -2,7 +2,7 @@ package com.library.sportshop.dto;
 
 import java.math.BigDecimal;
 
-public class CartItemResponse {
+public class CartItemResponseDTO {
     private Integer id;
     private Integer quantity;
     private ProductInfo product;

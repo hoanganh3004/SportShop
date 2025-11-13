@@ -7,7 +7,7 @@ import com.library.sportshop.repository.ProductRepository;
 import com.library.sportshop.service.AccountService;
 import com.library.sportshop.entity.Account;
 import com.library.sportshop.service.CartService;
-import com.library.sportshop.dto.CartItemResponse;
+import com.library.sportshop.dto.CartItemResponseDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    // ======================= ADD TO CART =======================
+    // thêm sản phẩm vào giỏ
     @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<?> addToCart(@RequestParam Integer productId,
@@ -50,7 +50,6 @@ public class CartController {
 
         Product product = productRepository.findById(productId).orElse(null);
         if (product == null) return ResponseEntity.badRequest().body("INVALID_PRODUCT");
-        if (quantity == null || quantity <= 0) quantity = 1;
 
         CartItem item = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId)
                 .orElseGet(() -> {
@@ -69,10 +68,10 @@ public class CartController {
         return ResponseEntity.ok(totalQty);
     }
 
-    // ======================= GET ITEMS =======================
+    // lấy danh sách item trong giỏ
     @GetMapping("/items")
     @ResponseBody
-    public List<CartItemResponse> getCartItems(Principal principal, HttpSession session) {
+    public List<CartItemResponseDTO> getCartItems(Principal principal, HttpSession session) {
         if (principal == null) {
             return new ArrayList<>();
         }
@@ -92,7 +91,7 @@ public class CartController {
         return cartService.mapToDto(items);
     }
 
-    // ======================= INCREASE QUANTITY =======================
+    // tăng số lượng 1 đơn vị cho sản phẩm trong giỏ
     @PostMapping("/increase")
     @ResponseBody
     public ResponseEntity<?> increaseQuantity(@RequestParam Integer productId,
@@ -124,7 +123,7 @@ public class CartController {
         return ResponseEntity.ok(totalQty);
     }
 
-    // ======================= DECREASE QUANTITY =======================
+    // giảm số lượng 1 đơn vị (không dưới 1)
     @PostMapping("/decrease")
     @ResponseBody
     public ResponseEntity<?> decreaseQuantity(@RequestParam Integer productId,
@@ -142,7 +141,7 @@ public class CartController {
             item.setQuantity(item.getQuantity() - 1);
             cartItemRepository.save(item);
         } else {
-            // Không giảm dưới 1, giữ nguyên
+            // không giảm dưới 1, giữ nguyên
         }
 
         int totalQty = cartItemRepository.countQuantityByUserCode(userCode);
@@ -150,7 +149,7 @@ public class CartController {
         return ResponseEntity.ok(totalQty);
     }
 
-    // ======================= REMOVE ITEM =======================
+    // xoá sản phẩm khỏi giỏ
     @PostMapping("/remove")
     @ResponseBody
     public ResponseEntity<?> removeItem(@RequestParam Integer productId,

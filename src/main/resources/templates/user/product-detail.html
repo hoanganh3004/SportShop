@@ -595,10 +595,58 @@
             $(this).addClass('js-addedwish-detail').off('click');
         });
     });
-    $('.js-addcart-detail').each(function(){
-        var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-        $(this).on('click', function(){
-            swal(nameProduct, "is added to cart !", "success");
+    $('.js-addcart-detail').each(function () {
+        var $btn = $(this);
+        var nameProduct = $btn.closest('.product-detail').find('.js-name-detail').text() || 'Sản phẩm';
+        $btn.on('click', function () {
+            try { swal(nameProduct, 'đã được thêm vào giỏ hàng!', 'success'); } catch (e) { }
+
+            var productId = $btn.data('product-id');
+            var qty = 1;
+            var $qtyInput = $btn.closest('.size-204').find('input.num-product');
+            if ($qtyInput && $qtyInput.length) {
+                var v = Number($qtyInput.val());
+                if (!isNaN(v) && v > 0) qty = v;
+            }
+
+            if (!productId) return;
+
+            $.ajax({
+                url: '/cart/add',
+                method: 'POST',
+                data: { productId: productId, quantity: qty }
+            })
+                .done(function (resp, textStatus, jqXHR) {
+                    try {
+                        // Nếu bị Spring Security redirect 302 tới trang login, AJAX sẽ nhận HTML thay vì số
+                        var ct = (jqXHR && jqXHR.getResponseHeader) ? (jqXHR.getResponseHeader('Content-Type') || '') : '';
+                        var isHtml = typeof resp === 'string' && /<\s*html[\s\S]*>/i.test(resp);
+                        var redirectedToLogin = (jqXHR && jqXHR.responseURL && jqXHR.responseURL.indexOf('/login') >= 0);
+                        if (redirectedToLogin || (ct.indexOf('text/html') >= 0 && isHtml)) {
+                            var current = window.location.pathname + window.location.search + window.location.hash;
+                            window.location.href = '/login?redirect=' + encodeURIComponent(current);
+                            return;
+                        }
+                        var totalQty = resp;
+                        // Trường hợp server trả text số: đảm bảo là number
+                        if (typeof totalQty === 'string') {
+                            var n = Number(totalQty);
+                            totalQty = isNaN(n) ? 0 : n;
+                        }
+                        updateCartBadge(totalQty);
+                        loadCart();
+                    } catch (e) {
+                        // fallback: nếu lỗi parse, cứ load lại giỏ để đồng bộ
+                        try { loadCart(); } catch(_){}
+                    }
+                })
+                .fail(function (xhr) {
+                    if (xhr.status === 401) {
+                        var current = window.location.pathname + window.location.search + window.location.hash;
+                        window.location.href = '/login?redirect=' + encodeURIComponent(current);
+                        return;
+                    }
+                });
         });
     });
 </script>

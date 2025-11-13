@@ -23,7 +23,7 @@ public class AdminOrderController {
     @Autowired
     private AdminProductService adminProductService; //
 
-    // 📦 Danh sách đơn hàng
+    // danh sách đơn hàng
     @GetMapping
     public String listOrders(Model model,
                              @RequestParam(defaultValue = "1") int page,
@@ -38,7 +38,7 @@ public class AdminOrderController {
         return "admin/adminOrder";
     }
 
-    //  Xem chi tiết
+    // xem chi tiết đơn hàng
     @GetMapping("/detail/{id}")
     public String detailOrder(@PathVariable Integer id, Model model) {
         Optional<Order> order = orderService.getOrderById(id);
@@ -50,7 +50,7 @@ public class AdminOrderController {
         return "admin/orderDetail";
     }
 
-    // Tạo đơn hàng mới
+    // tạo đơn hàng mới
     @GetMapping("/new")
     public String addOrderForm(Model model) {
         model.addAttribute("order", new Order());
@@ -68,7 +68,7 @@ public class AdminOrderController {
         return "redirect:/adorder";
     }
 
-    //  Cập nhật trạng thái
+    // cập nhật trạng thái đơn hàng
     @GetMapping("/update/{id}")
     public String updateOrderForm(@PathVariable Integer id, Model model) {
         Optional<Order> order = orderService.getOrderById(id);
@@ -90,7 +90,7 @@ public class AdminOrderController {
         return "redirect:/adorder";
     }
 
-    //  Xóa đơn hàng
+    // xoá đơn hàng
     @GetMapping("/delete/{id}")
     public String deleteOrder(@PathVariable Integer id, Model model) {
         orderService.deleteOrder(id);

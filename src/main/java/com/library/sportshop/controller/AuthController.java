@@ -2,6 +2,10 @@ package com.library.sportshop.controller;
 
 import com.library.sportshop.entity.Account;
 import com.library.sportshop.service.AccountService;
+import com.library.sportshop.repository.AccountRepository;
+import com.library.sportshop.repository.OrderRepository;
+import com.library.sportshop.repository.ProductRepository;
+import com.library.sportshop.repository.NotificationRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -20,6 +24,18 @@ public class AuthController {
 
     @Autowired
     private com.library.sportshop.repository.CartItemRepository cartItemRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -85,6 +101,10 @@ public class AuthController {
         if (authentication != null && authentication.isAuthenticated()) {
             model.addAttribute("username", authentication.getName());
         }
+        model.addAttribute("totalProducts", productRepository.count());
+        model.addAttribute("totalOrders", orderRepository.count());
+        model.addAttribute("totalUsers", accountRepository.count());
+        model.addAttribute("totalNotifications", notificationRepository.count());
         return "admin/ad";
     }
 

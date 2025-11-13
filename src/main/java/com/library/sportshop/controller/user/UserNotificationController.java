@@ -135,7 +135,7 @@ public class UserNotificationController {
         } catch (Exception ignored) {}
     }
 
-    // Open a notification: mark as read, then try to redirect to order detail if message contains an order code
+    // Mở thông báo: đánh dấu là đã đọc, sau đó thử chuyển hướng đến chi tiết đơn hàng nếu tin nhắn chứa mã đơn hàng
     @GetMapping({
             "/notifications/open/{id}",
             "/no/{id}"
@@ -153,7 +153,8 @@ public class UserNotificationController {
                     notificationRepository.markAsRead(id, acc.getCode());
                 }
             }
-            // try parse order id from notification message
+
+            // phân tích cú pháp ID đơn hàng từ tin nhắn thông báo
             Integer orderId = null;
             try {
                 Optional<Notification> opt = notificationRepository.findById(id);

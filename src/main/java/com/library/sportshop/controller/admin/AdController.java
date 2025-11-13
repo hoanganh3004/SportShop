@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AdController {
     @GetMapping("/admin")   // khi truy cập localhost:8080/
     public String ad() {
-        return "admin/ad";  // Trả về file home.html trong /templates
+        return "forward:/admin/ad";  // Forward để dùng logic set số liệu tại AuthController
     }
 }

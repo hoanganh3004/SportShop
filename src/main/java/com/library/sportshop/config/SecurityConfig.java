@@ -44,7 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/home")
                         .access(new WebExpressionAuthorizationManager("isAnonymous() or hasRole('USER') or hasRole('ADMIN')"))
 
-                        //  Chặn cả /admin và /admin/**
+                        // Các URL cho admin
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
 
                         // Các URL cho USER
@@ -111,6 +111,18 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
+            // Ưu tiên redirect về trang trước đó nếu có tham số 'redirect'
+            try {
+                String redirect = request.getParameter("redirect");
+                if (redirect != null && !redirect.isBlank()) {
+                    // Chỉ cho phép đường dẫn nội bộ để tránh open-redirect
+                    if (!redirect.startsWith("/")) {
+                        redirect = "/";
+                    }
+                    response.sendRedirect(redirect);
+                    return;
+                }
+            } catch (Exception ignored) {}
             // Kiểm tra role cụ thể
             boolean isAdmin = authentication.getAuthorities().stream()
                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));

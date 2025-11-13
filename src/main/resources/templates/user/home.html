@@ -41,12 +41,12 @@
 
             <!-- Slide 1 -->
             <div class="item-slick1"
-                 th:style="|background-image: url(@{/images/slide-01.jpg});|">
+                 th:style="|background-image: url(@{/images/1.png});|">
                 <div class="container h-full">
                     <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
                         <div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
                 <span class="ltext-101 cl2 respon2">
-                    Women Collection 2018
+                    Women Collection 2025
                 </span>
                         </div>
 
@@ -67,7 +67,7 @@
 
             <!-- Slide 2 -->
             <div class="item-slick1"
-                 th:style="|background-image: url(@{/images/slide-02.jpg});|">
+                 th:style="|background-image: url(@{/images/2.png});|">
                 <div class="container h-full">
                     <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
                         <div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
@@ -78,7 +78,7 @@
 
                         <div class="layer-slick1 animated visible-false" data-appear="lightSpeedIn" data-delay="800">
                             <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
-                                Jackets & Coats
+                                Sports clothes & Gym clothes
                             </h2>
                         </div>
 
@@ -93,12 +93,12 @@
 
             <!-- Slide 3 -->
             <div class="item-slick1"
-                 th:style="|background-image: url(@{/images/slide-03.jpg});|">
+                 th:style="|background-image: url(@{/images/3.png});|">
                 <div class="container h-full">
                     <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
                         <div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft" data-delay="0">
                 <span class="ltext-101 cl2 respon2">
-                    Men Collection 2018
+                    Men Collection 2025
                 </span>
                         </div>
 
@@ -231,7 +231,7 @@
                 <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
                     <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
                     <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-                    Search
+                    Tìm kiếm
                 </div>
             </div>
 
@@ -273,13 +273,6 @@
                             <span class="stext-105 cl3" th:text="${p.price != null ? #numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT') + '₫' : 'N/A'}">
                                 0.00
                             </span>
-                        </div>
-
-                        <div class="block2-txt-child2 flex-r p-t-3">
-                            <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                <img class="icon-heart1 dis-block trans-04" th:src="@{/images/icons/icon-heart-01.png}" alt="ICON">
-                                <img class="icon-heart2 dis-block trans-04 ab-t-l" th:src="@{/images/icons/icon-heart-02.png}" alt="ICON">
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -526,10 +519,38 @@
         });
     });
 
-    $('.js-addcart-detail').each(function(){
-        var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-        $(this).on('click', function(){
-            swal(nameProduct, "is added to cart !", "success");
+    $('.js-addcart-detail').each(function () {
+        var $btn = $(this);
+        var nameProduct = $btn.closest('.product-detail').find('.js-name-detail').text() || 'Sản phẩm';
+        $btn.on('click', function () {
+            try { swal(nameProduct, 'đã được thêm vào giỏ hàng!', 'success'); } catch (e) { }
+
+            var productId = $btn.data('product-id');
+            var qty = 1;
+            var $qtyInput = $btn.closest('.size-204').find('input.num-product');
+            if ($qtyInput && $qtyInput.length) {
+                var v = Number($qtyInput.val());
+                if (!isNaN(v) && v > 0) qty = v;
+            }
+
+            if (!productId) return;
+
+            $.ajax({
+                url: '/cart/add',
+                method: 'POST',
+                data: { productId: productId, quantity: qty }
+            })
+                .done(function (totalQty) {
+                    updateCartBadge(totalQty);
+                    loadCart();
+                })
+                .fail(function (xhr) {
+                    if (xhr.status === 401) {
+                        var current = window.location.pathname + window.location.search + window.location.hash;
+                        window.location.href = '/login?redirect=' + encodeURIComponent(current);
+                        return;
+                    }
+                });
         });
     });
 </script>
@@ -628,7 +649,7 @@
         if(window.__userDropdownInitialized) return;
         window.__userDropdownInitialized = true;
 
-        console.log('🔄 Initializing user dropdown...');
+        console.log(' Initializing user dropdown...');
 
         function initUserDropdown(){
             const dropdownParent = document.getElementById('user-dropdown');
@@ -637,11 +658,11 @@
 
             // Only initialize if user is logged in and elements exist
             if(!dropdownParent || !dropdown || !trigger) {
-                console.log('ℹ️ User not logged in or elements not found');
+                console.log(' User not logged in or elements not found');
                 return;
             }
 
-            console.log('✅ Dropdown elements found, initializing...');
+            console.log(' Dropdown elements found, initializing...');
 
             function closeDropdown(){
                 dropdown.classList.remove('show');
@@ -698,7 +719,7 @@
                 }
             });
 
-            console.log('✅ User dropdown initialized successfully');
+            console.log(' User dropdown initialized successfully');
         }
 
         // Initialize when DOM is ready
@@ -1040,6 +1061,42 @@
 
         // Initial sync
         try { setTimeout(loadCart, 0); } catch(e) {}
+        
+        // Xử lý sự kiện click nút tìm kiếm
+        var searchBtn = document.querySelector('.js-show-search');
+        var searchPanel = document.querySelector('.panel-search');
+        var searchClose = document.querySelector('.icon-close-search');
+        
+        if (searchBtn && searchPanel) {
+            searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                searchPanel.classList.toggle('dis-none');
+                // Toggle hiển thị icon search/close
+                var searchIcon = searchBtn.querySelector('.icon-search');
+                var closeIcon = searchBtn.querySelector('.icon-close-search');
+                if (searchIcon) searchIcon.classList.toggle('dis-none');
+                if (closeIcon) closeIcon.classList.toggle('dis-none');
+                // Focus vào ô tìm kiếm khi hiển thị
+                if (!searchPanel.classList.contains('dis-none')) {
+                    var searchInput = searchPanel.querySelector('input[name="q"]');
+                    if (searchInput) searchInput.focus();
+                }
+            });
+        }
+        
+        // Đóng tìm kiếm khi click ra ngoài
+        document.addEventListener('click', function(e) {
+            if (searchPanel && !searchPanel.contains(e.target) && 
+                searchBtn && !searchBtn.contains(e.target) && 
+                !searchPanel.classList.contains('dis-none')) {
+                searchPanel.classList.add('dis-none');
+                // Đặt lại icon
+                var searchIcon = searchBtn.querySelector('.icon-search');
+                var closeIcon = searchBtn.querySelector('.icon-close-search');
+                if (searchIcon) searchIcon.classList.remove('dis-none');
+                if (closeIcon) closeIcon.classList.add('dis-none');
+            }
+        });
     })();
 </script>
 <style>

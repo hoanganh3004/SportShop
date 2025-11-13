@@ -157,6 +157,8 @@
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
               </div>
             </div>
+            <!-- giữ tham số redirect nếu có -->
+            <input type="hidden" name="redirect" th:value="${param.redirect}" />
             <div class="mb-3">
               <div class="mb-3 text-center">
                 <a th:href="@{/forgot-password}">
