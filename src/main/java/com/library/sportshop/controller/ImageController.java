@@ -1,5 +1,8 @@
 package com.library.sportshop.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -18,17 +21,21 @@ import java.nio.file.Paths;
 @RequestMapping("/images")
 public class ImageController {
 
-    private static final String IMAGE_DIRECTORY = "D:/image/";
+    private static final Logger log = LoggerFactory.getLogger(ImageController.class);
+
+    @Value("${app.image.directory}")
+    private String imageDirectory;
 
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> serveImage(@PathVariable String filename) {
         try {
             // Tạo đường dẫn đến file ảnh
-            Path imagePath = Paths.get(IMAGE_DIRECTORY + filename);
+            Path imagePath = Paths.get(imageDirectory + filename);
             File imageFile = imagePath.toFile();
             
             // Kiểm tra file có tồn tại không
             if (!imageFile.exists() || !imageFile.isFile()) {
+                log.warn("Image not found: {}", filename);
                 return ResponseEntity.notFound().build();
             }
             
@@ -44,7 +51,7 @@ public class ImageController {
                     .body(resource);
                     
         } catch (Exception e) {
-            System.err.println("Error serving image: " + filename + " - " + e.getMessage());
+            log.error("Error serving image: {}", filename, e);
             return ResponseEntity.notFound().build();
         }
     }

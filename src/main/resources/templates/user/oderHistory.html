@@ -81,13 +81,13 @@
         <span>Trang <span th:text="${currentPage}"></span> / <span th:text="${totalPages}"></span></span>
         <ul class="pagination mb-0">
             <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/oderhistory(page=${currentPage - 1})}">Trước</a>
+                <a class="page-link" th:href="@{/order-history(page=${currentPage - 1})}">Trước</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/oderhistory(page=${i})}" th:text="${i}"></a>
+                <a class="page-link" th:href="@{/order-history(page=${i})}" th:text="${i}"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/oderhistory(page=${currentPage + 1})}">Sau</a>
+                <a class="page-link" th:href="@{/order-history(page=${currentPage + 1})}">Sau</a>
             </li>
         </ul>
     </div>
@@ -145,7 +145,7 @@
         var contextPath = /*[[@{/}]]*/ '';
         $(document).on('click', '.btn-view', function(){
             var id = $(this).data('id');
-            $.get(contextPath + 'oderhistory/detail/' + id)
+            $.get(contextPath + 'order-history/detail/' + id)
                 .done(function(html){
                     $('#userOrderModalBody').html(html);
                     // Loại bỏ các nút đóng thừa bên trong nội dung chi tiết (không thuộc footer của modal người dùng)
@@ -172,7 +172,7 @@
         $(document).on('click', '.btn-open-cancel', function(){
             var id = $(this).data('id');
             var $form = $('#cancelOrderForm');
-            $form.attr('action', contextPath + 'oderhistory/cancel/' + id);
+            $form.attr('action', contextPath + 'order-history/cancel/' + id);
             $('#cancelReason').val('');
             $('#cancelOrderModal').modal('show');
         });
@@ -187,12 +187,12 @@
             return true;
         });
 
-        // Auto-open order detail when coming from notification: /oderhistory?open={orderId}
+        // Auto-open order detail when coming from notification: /order-history?open={orderId}
         try {
             var params = new URLSearchParams(window.location.search || '');
             var openId = params.get('open');
             if (openId) {
-                $.get(contextPath + 'oderhistory/detail/' + openId)
+                $.get(contextPath + 'order-history/detail/' + openId)
                     .done(function(html){
                         $('#userOrderModalBody').html(html);
                         try {

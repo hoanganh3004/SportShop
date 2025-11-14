@@ -180,12 +180,12 @@ public class UserNotificationController {
 
             String ctx = request != null ? request.getContextPath() : "";
             if (ctx == null) ctx = "";
-            String target = ctx + "/oderhistory" + (orderId != null ? ("?open=" + orderId) : "");
+            String target = ctx + "/order-history" + (orderId != null ? ("?open=" + orderId) : "");
             if (response != null) {
                 response.sendRedirect(target);
             }
         } catch (Exception ignored) {
-            try { if (response != null) response.sendRedirect("/oderhistory"); } catch (Exception __) {}
+            try { if (response != null) response.sendRedirect("/order-history"); } catch (Exception __) {}
         }
     }
 }

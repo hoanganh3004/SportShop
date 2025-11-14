@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
 
                         // Các URL cho USER
-                        .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/user/**", "/order-history", "/order-history/**", "/profile", "/profile/**", "/checkout", "/cart/**").hasRole("USER")
 
                         // Các route còn lại yêu cầu đăng nhập
                         .anyRequest().authenticated()
@@ -84,6 +84,9 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .accessDeniedHandler(accessDeniedHandler())
                 )
+                // CSRF disabled for development/testing
+                // TODO: Enable CSRF protection for production:
+                // .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .csrf(csrf -> csrf.disable())
                 .authenticationProvider(authenticationProvider(userDetailsService()));
 

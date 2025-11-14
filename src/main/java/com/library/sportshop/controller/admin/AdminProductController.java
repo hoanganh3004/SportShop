@@ -4,6 +4,8 @@ import com.library.sportshop.entity.Product;
 import com.library.sportshop.entity.Category;
 import com.library.sportshop.service.AdminProductService;
 import com.library.sportshop.service.AdminCategoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/adproduct")
 public class AdminProductController {
+
+    private static final Logger log = LoggerFactory.getLogger(AdminProductController.class);
 
     @Autowired
     private AdminProductService adminProductService;
@@ -75,13 +79,8 @@ public class AdminProductController {
                               RedirectAttributes redirectAttributes,
                               Model model) {
         try {
-            System.out.println("=== SAVE PRODUCT DEBUG ===");
-            System.out.println("name: " + name);
-            System.out.println("masp: " + masp);
-            System.out.println("price: " + priceStr);
-            System.out.println("quantity: " + quantityStr);
-            System.out.println("categoryId: " + categoryId);
-            System.out.println("images: " + (newImages != null ? newImages.length : "null"));
+            log.debug("Saving product - name: {}, masp: {}, price: {}, quantity: {}, categoryId: {}, images: {}",
+                    name, masp, priceStr, quantityStr, categoryId, (newImages != null ? newImages.length : 0));
 
             // Validate dữ liệu đầu vào
             if (name == null || name.trim().isEmpty()) {
@@ -149,8 +148,7 @@ public class AdminProductController {
             redirectAttributes.addFlashAttribute("success", " Thêm sản phẩm thành công!");
 
         } catch (Exception e) {
-            System.err.println("Error saving product: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error saving product", e);
             redirectAttributes.addFlashAttribute("error", " Thêm thất bại: " + e.getMessage());
             return "redirect:/adproduct/new";
         }
@@ -160,7 +158,7 @@ public class AdminProductController {
     @GetMapping("/detail/{id}")
     public String viewDetail(@PathVariable Integer id, Model model) {
         try {
-            System.out.println("Fetching product with id: " + id);
+            log.debug("Fetching product with id: {}", id);
             Product product = adminProductService.getProductByIdWithImages(id);
 
             if (product == null) {
@@ -172,7 +170,7 @@ public class AdminProductController {
             model.addAttribute("categories", adminCategoryService.getAllCategories());
             return "admin/productDetail";
         } catch (Exception e) {
-            System.out.println("Error in viewDetail: " + e.getMessage());
+            log.error("Error in viewDetail for product id: {}", id, e);
             model.addAttribute("error", "Lỗi khi tải chi tiết sản phẩm: " + e.getMessage());
             return "admin/productDetail";
         }
@@ -230,8 +228,7 @@ public class AdminProductController {
             }
 
         } catch (Exception e) {
-            System.err.println("Error updating product: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error updating product with id: {}", id, e);
             redirectAttributes.addFlashAttribute("error", " Cập nhật thất bại: " + e.getMessage());
             return "redirect:/adproduct/detail/" + id;
         }

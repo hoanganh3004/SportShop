@@ -2,6 +2,7 @@ package com.library.sportshop.service.impl;
 
 import com.library.sportshop.entity.Order;
 import com.library.sportshop.entity.OrderItem;
+import com.library.sportshop.entity.OrderStatus;
 import com.library.sportshop.entity.Product;
 import com.library.sportshop.entity.CartItem;
 import com.library.sportshop.entity.Notification;
@@ -72,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
     public Order saveOrder(Order order) {
         order.setOrderDate(LocalDateTime.now());
         if (order.getStatus() == null) {
-            order.setStatus("Chờ xác nhận");
+            order.setStatus(OrderStatus.PENDING.getDisplayName());
         }
         return orderRepository.save(order);
     }
@@ -83,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
     public Order createOrderWithItem(Order order, Integer productId, Integer quantity) {
         order.setOrderDate(LocalDateTime.now());
         if (order.getStatus() == null) {
-            order.setStatus("Chờ xác nhận");
+            order.setStatus(OrderStatus.PENDING.getDisplayName());
         }
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại"));
@@ -154,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
         order.setRecipientAddress(recipientAddress);
         order.setRecipientEmail(recipientEmail);
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus("Chờ xác nhận");
+        order.setStatus(OrderStatus.PENDING.getDisplayName());
 
         BigDecimal total = BigDecimal.ZERO;
         for (CartItem ci : cartItems) {
@@ -200,16 +201,18 @@ public class OrderServiceImpl implements OrderService {
         if (opt.isPresent()) {
             Order order = opt.get();
             String oldStatus = order.getStatus();
+            OrderStatus oldStatusEnum = OrderStatus.fromDisplayName(oldStatus);
+            OrderStatus newStatusEnum = OrderStatus.fromDisplayName(status);
 
             order.setStatus(status);
-            if ("Đã hủy".equals(status)) {
+            if (OrderStatus.CANCELLED.getDisplayName().equals(status)) {
                 order.setCancelReason(cancelReason);
             } else {
                 order.setCancelReason(null);
             }
 
             // nếu chuyển từ trạng thái khác "Đã hủy" sang "Đã hủy" => hoàn trả tồn kho
-            if (!"Đã hủy".equals(oldStatus) && "Đã hủy".equals(status)) {
+            if (oldStatusEnum != OrderStatus.CANCELLED && newStatusEnum == OrderStatus.CANCELLED) {
                 if (order.getOrderItems() != null) {
                     for (OrderItem item : order.getOrderItems()) {
                         if (item == null || item.getProduct() == null) continue;
