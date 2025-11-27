@@ -1,4 +1,9 @@
 <!-- ================= HEADER ================= -->
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr"
+      data-theme="theme-default" data-assets-path="../assets/"
+      data-template="vertical-menu-template-free"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <header th:fragment="header">
     <!-- Header desktop -->
     <div class="container-menu-desktop">
@@ -60,12 +65,12 @@
                     <!-- User account -->
                     <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 position-relative" id="user-dropdown">
                         <!-- Khi đã đăng nhập -->
-                        <div th:if="${session.loggedInUsername != null}">
+                        <div sec:authorize="isAuthenticated()">
                             <div id="user-trigger" class="user-info"
                                  style="cursor: pointer; display: flex; align-items: center;"
                                  tabindex="0" aria-haspopup="true" aria-expanded="false">
                                 <i class="zmdi zmdi-account" style="color: #000 !important;"></i>
-                                <span th:text="${session.loggedInUsername}" class="user-name ml-2"></span>
+                                <span sec:authentication="name" class="user-name ml-2"></span>
                             </div>
 
                             <!-- Dropdown content -->
@@ -80,7 +85,7 @@
                         </div>
 
                         <!-- Khi chưa đăng nhập -->
-                        <a th:href="@{/login}" th:unless="${session.loggedInUsername != null}" class="dis-block">
+                        <a th:href="@{/login}" sec:authorize="!isAuthenticated()" class="dis-block">
                             <i class="zmdi zmdi-account" style="color: #000 !important;"></i>
                         </a>
                     </div>

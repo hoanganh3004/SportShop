@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/adproduct")
-public class AdminProductController {
+public class    AdminProductController {
 
     private static final Logger log = LoggerFactory.getLogger(AdminProductController.class);
 

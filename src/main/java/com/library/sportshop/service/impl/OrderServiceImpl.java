@@ -98,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal total = unitPrice.multiply(BigDecimal.valueOf(quantity));
         order.setTotalAmount(total);
 
-        Order saved = orderRepository.save(order);
+        Order saved = orderRepository.save(order);// lưu oder vào db
 
         OrderItem item = new OrderItem();
         item.setOrder(saved);

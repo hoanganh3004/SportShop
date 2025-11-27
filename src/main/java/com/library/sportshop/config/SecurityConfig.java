@@ -1,109 +1,94 @@
 package com.library.sportshop.config;
 
 import com.library.sportshop.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.AccountStatusException;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // Sử dụng Constructor Injection thay vì @Autowired trên field
+    public SecurityConfig(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
-                                "/blog-detail", "/product-detail", "/product-detail/**", "/blog", "/about", "/contact", "/product", "/login",
+                                "/blog-detail", "/product-detail", "/product-detail/**", "/blog", "/about", "/contact",
+                                "/product", "/login",
                                 "/register", "/forgot-password",
                                 "/css/**", "/js/**", "/images/**", "/assets/**", "/fonts/**", "/img/**",
                                 "/libs/**", "/scss/**", "/tasks/**", "/vendor/**",
-                                "/403"
-                        ).permitAll()
-
-                        // Trang home: cho phép ANONYMOUS hoặc USER hoặc ADMIN
-                        .requestMatchers("/home")
-                        .access(new WebExpressionAuthorizationManager("isAnonymous() or hasRole('USER') or hasRole('ADMIN')"))
-
+                                "/403", "/home")
+                        .permitAll()
                         // Các URL cho admin
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
-
                         // Các URL cho USER
-                        .requestMatchers("/user/**", "/order-history", "/order-history/**", "/profile", "/profile/**", "/checkout", "/cart/**").hasRole("USER")
-
+                        .requestMatchers("/user/**", "/order-history", "/order-history/**", "/profile", "/profile/**",
+                                "/checkout", "/cart/**")
+                        .hasRole("USER")
                         // Các route còn lại yêu cầu đăng nhập
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .successHandler(customAuthenticationSuccessHandler())
                         .failureHandler((request, response, exception) -> {
-                            Throwable cursor = exception;
-                            boolean isLocked = false;
-                            while (cursor != null && !isLocked) {
-                                if (cursor instanceof DisabledException || cursor instanceof AccountStatusException) {
-                                    isLocked = true;
-                                    break;
-                                }
-                                String msg = cursor.getMessage();
-                                if (msg != null && msg.toLowerCase().contains("disabled")) {
-                                    isLocked = true;
-                                    break;
-                                }
-                                cursor = cursor.getCause();
+                            if (isAccountLocked(exception)) {
+                                response.sendRedirect("/login?locked");
+                            } else {
+                                response.sendRedirect("/login?error");
                             }
-                            response.sendRedirect(isLocked ? "/login?locked" : "/login?error");
                         })
-                        .permitAll()
-                )
+                        .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/home")
-                        .permitAll()
-                )
+                        .permitAll())
                 .exceptionHandling(ex -> ex
-                        .accessDeniedHandler(accessDeniedHandler())
-                )
+                        .accessDeniedHandler(accessDeniedHandler()))
                 // CSRF disabled for development/testing
-                // TODO: Enable CSRF protection for production:
-                // .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .csrf(csrf -> csrf.disable())
-                .authenticationProvider(authenticationProvider(userDetailsService()));
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> accountService.loadUserByUsername(username);
+    // Tách logic kiểm tra lỗi ra method riêng để code gọn gàng hơn
+    private boolean isAccountLocked(Throwable exception) {
+        Throwable cause = exception;
+        while (cause != null) {
+            if (cause instanceof DisabledException || cause instanceof AccountStatusException) {
+                return true;
+            }
+            String msg = cause.getMessage();
+            if (msg != null && msg.toLowerCase().contains("disabled")) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder);
-        return authProvider;
+    public UserDetailsService userDetailsService() {
+        return accountService::loadUserByUsername;
     }
 
     @Bean
@@ -114,33 +99,19 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            // Ưu tiên redirect về trang trước đó nếu có tham số 'redirect'
-            try {
-                String redirect = request.getParameter("redirect");
-                if (redirect != null && !redirect.isBlank()) {
-                    // Chỉ cho phép đường dẫn nội bộ để tránh open-redirect
-                    if (!redirect.startsWith("/")) {
-                        redirect = "/";
-                    }
-                    response.sendRedirect(redirect);
-                    return;
-                }
-            } catch (Exception ignored) {}
-            // Kiểm tra role cụ thể
+            // 1. Xử lý redirect (ưu tiên tham số 'redirect' nếu có)
+            String redirect = request.getParameter("redirect");
+            if (redirect != null && !redirect.isBlank() && redirect.startsWith("/")) {
+                response.sendRedirect(redirect);
+                return;
+            }
+
+            // 2. Redirect dựa trên Role
             boolean isAdmin = authentication.getAuthorities().stream()
                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-            boolean isUser = authentication.getAuthorities().stream()
-                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_USER"));
-
-            // Lưu username và role vào session
-            request.getSession(true).setAttribute("loggedInUsername", authentication.getName());
-            request.getSession(true).setAttribute("userRole", isAdmin ? "ADMIN" : "USER");
-
             if (isAdmin) {
                 response.sendRedirect("/admin");
-            } else if (isUser) {
-                response.sendRedirect("/home");
             } else {
                 response.sendRedirect("/home");
             }

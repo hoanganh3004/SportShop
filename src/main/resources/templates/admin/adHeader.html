@@ -1,7 +1,8 @@
 <html lang="en" class="light-style layout-menu-fixed" dir="ltr"
       data-theme="theme-default" data-assets-path="../assets/"
       data-template="vertical-menu-template-free"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 
 <div th:fragment="adHeader" class="layout-page">
     <!-- Navbar -->
@@ -18,7 +19,7 @@
             </div>
             <ul class="navbar-nav flex-row align-items-center ms-auto">
                 <li class="nav-item lh-1 me-3">
-                    <span th:text="${session.loggedInUsername}" class="user-name ml-2"></span>
+                    <span sec:authentication="name" class="user-name ml-2"></span>
                 </li>
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
