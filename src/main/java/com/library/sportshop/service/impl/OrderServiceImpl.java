@@ -93,6 +93,14 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("Số lượng không hợp lệ");
         }
 
+        // Kiểm tra và trừ tồn kho
+        int updated = productRepository.decrementIfEnough(product.getId(), quantity);
+        if (updated == 0) {
+            int currentStock = product.getQuantity() == null ? 0 : product.getQuantity();
+            throw new IllegalStateException(
+                    "Sản phẩm '" + product.getName() + "' không đủ hàng để đặt (Tồn kho: " + currentStock + ")");
+        }
+
         // tính đơn giá và tổng tiền
         BigDecimal unitPrice = product.getPrice();
         BigDecimal total = unitPrice.multiply(BigDecimal.valueOf(quantity));
@@ -100,20 +108,8 @@ public class OrderServiceImpl implements OrderService {
 
         Order saved = orderRepository.save(order);// lưu oder vào db
 
-        OrderItem item = new OrderItem();
-        item.setOrder(saved);
-        item.setProduct(product);
-        item.setQuantity(quantity);
-        item.setUnitPrice(unitPrice);
-        item.setProductName(product.getName());
-        item.setProductMasp(product.getMasp());
-        item.setProductDescription(product.getDescription());
-        item.setProductSize(product.getSize());
-        item.setProductColor(product.getColor());
-        // lấy ảnh đầu tiên nếu có
-        if (product.getImages() != null && !product.getImages().isEmpty()) {
-            item.setProductImage(product.getImages().get(0).getImageUrl());
-        }
+        // Sử dụng constructor tiện lợi - tự động copy thông tin từ Product
+        OrderItem item = new OrderItem(saved, product, quantity);
         orderItemRepository.save(item);
 
         return saved;
@@ -123,13 +119,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     // tạo đơn từ toàn bộ giỏ hàng của người dùng
     public Order createOrderFromCart(String userCode,
-                                     String recipientName,
-                                     String recipientPhone,
-                                     String recipientAddress,
-                                     String recipientEmail) {
-        if (userCode == null || userCode.isBlank()) {
-            throw new IllegalArgumentException("userCode không hợp lệ");
-        }
+            String recipientName,
+            String recipientPhone,
+            String recipientAddress,
+            String recipientEmail) {
         List<CartItem> cartItems = cartItemRepository.findByUserCode(userCode);
         if (cartItems == null || cartItems.isEmpty()) {
             throw new IllegalStateException("Giỏ hàng trống");
@@ -138,9 +131,11 @@ public class OrderServiceImpl implements OrderService {
         // kiểm tra tồn kho
         for (CartItem ci : cartItems) {
             Product p = ci.getProduct();
-            if (p == null || p.getId() == null) continue;
+            if (p == null || p.getId() == null)
+                continue;
             int qty = ci.getQuantity() == null ? 0 : ci.getQuantity();
-            if (qty <= 0) continue;
+            if (qty <= 0)
+                continue;
             int updated = productRepository.decrementIfEnough(p.getId(), qty);
             if (updated == 0) {
                 String name = p.getName() == null ? "Sản phẩm" : p.getName();
@@ -148,16 +143,11 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        Order order = new Order();
-        order.setUserCode(userCode);
-        order.setRecipientName(recipientName);
-        order.setRecipientPhone(recipientPhone);
-        order.setRecipientAddress(recipientAddress);
-        order.setRecipientEmail(recipientEmail);
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus(OrderStatus.PENDING.getDisplayName());
+
+        Order order = new Order(userCode, recipientName, recipientPhone, recipientAddress, recipientEmail);
 
         BigDecimal total = BigDecimal.ZERO;
+
         for (CartItem ci : cartItems) {
             Product p = ci.getProduct();
             BigDecimal price = (p != null && p.getPrice() != null) ? p.getPrice() : BigDecimal.ZERO;
@@ -170,20 +160,9 @@ public class OrderServiceImpl implements OrderService {
 
         for (CartItem ci : cartItems) {
             Product product = ci.getProduct();
-            if (product == null) continue;
-            OrderItem item = new OrderItem();
-            item.setOrder(saved);
-            item.setProduct(product);
-            item.setQuantity(ci.getQuantity());
-            item.setUnitPrice(product.getPrice());
-            item.setProductName(product.getName());
-            item.setProductMasp(product.getMasp());
-            item.setProductDescription(product.getDescription());
-            item.setProductSize(product.getSize());
-            item.setProductColor(product.getColor());
-            if (product.getImages() != null && !product.getImages().isEmpty()) {
-                item.setProductImage(product.getImages().get(0).getImageUrl());
-            }
+            if (product == null)
+                continue;
+            OrderItem item = new OrderItem(saved, product, ci.getQuantity());
             orderItemRepository.save(item);
         }
 
@@ -215,7 +194,8 @@ public class OrderServiceImpl implements OrderService {
             if (oldStatusEnum != OrderStatus.CANCELLED && newStatusEnum == OrderStatus.CANCELLED) {
                 if (order.getOrderItems() != null) {
                     for (OrderItem item : order.getOrderItems()) {
-                        if (item == null || item.getProduct() == null) continue;
+                        if (item == null || item.getProduct() == null)
+                            continue;
                         Product p = item.getProduct();
                         Integer cur = p.getQuantity() == null ? 0 : p.getQuantity();
                         Integer inc = item.getQuantity() == null ? 0 : item.getQuantity();
@@ -235,7 +215,8 @@ public class OrderServiceImpl implements OrderService {
                     n.setMessage("Trạng thái đơn hàng #" + updated.getId() + " đã cập nhật: " + status);
                     notificationService.saveNotification(n);
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
 
             try {
                 String to = updated.getRecipientEmail();
@@ -250,7 +231,8 @@ public class OrderServiceImpl implements OrderService {
                     }
                     mailSender.send(mimeMessage);
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             return updated;
         }
         throw new RuntimeException("Không tìm thấy đơn hàng với id " + id);

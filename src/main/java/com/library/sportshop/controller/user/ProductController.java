@@ -28,10 +28,10 @@ public class ProductController {
     @Autowired
     private AdminProductService adminProductService;
 
-    @GetMapping("/product")   // khi truy cập localhost:8080/
+    @GetMapping("/product") // khi truy cập localhost:8080/
     public String product(Model model,
-                          @RequestParam(value = "q", required = false) String q,
-                          @RequestParam(value = "categoryId", required = false) Integer categoryId) {
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId) {
         Pageable firstPage = PageRequest.of(0, 20);
         List<Product> products;
         if (categoryId != null && categoryId > 0) {
@@ -46,7 +46,7 @@ public class ProductController {
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("q", q);
         model.addAttribute("categoryId", categoryId);
-        return "user/product";  // Trả về file product.html trong /templates
+        return "user/product"; // Trả về file product.html trong /templates
     }
 
     @GetMapping("/product-detail/{id}")

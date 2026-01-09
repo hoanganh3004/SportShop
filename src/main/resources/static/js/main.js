@@ -249,7 +249,6 @@
         var $btn = $(this);
         var nameProduct = $btn.closest('.product-detail').find('.js-name-detail').text() || 'Sản phẩm';
         $btn.on('click', function () {
-            try { swal(nameProduct, 'đã được thêm vào giỏ hàng!', 'success'); } catch (e) { }
 
             var productId = $btn.data('product-id');
             var qty = 1;
@@ -283,17 +282,33 @@
                             var n = Number(totalQty);
                             totalQty = isNaN(n) ? 0 : n;
                         }
+                        // Hiển thị thông báo thành công
+                        try { swal(nameProduct, 'đã được thêm vào giỏ hàng!', 'success'); } catch (e) { }
                         updateCartBadge(totalQty);
                         loadCart();
                     } catch (e) {
-                        // fallback: nếu lỗi parse, cứ load lại giỏ để đồng bộ
-                        try { loadCart(); } catch(_){}
+                        try { loadCart(); } catch (_) { }
                     }
                 })
                 .fail(function (xhr) {
                     if (xhr.status === 401) {
                         var current = window.location.pathname + window.location.search + window.location.hash;
                         window.location.href = '/login?redirect=' + encodeURIComponent(current);
+                        return;
+                    }
+                    // Xử lý lỗi tồn kho (hiển thị thông báo lỗi)
+                    if (xhr.status === 409) {
+                        var msg = xhr.responseText;
+                        var errorMsg = 'Có lỗi xảy ra, vui lòng thử lại!';
+                        if (msg === 'OUT_OF_STOCK') {
+                            errorMsg = 'Sản phẩm hiện đã hết hàng!';
+                        } else if (msg === 'INSUFFICIENT_STOCK') {
+                            errorMsg = 'Số lượng trong kho không đủ!';
+                        } else if (msg === 'LIMIT_REACHED') {
+                            errorMsg = 'Đạt giới hạn số lượng!';
+                        }
+                        // Dùng swal với icon error (dấu x)
+                        try { swal(nameProduct, errorMsg, 'error'); } catch (e) { }
                         return;
                     }
                 });

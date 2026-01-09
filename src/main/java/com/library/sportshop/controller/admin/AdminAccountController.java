@@ -17,10 +17,16 @@ public class AdminAccountController {
     @Autowired
     private AdminAccountService adminAccountService;
 
-    //  Hiển thị danh sách tài khoản
+    // Hiển thị danh sách tài khoản
     @GetMapping
-    public String listAccounts(Model model) {
-        List<Account> accounts = adminAccountService.getAllAccounts();
+    public String listAccounts(Model model, @RequestParam(name = "keyword", required = false) String keyword) {
+        List<Account> accounts;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            accounts = adminAccountService.searchAccounts(keyword.trim());
+            model.addAttribute("keyword", keyword.trim());
+        } else {
+            accounts = adminAccountService.getAllAccounts();
+        }
         model.addAttribute("accounts", accounts);
         return "admin/adminAccount";
     }
@@ -28,7 +34,7 @@ public class AdminAccountController {
     // Phân quyền tài khoản
     @PostMapping("/updateRole")
     public String updateRole(@RequestParam Long id, @RequestParam String role,
-                             RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             adminAccountService.updateRole(id, role);
             redirectAttributes.addFlashAttribute("success", "Cập nhật vai trò thành công!");
@@ -41,8 +47,8 @@ public class AdminAccountController {
     // Cập nhật thông tin
     @PostMapping("/update/{id}")
     public String updateAccount(@PathVariable Long id,
-                                @ModelAttribute Account account,
-                                RedirectAttributes redirectAttributes) {
+            @ModelAttribute Account account,
+            RedirectAttributes redirectAttributes) {
         try {
             adminAccountService.updateAccount(id, account);
             redirectAttributes.addFlashAttribute("success", "Cập nhật thông tin thành công!");
@@ -60,13 +66,12 @@ public class AdminAccountController {
         return "admin/editAccount :: editForm";
     }
 
-
-    //  Đổi mật khẩu
+    // Đổi mật khẩu
     @PostMapping("/password/{id}")
     public String updatePassword(@PathVariable Long id,
-                                 @RequestParam String newPassword,
-                                 @RequestParam String confirmPassword,
-                                 RedirectAttributes redirectAttributes) {
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
+            RedirectAttributes redirectAttributes) {
         if (!newPassword.equals(confirmPassword)) {
             redirectAttributes.addFlashAttribute("error", "Mật khẩu nhập lại không khớp!");
             return "redirect:/adaccount";
@@ -83,7 +88,6 @@ public class AdminAccountController {
         return "admin/changePassword :: passwordForm"; // fragment trong changePassword.html
     }
 
-
     // Khóa/Mở tài khoản
     @GetMapping("/toggle/{id}")
     public String toggleStatus(@PathVariable Long id, Model model) {
@@ -98,4 +102,3 @@ public class AdminAccountController {
         }
     }
 }
-

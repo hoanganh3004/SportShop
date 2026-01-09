@@ -33,7 +33,8 @@ public class CartServiceImpl implements CartService {
     public List<CartItemResponseDTO> mapToDto(List<CartItem> items) {
         List<CartItemResponseDTO> dto = new ArrayList<>();
         // nếu danh sách rỗng thì trả về danh sách DTO rỗng
-        if (items == null) return dto;
+        if (items == null)
+            return dto;
         for (CartItem it : items) {
             // tạo DTO cho từng item trong giỏ
             CartItemResponseDTO r = new CartItemResponseDTO();
@@ -52,6 +53,89 @@ public class CartServiceImpl implements CartService {
         }
         return dto;
     }
+
+    @Autowired
+    private com.library.sportshop.repository.ProductRepository productRepository;
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public Integer addToCart(Integer productId, Integer quantity, String userCode) {
+        com.library.sportshop.entity.Product product = productRepository.findById(productId).orElse(null);
+        if (product == null) {
+            throw new RuntimeException("INVALID_PRODUCT");
+        }
+
+        Integer stock = product.getQuantity();
+        if (stock == null)
+            stock = 0;
+
+        CartItem existingItem = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId).orElse(null);
+        int currentInCart = (existingItem != null) ? existingItem.getQuantity() : 0;
+        int newTotal = currentInCart + quantity;
+
+        if (stock <= 0) {
+            throw new RuntimeException("OUT_OF_STOCK");
+        }
+        if (newTotal > stock) {
+            throw new RuntimeException("INSUFFICIENT_STOCK");
+        }
+
+        CartItem item = existingItem != null ? existingItem : new CartItem();
+        if (existingItem == null) {
+            item.setUserCode(userCode);
+            item.setProduct(product);
+            item.setQuantity(0);
+        }
+
+        item.setQuantity(item.getQuantity() + quantity);
+        cartItemRepository.save(item);
+
+        return cartItemRepository.countQuantityByUserCode(userCode);
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public Integer increaseQuantity(Integer productId, String userCode) {
+        CartItem item = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId).orElse(null);
+        if (item == null) {
+            throw new RuntimeException("ITEM_NOT_FOUND");
+        }
+
+        com.library.sportshop.entity.Product product = productRepository.findById(productId).orElse(null);
+        if (product == null) {
+            throw new RuntimeException("INVALID_PRODUCT");
+        }
+
+        Integer stock = product.getQuantity() == null ? Integer.MAX_VALUE : product.getQuantity();
+        if (item.getQuantity() >= stock) {
+            throw new RuntimeException("LIMIT_REACHED");
+        }
+
+        item.setQuantity(item.getQuantity() + 1);
+        cartItemRepository.save(item);
+
+        return cartItemRepository.countQuantityByUserCode(userCode);
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public Integer decreaseQuantity(Integer productId, String userCode) {
+        CartItem item = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId).orElse(null);
+        if (item == null) {
+            throw new RuntimeException("ITEM_NOT_FOUND");
+        }
+
+        if (item.getQuantity() > 1) {
+            item.setQuantity(item.getQuantity() - 1);
+            cartItemRepository.save(item);
+        }
+
+        return cartItemRepository.countQuantityByUserCode(userCode);
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public void removeItem(Integer productId, String userCode) {
+        cartItemRepository.deleteByUserCodeAndProduct_Id(userCode, productId);
+    }
 }
-
-

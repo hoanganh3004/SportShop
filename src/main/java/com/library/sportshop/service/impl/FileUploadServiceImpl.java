@@ -12,11 +12,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
 
-    private static final String UPLOAD_DIR = "D:\\image";
+    @Value("${app.image.directory}")
+    private String uploadDir;
     private static final List<String> ALLOWED_EXTENSIONS = List.of("jpg", "jpeg", "png", "gif", "bmp", "webp");
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -46,10 +48,10 @@ public class FileUploadServiceImpl implements FileUploadService {
         // Chỉ lấy tên file, bỏ thư mục người dùng đính kèm
         String cleanOriginalName = Paths.get(originalFileName).getFileName().toString();
 
-        Path uploadDir = Paths.get(UPLOAD_DIR);
+        Path uploadPath = Paths.get(this.uploadDir);
         createUploadDirectoryIfNotExists();
 
-        Path target = resolveNonConflictingPath(uploadDir, cleanOriginalName);
+        Path target = resolveNonConflictingPath(uploadPath, cleanOriginalName);
         Files.write(target, file.getBytes());
 
         // Trả về đường dẫn Windows dạng D:\image\filename.jpg
@@ -86,13 +88,15 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     private String getFileExtension(String fileName) {
-        if (fileName == null) return "";
+        if (fileName == null)
+            return "";
         int dot = fileName.lastIndexOf('.');
         return dot == -1 ? "" : fileName.substring(dot + 1);
     }
 
     private String getBaseName(String fileName) {
-        if (fileName == null) return "";
+        if (fileName == null)
+            return "";
         int dot = fileName.lastIndexOf('.');
         return dot == -1 ? fileName : fileName.substring(0, dot);
     }
@@ -113,11 +117,11 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     private void createUploadDirectoryIfNotExists() throws IOException {
-        File directory = new File(UPLOAD_DIR);
+        File directory = new File(this.uploadDir);
         if (!directory.exists()) {
             boolean created = directory.mkdirs();
             if (!created) {
-                throw new IOException("Không thể tạo thư mục upload: " + UPLOAD_DIR);
+                throw new IOException("Không thể tạo thư mục upload: " + this.uploadDir);
             }
         }
     }

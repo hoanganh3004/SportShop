@@ -35,7 +35,7 @@ public class AdminProductServiceImpl implements AdminProductService {
         return productRepository.findAll(pageable);
     }
 
-    //  DÙNG CHO DROPDOWN
+    // DÙNG CHO DROPDOWN
     @Override
     public Page<Product> getAllProductsForDropdown() {
         Pageable pageable = PageRequest.of(0, 100); // load tối đa 100 sản phẩm cho dropdown

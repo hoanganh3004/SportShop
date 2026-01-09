@@ -100,7 +100,8 @@ public class AccountServiceImpl implements AccountService {
             return false;
         }
         Account account = opt.get();
-        // generate random 8-char password including letters, digits, and special characters
+        // generate random 8-char password including letters, digits, and special
+        // characters
         String newPass = generatePassword(8);
 
         // hash and save
@@ -113,7 +114,23 @@ public class AccountServiceImpl implements AccountService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             helper.setTo(email);
             helper.setSubject("Khôi phục mật khẩu - SportShop");
-            helper.setText("Mật khẩu mới của bạn là: " + newPass + "\nVui lòng đăng nhập và đổi mật khẩu ngay sau khi vào hệ thống.", false);
+            String content = "<div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 5px;'>"
+                    +
+                    "<h2 style='color: #007bff;'>SportShop - Khôi phục mật khẩu</h2>" +
+                    "<p>Xin chào,</p>" +
+                    "<p>Chúng tôi đã nhận được yêu cầu khôi phục mật khẩu cho tài khoản liên kết với email này.</p>" +
+                    "<p>Mật khẩu tạm thời của bạn là: <strong style='font-size: 18px; color: #d9534f; background-color: #f9f9f9; padding: 5px 10px; border-radius: 3px; border: 1px dashed #d9534f;'>"
+                    + newPass + "</strong></p>" +
+                    "<div style='background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; margin-top: 15px; border: 1px solid #ffeeba;'>"
+                    +
+                    "<strong>⚠️ CẢNH BÁO BẢO MẬT:</strong> Đây là mật khẩu tạm thời được gửi qua email. Để đảm bảo an toàn cho tài khoản, vui lòng đăng nhập và <strong>ĐỔI MẬT KHẨU NGAY LẬP TỨC</strong>."
+                    +
+                    "</div>" +
+                    "<p style='margin-top: 20px;'>Nếu bạn không yêu cầu khôi phục mật khẩu, vui lòng liên hệ ngay với chúng tôi.</p>"
+                    +
+                    "<p>Trân trọng,<br/>Đội ngũ SportShop</p>" +
+                    "</div>";
+            helper.setText(content, true);
             if (mailFrom != null && !mailFrom.isBlank()) {
                 helper.setFrom(new InternetAddress(mailFrom, "SportShop"));
             }
@@ -146,7 +163,8 @@ public class AccountServiceImpl implements AccountService {
         Collections.shuffle(chars, rnd);
 
         StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) sb.append(chars.get(i));
+        for (int i = 0; i < length; i++)
+            sb.append(chars.get(i));
         return sb.toString();
     }
 

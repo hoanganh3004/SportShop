@@ -41,13 +41,33 @@ public class OrderItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public OrderItem() {}
+    public OrderItem() {
+    }
 
+    // Constructor tiện lợi - tự động lấy thông tin từ Product
+    public OrderItem(Order order, Product product, Integer quantity) {
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+        if (product != null) {
+            this.unitPrice = product.getPrice();
+            this.productName = product.getName();
+            this.productMasp = product.getMasp();
+            this.productDescription = product.getDescription();
+            this.productSize = product.getSize();
+            this.productColor = product.getColor();
+            if (product.getImages() != null && !product.getImages().isEmpty()) {
+                this.productImage = product.getImages().get(0).getImageUrl();
+            }
+        }
+    }
+
+    // Constructor đầy đủ
     public OrderItem(Integer id, Integer quantity, BigDecimal unitPrice,
-                     String productName, String productImage,
-                     String productMasp, String productDescription,
-                     String productSize, String productColor,
-                     Order order, Product product) {
+            String productName, String productImage,
+            String productMasp, String productDescription,
+            String productSize, String productColor,
+            Order order, Product product) {
         this.id = id;
         this.quantity = quantity;
         this.unitPrice = unitPrice;

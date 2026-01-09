@@ -11,10 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/adorder")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminOrderController {
 
     @Autowired
@@ -26,8 +29,8 @@ public class AdminOrderController {
     // danh sách đơn hàng
     @GetMapping
     public String listOrders(Model model,
-                             @RequestParam(defaultValue = "1") int page,
-                             @RequestParam(required = false) String keyword) {
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String keyword) {
         Page<Order> orders = orderService.getAllOrders(keyword, PageRequest.of(page - 1, 5));
 
         model.addAttribute("orders", orders);
@@ -60,11 +63,16 @@ public class AdminOrderController {
 
     @PostMapping("/save")
     public String saveOrder(@ModelAttribute Order order,
-                            @RequestParam Integer productId,
-                            @RequestParam Integer quantity,
-                            Model model) {
-        orderService.createOrderWithItem(order, productId, quantity);
-        model.addAttribute("success", "Tạo đơn hàng thành công!");
+            @RequestParam Integer productId,
+            @RequestParam Integer quantity,
+            RedirectAttributes redirectAttributes) {
+        try {
+            orderService.createOrderWithItem(order, productId, quantity);
+            redirectAttributes.addFlashAttribute("success", "Tạo đơn hàng thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Tạo đơn thất bại: " + e.getMessage());
+            return "redirect:/adorder/new";
+        }
         return "redirect:/adorder";
     }
 
@@ -82,9 +90,9 @@ public class AdminOrderController {
 
     @PostMapping("/update")
     public String updateOrder(@RequestParam Integer id,
-                              @RequestParam String status,
-                              @RequestParam(required = false) String cancelReason,
-                              RedirectAttributes redirectAttributes) {
+            @RequestParam String status,
+            @RequestParam(required = false) String cancelReason,
+            RedirectAttributes redirectAttributes) {
         orderService.updateOrderStatus(id, status, cancelReason);
         redirectAttributes.addFlashAttribute("success", "Cập nhật trạng thái thành công!");
         return "redirect:/adorder";

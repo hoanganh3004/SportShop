@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-menu-fixed" dir="ltr"
-      data-theme="theme-default" data-assets-path="../assets/"
-      data-template="vertical-menu-template-free"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
+    data-template="vertical-menu-template-free" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <title>Trang chủ</title>
@@ -24,1143 +22,1174 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/util.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
 </head>
+
 <body class="animsition">
 
-<div th:replace="user/header :: header"></div>
+    <div th:replace="user/header :: header"></div>
 
-<!-- Flash message -->
-<div class="container mt-3" th:if="${successMessage}">
-    <div class="alert alert-success" role="alert" th:text="${successMessage}">Đặt hàng thành công!</div>
-    
-</div>
+    <!-- Flash message -->
+    <div class="container mt-3" th:if="${successMessage}">
+        <div class="alert alert-success" role="alert" th:text="${successMessage}">Đặt hàng thành công!</div>
 
-<!-- Slider -->
-<section class="section-slide">
-    <div class="wrap-slick1">
-        <div class="slick1">
-
-            <!-- Slide 1 -->
-            <div class="item-slick1"
-                 th:style="|background-image: url(@{/images/1.png});|">
-                <div class="container h-full">
-                    <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
-                        <div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
-                <span class="ltext-101 cl2 respon2">
-                    Women Collection 2025
-                </span>
-                        </div>
-
-                        <div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
-                            <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
-                                NEW SEASON
-                            </h2>
-                        </div>
-
-                        <div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
-                            <a th:href="@{/product}" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
-                                Shop Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 2 -->
-            <div class="item-slick1"
-                 th:style="|background-image: url(@{/images/2.png});|">
-                <div class="container h-full">
-                    <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
-                        <div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
-                <span class="ltext-101 cl2 respon2">
-                    Men New-Season
-                </span>
-                        </div>
-
-                        <div class="layer-slick1 animated visible-false" data-appear="lightSpeedIn" data-delay="800">
-                            <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
-                                Sports clothes & Gym clothes
-                            </h2>
-                        </div>
-
-                        <div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
-                            <a th:href="@{/product}" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
-                                Shop Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slide 3 -->
-            <div class="item-slick1"
-                 th:style="|background-image: url(@{/images/3.png});|">
-                <div class="container h-full">
-                    <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
-                        <div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft" data-delay="0">
-                <span class="ltext-101 cl2 respon2">
-                    Men Collection 2025
-                </span>
-                        </div>
-
-                        <div class="layer-slick1 animated visible-false" data-appear="rotateInUpRight" data-delay="800">
-                            <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
-                                New arrivals
-                            </h2>
-                        </div>
-
-                        <div class="layer-slick1 animated visible-false" data-appear="rotateIn" data-delay="1600">
-                            <a th:href="@{/product}" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
-                                Shop Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
     </div>
-</section>
 
+    <!-- Slider -->
+    <section class="section-slide">
+        <div class="wrap-slick1">
+            <div class="slick1">
 
-<!-- Banner -->
-<div class="sec-banner bg0 p-t-80 p-b-50">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
-                <!-- Block1 -->
-                <div class="block1 wrap-pic-w">
-                    <img th:src="@{/images/banner-01.jpg}" alt="IMG-BANNER">
+                <!-- Slide 1 -->
+                <div class="item-slick1" th:style="|background-image: url(@{/images/1.png});|">
+                    <div class="container h-full">
+                        <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                            <div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
+                                <span class="ltext-101 cl2 respon2">
+                                    Women Collection 2025
+                                </span>
+                            </div>
 
-                    <a th:href="@{/product}"
-                       class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
-                        <div class="block1-txt-child1 flex-col-l">
-                            <span class="block1-name ltext-102 trans-04 p-b-8">
-                                Women
-                            </span>
+                            <div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
+                                <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+                                    NEW SEASON
+                                </h2>
+                            </div>
 
-                            <span class="block1-info stext-102 trans-04">
-                                Spring 2018
-                            </span>
-                        </div>
-
-                        <div class="block1-txt-child2 p-b-4 trans-05">
-                            <div class="block1-link stext-101 cl0 trans-09">
-                                Shop Now
+                            <div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
+                                <a th:href="@{/product}"
+                                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                                    Shop Now
+                                </a>
                             </div>
                         </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
-                <!-- Block1 -->
-                <div class="block1 wrap-pic-w">
-                    <img th:src="@{/images/banner-02.jpg}" alt="IMG-BANNER">
-
-                    <a th:href="@{/product}"
-                       class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
-                        <div class="block1-txt-child1 flex-col-l">
-                            <span class="block1-name ltext-102 trans-04 p-b-8">
-                                Men
-                            </span>
-
-                            <span class="block1-info stext-102 trans-04">
-                                Spring 2018
-                            </span>
-                        </div>
-
-                        <div class="block1-txt-child2 p-b-4 trans-05">
-                            <div class="block1-link stext-101 cl0 trans-09">
-                                Shop Now
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
-                <!-- Block1 -->
-                <div class="block1 wrap-pic-w">
-                    <img th:src="@{/images/banner-03.jpg}" alt="IMG-BANNER">
-
-                    <a th:href="@{/product}"
-                       class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
-                        <div class="block1-txt-child1 flex-col-l">
-                            <span class="block1-name ltext-102 trans-04 p-b-8">
-                                Accessories
-                            </span>
-
-                            <span class="block1-info stext-102 trans-04">
-                                New Trend
-                            </span>
-                        </div>
-
-                        <div class="block1-txt-child2 p-b-4 trans-05">
-                            <div class="block1-link stext-101 cl0 trans-09">
-                                Shop Now
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Product -->
-<section class="bg0 p-t-23 p-b-140">
-    <div class="container">
-        <div class="p-b-10">
-            <h3 class="ltext-103 cl5">
-                Product Overview
-            </h3>
-        </div>
-
-        <div class="flex-w flex-sb-m p-b-52">
-            <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-                    Tất cả sản phẩm
-                </button>
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                        th:each="c : ${homeCategories}"
-                        th:attr="data-filter=${'.cat-' + c.id}"
-                        th:text="${c.name}">Category</button>
-            </div>
-
-            <div class="flex-w flex-c-m m-tb-10">
-                <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
-                    <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
-                    <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-                    Tìm kiếm
-                </div>
-            </div>
-
-            <!-- Search product -->
-            <div class="dis-none panel-search w-full p-t-10 p-b-15">
-                <form class="bor8 dis-flex p-l-15" method="get" th:action="@{/home}">
-                    <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04" type="submit">
-                        <i class="zmdi zmdi-search"></i>
-                    </button>
-                    <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="q" placeholder="Search" th:value="${q}">
-                </form>
-            </div>
-        </div>
-
-        <div class="row isotope-grid">
-            <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item"
-                 th:each="p : ${homeProducts}"
-                 th:classappend="${' cat-' + (p.category != null ? p.category.id : 0)}">
-                <!-- Block2 -->
-                <div class="block2">
-                    <div class="block2-pic hov-img0 product-img-frame">
-                        <img class="product-img"
-                             th:if="${p.firstImageFileName != null}"
-                             th:src="@{/images/{f}(f=${p.firstImageFileName})}"
-                             alt="IMG-PRODUCT">
-                        <img class="product-img"
-                             th:unless="${p.firstImageFileName != null}"
-                             th:src="@{/images/product-01.jpg}"
-                             alt="IMG-PRODUCT">
-
                     </div>
+                </div>
 
-                    <div class="block2-txt flex-w flex-t p-t-14">
-                        <div class="block2-txt-child1 flex-col-l ">
-                            <a th:href="@{/product-detail/{id}(id=${p.id})}"
-                               class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
-                               th:text="${p.name}">Product Name</a>
+                <!-- Slide 2 -->
+                <div class="item-slick1" th:style="|background-image: url(@{/images/2.png});|">
+                    <div class="container h-full">
+                        <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                            <div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
+                                <span class="ltext-101 cl2 respon2">
+                                    Men New-Season
+                                </span>
+                            </div>
 
-                            <span class="stext-105 cl3" th:text="${p.price != null ? #numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT') + '₫' : 'N/A'}">
-                                0.00
-                            </span>
+                            <div class="layer-slick1 animated visible-false" data-appear="lightSpeedIn"
+                                data-delay="800">
+                                <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+                                    Sports clothes & Gym clothes
+                                </h2>
+                            </div>
+
+                            <div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
+                                <a th:href="@{/product}"
+                                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                                    Shop Now
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-12" th:if="${homeProducts == null or #lists.isEmpty(homeProducts)}">
-                <p class="text-center text-muted">Hiện chưa có sản phẩm để hiển thị.</p>
+                <!-- Slide 3 -->
+                <div class="item-slick1" th:style="|background-image: url(@{/images/3.png});|">
+                    <div class="container h-full">
+                        <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                            <div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft"
+                                data-delay="0">
+                                <span class="ltext-101 cl2 respon2">
+                                    Men Collection 2025
+                                </span>
+                            </div>
+
+                            <div class="layer-slick1 animated visible-false" data-appear="rotateInUpRight"
+                                data-delay="800">
+                                <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+                                    New arrivals
+                                </h2>
+                            </div>
+
+                            <div class="layer-slick1 animated visible-false" data-appear="rotateIn" data-delay="1600">
+                                <a th:href="@{/product}"
+                                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                                    Shop Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-</section>
-<div th:replace="user/footer::footer"></div>
-<!-- Back to top -->
-<div class="btn-back-to-top" id="myBtn">
-    <span class="symbol-btn-back-to-top">
-        <i class="zmdi zmdi-chevron-up"></i>
-    </span>
-</div>
+    </section>
 
-<!-- Modal1 -->
-<div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
-    <div class="overlay-modal1 js-hide-modal1"></div>
 
-    <div class="container">
-        <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
-            <button class="how-pos3 hov3 trans-04 js-hide-modal1">
-                <img th:src="@{/images/icons/icon-close.png}" alt="CLOSE">
-            </button>
-
+    <!-- Banner -->
+    <div class="sec-banner bg0 p-t-80 p-b-50">
+        <div class="container">
             <div class="row">
-                <div class="col-md-6 col-lg-7 p-b-30">
-                    <div class="p-l-25 p-r-30 p-lr-0-lg">
-                        <div class="wrap-slick3 flex-sb flex-w">
-                            <div class="wrap-slick3-dots"></div>
-                            <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+                <div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
+                    <!-- Block1 -->
+                    <div class="block1 wrap-pic-w">
+                        <img th:src="@{/images/banner-01.jpg}" alt="IMG-BANNER">
 
-                            <div class="slick3 gallery-lb">
-                                <div class="item-slick3" data-thumb="/images/product-detail-01.jpg">
-                                    <div class="wrap-pic-w pos-relative">
-                                        <img th:src="@{/images/product-detail-01.jpg}" alt="IMG-PRODUCT">
+                        <a th:href="@{/product}"
+                            class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+                            <div class="block1-txt-child1 flex-col-l">
+                                <span class="block1-name ltext-102 trans-04 p-b-8">
+                                    Women
+                                </span>
 
-                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                           th:href="@{/images/product-detail-01.jpg}">
-                                            <i class="fa fa-expand"></i>
-                                        </a>
-                                    </div>
+                                <span class="block1-info stext-102 trans-04">
+                                    Spring 2018
+                                </span>
+                            </div>
+
+                            <div class="block1-txt-child2 p-b-4 trans-05">
+                                <div class="block1-link stext-101 cl0 trans-09">
+                                    Shop Now
                                 </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
 
-                                <div class="item-slick3" data-thumb="/images/product-detail-02.jpg">
-                                    <div class="wrap-pic-w pos-relative">
-                                        <img th:src="@{/images/product-detail-02.jpg}" alt="IMG-PRODUCT">
+                <div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
+                    <!-- Block1 -->
+                    <div class="block1 wrap-pic-w">
+                        <img th:src="@{/images/banner-02.jpg}" alt="IMG-BANNER">
 
-                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                           th:href="@{/images/product-detail-02.jpg}">
-                                            <i class="fa fa-expand"></i>
-                                        </a>
-                                    </div>
+                        <a th:href="@{/product}"
+                            class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+                            <div class="block1-txt-child1 flex-col-l">
+                                <span class="block1-name ltext-102 trans-04 p-b-8">
+                                    Men
+                                </span>
+
+                                <span class="block1-info stext-102 trans-04">
+                                    Spring 2018
+                                </span>
+                            </div>
+
+                            <div class="block1-txt-child2 p-b-4 trans-05">
+                                <div class="block1-link stext-101 cl0 trans-09">
+                                    Shop Now
                                 </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
 
-                                <div class="item-slick3" data-thumb="/images/product-detail-03.jpg">
-                                    <div class="wrap-pic-w pos-relative">
-                                        <img th:src="@{/images/product-detail-03.jpg}" alt="IMG-PRODUCT">
+                <div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
+                    <!-- Block1 -->
+                    <div class="block1 wrap-pic-w">
+                        <img th:src="@{/images/banner-03.jpg}" alt="IMG-BANNER">
 
-                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                                           th:href="@{/images/product-detail-03.jpg}">
-                                            <i class="fa fa-expand"></i>
-                                        </a>
-                                    </div>
+                        <a th:href="@{/product}"
+                            class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+                            <div class="block1-txt-child1 flex-col-l">
+                                <span class="block1-name ltext-102 trans-04 p-b-8">
+                                    Accessories
+                                </span>
+
+                                <span class="block1-info stext-102 trans-04">
+                                    New Trend
+                                </span>
+                            </div>
+
+                            <div class="block1-txt-child2 p-b-4 trans-05">
+                                <div class="block1-link stext-101 cl0 trans-09">
+                                    Shop Now
                                 </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product -->
+    <section class="bg0 p-t-23 p-b-140">
+        <div class="container">
+            <div class="p-b-10">
+                <h3 class="ltext-103 cl5">
+                    Product Overview
+                </h3>
+            </div>
+
+            <div class="flex-w flex-sb-m p-b-52">
+                <div class="flex-w flex-l-m filter-tope-group m-tb-10">
+                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
+                        Tất cả sản phẩm
+                    </button>
+                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" th:each="c : ${homeCategories}"
+                        th:attr="data-filter=${'.cat-' + c.id}" th:text="${c.name}">Category</button>
+                </div>
+
+                <div class="flex-w flex-c-m m-tb-10">
+                    <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+                        <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+                        <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+                        Tìm kiếm
+                    </div>
+                </div>
+
+                <!-- Search product -->
+                <div class="dis-none panel-search w-full p-t-10 p-b-15">
+                    <form class="bor8 dis-flex p-l-15" method="get" th:action="@{/home}">
+                        <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04" type="submit">
+                            <i class="zmdi zmdi-search"></i>
+                        </button>
+                        <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="q" placeholder="Search"
+                            th:value="${q}">
+                    </form>
+                </div>
+            </div>
+
+            <div class="row isotope-grid">
+                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item" th:each="p : ${homeProducts}"
+                    th:classappend="${' cat-' + (p.category != null ? p.category.id : 0)}">
+                    <!-- Block2 -->
+                    <div class="block2">
+                        <div class="block2-pic hov-img0 product-img-frame">
+                            <img class="product-img" th:if="${p.firstImageFileName != null}"
+                                th:src="@{/images/{f}(f=${p.firstImageFileName})}" alt="IMG-PRODUCT">
+                            <img class="product-img" th:unless="${p.firstImageFileName != null}"
+                                th:src="@{/images/product-01.jpg}" alt="IMG-PRODUCT">
+
+                        </div>
+
+                        <div class="block2-txt flex-w flex-t p-t-14">
+                            <div class="block2-txt-child1 flex-col-l ">
+                                <a th:href="@{/product-detail/{id}(id=${p.id})}"
+                                    class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6" th:text="${p.name}">Product
+                                    Name</a>
+
+                                <span class="stext-105 cl3"
+                                    th:text="${p.price != null ? #numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT') + '₫' : 'N/A'}">
+                                    0.00
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-5 p-b-30">
-                    <div class="p-r-50 p-t-5 p-lr-0-lg">
-                        <h4 class="mtext-105 cl2 js-name-detail p-b-14">
-                            Lightweight Jacket
-                        </h4>
+                <div class="col-12" th:if="${homeProducts == null or #lists.isEmpty(homeProducts)}">
+                    <p class="text-center text-muted">Hiện chưa có sản phẩm để hiển thị.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div th:replace="user/footer::footer"></div>
+    <!-- Back to top -->
+    <div class="btn-back-to-top" id="myBtn">
+        <span class="symbol-btn-back-to-top">
+            <i class="zmdi zmdi-chevron-up"></i>
+        </span>
+    </div>
 
-                        <span class="mtext-106 cl2">
-                            $58.79
-                        </span>
+    <!-- Modal1 -->
+    <div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
+        <div class="overlay-modal1 js-hide-modal1"></div>
 
-                        <p class="stext-102 cl3 p-t-23">
-                            Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris consequat ornare feugiat.
-                        </p>
+        <div class="container">
+            <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+                <button class="how-pos3 hov3 trans-04 js-hide-modal1">
+                    <img th:src="@{/images/icons/icon-close.png}" alt="CLOSE">
+                </button>
 
-                        <!-- Options -->
-                        <div class="p-t-33">
-                            <div class="flex-w flex-r-m p-b-10">
-                                <div class="size-203 flex-c-m respon6">
-                                    Size
+                <div class="row">
+                    <div class="col-md-6 col-lg-7 p-b-30">
+                        <div class="p-l-25 p-r-30 p-lr-0-lg">
+                            <div class="wrap-slick3 flex-sb flex-w">
+                                <div class="wrap-slick3-dots"></div>
+                                <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+
+                                <div class="slick3 gallery-lb">
+                                    <div class="item-slick3" data-thumb="/images/product-detail-01.jpg">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img th:src="@{/images/product-detail-01.jpg}" alt="IMG-PRODUCT">
+
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                                th:href="@{/images/product-detail-01.jpg}">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="item-slick3" data-thumb="/images/product-detail-02.jpg">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img th:src="@{/images/product-detail-02.jpg}" alt="IMG-PRODUCT">
+
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                                th:href="@{/images/product-detail-02.jpg}">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="item-slick3" data-thumb="/images/product-detail-03.jpg">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img th:src="@{/images/product-detail-03.jpg}" alt="IMG-PRODUCT">
+
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                                th:href="@{/images/product-detail-03.jpg}">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-5 p-b-30">
+                        <div class="p-r-50 p-t-5 p-lr-0-lg">
+                            <h4 class="mtext-105 cl2 js-name-detail p-b-14">
+                                Lightweight Jacket
+                            </h4>
+
+                            <span class="mtext-106 cl2">
+                                $58.79
+                            </span>
+
+                            <p class="stext-102 cl3 p-t-23">
+                                Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris consequat
+                                ornare feugiat.
+                            </p>
+
+                            <!-- Options -->
+                            <div class="p-t-33">
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-203 flex-c-m respon6">
+                                        Size
+                                    </div>
+
+                                    <div class="size-204 respon6-next">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="time">
+                                                <option>Choose an option</option>
+                                                <option>Size S</option>
+                                                <option>Size M</option>
+                                                <option>Size L</option>
+                                                <option>Size XL</option>
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="size-204 respon6-next">
-                                    <div class="rs1-select2 bor8 bg0">
-                                        <select class="js-select2" name="time">
-                                            <option>Choose an option</option>
-                                            <option>Size S</option>
-                                            <option>Size M</option>
-                                            <option>Size L</option>
-                                            <option>Size XL</option>
-                                        </select>
-                                        <div class="dropDownSelect2"></div>
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-203 flex-c-m respon6">
+                                        Color
+                                    </div>
+
+                                    <div class="size-204 respon6-next">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="time">
+                                                <option>Choose an option</option>
+                                                <option>Red</option>
+                                                <option>Blue</option>
+                                                <option>White</option>
+                                                <option>Grey</option>
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-204 flex-w flex-m respon6-next">
+                                        <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                            <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-minus"></i>
+                                            </div>
+
+                                            <input class="mtext-104 cl3 txt-center num-product" type="number"
+                                                name="num-product" value="1">
+
+                                            <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-plus"></i>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+                                            Add to cart
+                                        </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="flex-w flex-r-m p-b-10">
-                                <div class="size-203 flex-c-m respon6">
-                                    Color
-                                </div>
-
-                                <div class="size-204 respon6-next">
-                                    <div class="rs1-select2 bor8 bg0">
-                                        <select class="js-select2" name="time">
-                                            <option>Choose an option</option>
-                                            <option>Red</option>
-                                            <option>Blue</option>
-                                            <option>White</option>
-                                            <option>Grey</option>
-                                        </select>
-                                        <div class="dropDownSelect2"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex-w flex-r-m p-b-10">
-                                <div class="size-204 flex-w flex-m respon6-next">
-                                    <div class="wrap-num-product flex-w m-r-20 m-tb-10">
-                                        <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                            <i class="fs-16 zmdi zmdi-minus"></i>
-                                        </div>
-
-                                        <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1">
-
-                                        <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                            <i class="fs-16 zmdi zmdi-plus"></i>
-                                        </div>
-                                    </div>
-
-                                    <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-                                        Add to cart
+                            <!-- Wishlist -->
+                            <div class="flex-w flex-m p-l-100 p-t-40 respon7">
+                                <div class="flex-m bor9 p-r-10 m-r-11">
+                                    <button class="btn-addwish-b2 dis-block pos-relative js-addwish-detail">
+                                        <img class="icon-heart1 dis-block trans-04"
+                                            th:src="@{/images/icons/icon-heart-01.png}" alt="ICON">
+                                        <img class="icon-heart2 dis-block trans-04 ab-t-l"
+                                            th:src="@{/images/icons/icon-heart-02.png}" alt="ICON">
                                     </button>
                                 </div>
+
+                                <a href="#" class="fs-14 cl3 hov-cl1 trans-04 m-r-6">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+
+                                <a href="#" class="fs-14 cl3 hov-cl1 trans-04 m-r-6">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+
+                                <a href="#" class="fs-14 cl3 hov-cl1 trans-04 m-r-6">
+                                    <i class="fa fa-google-plus"></i>
+                                </a>
                             </div>
-                        </div>
-
-                        <!-- Wishlist -->
-                        <div class="flex-w flex-m p-l-100 p-t-40 respon7">
-                            <div class="flex-m bor9 p-r-10 m-r-11">
-                                <button class="btn-addwish-b2 dis-block pos-relative js-addwish-detail">
-                                    <img class="icon-heart1 dis-block trans-04" th:src="@{/images/icons/icon-heart-01.png}" alt="ICON">
-                                    <img class="icon-heart2 dis-block trans-04 ab-t-l" th:src="@{/images/icons/icon-heart-02.png}" alt="ICON">
-                                </button>
-                            </div>
-
-                            <a href="#" class="fs-14 cl3 hov-cl1 trans-04 m-r-6">
-                                <i class="fa fa-facebook"></i>
-                            </a>
-
-                            <a href="#" class="fs-14 cl3 hov-cl1 trans-04 m-r-6">
-                                <i class="fa fa-twitter"></i>
-                            </a>
-
-                            <a href="#" class="fs-14 cl3 hov-cl1 trans-04 m-r-6">
-                                <i class="fa fa-google-plus"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-------------------------------
-<script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script>
+    ------------------------------
+    <script th:src="@{/vendor/jquery/jquery-3.2.1.min.js}"></script>
 
-<script th:src="@{/vendor/animsition/js/animsition.min.js}"></script>
+    <script th:src="@{/vendor/animsition/js/animsition.min.js}"></script>
 
-<script th:src="@{/vendor/bootstrap/js/popper.js}"></script>
-<script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/popper.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
 
-<script th:src="@{/vendor/select2/select2.min.js}"></script>
-<script>
-    $(".js-select2").each(function(){
-        $(this).select2({
-            minimumResultsForSearch: 20,
-            dropdownParent: $(this).next('.dropDownSelect2')
+    <script th:src="@{/vendor/select2/select2.min.js}"></script>
+    <script>
+        $(".js-select2").each(function () {
+            $(this).select2({
+                minimumResultsForSearch: 20,
+                dropdownParent: $(this).next('.dropDownSelect2')
+            });
+        })
+    </script>
+
+    <script th:src="@{/vendor/daterangepicker/moment.min.js}"></script>
+    <script th:src="@{/vendor/daterangepicker/daterangepicker.js}"></script>
+
+    <script th:src="@{/vendor/slick/slick.min.js}"></script>
+    <script th:src="@{/js/slick-custom.js}"></script>
+
+    <script th:src="@{/vendor/parallax100/parallax100.js}"></script>
+    <script>
+        $('.parallax100').parallax100();
+    </script>
+
+    <script th:src="@{/vendor/MagnificPopup/jquery.magnific-popup.min.js}"></script>
+    <script>
+        $('.gallery-lb').each(function () {
+            $(this).magnificPopup({
+                delegate: 'a',
+                type: 'image',
+                gallery: { enabled: true },
+                mainClass: 'mfp-fade'
+            });
         });
-    })
-</script>
+    </script>
 
-<script th:src="@{/vendor/daterangepicker/moment.min.js}"></script>
-<script th:src="@{/vendor/daterangepicker/daterangepicker.js}"></script>
+    <script th:src="@{/vendor/isotope/isotope.pkgd.min.js}"></script>
 
-<script th:src="@{/vendor/slick/slick.min.js}"></script>
-<script th:src="@{/js/slick-custom.js}"></script>
-
-<script th:src="@{/vendor/parallax100/parallax100.js}"></script>
-<script>
-    $('.parallax100').parallax100();
-</script>
-
-<script th:src="@{/vendor/MagnificPopup/jquery.magnific-popup.min.js}"></script>
-<script>
-    $('.gallery-lb').each(function() {
-        $(this).magnificPopup({
-            delegate: 'a',
-            type: 'image',
-            gallery: { enabled:true },
-            mainClass: 'mfp-fade'
+    <script th:src="@{/vendor/sweetalert/sweetalert.min.js}"></script>
+    <script>
+        $('.js-addwish-b2').on('click', function (e) {
+            e.preventDefault();
         });
-    });
-</script>
 
-<script th:src="@{/vendor/isotope/isotope.pkgd.min.js}"></script>
+        $('.js-addwish-b2').each(function () {
+            var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+            $(this).on('click', function () {
+                swal(nameProduct, "is added to wishlist !", "success");
 
-<script th:src="@{/vendor/sweetalert/sweetalert.min.js}"></script>
-<script>
-    $('.js-addwish-b2').on('click', function(e){
-        e.preventDefault();
-    });
-
-    $('.js-addwish-b2').each(function(){
-        var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-        $(this).on('click', function(){
-            swal(nameProduct, "is added to wishlist !", "success");
-
-            $(this).addClass('js-addedwish-b2');
-            $(this).off('click');
+                $(this).addClass('js-addedwish-b2');
+                $(this).off('click');
+            });
         });
-    });
 
-    $('.js-addwish-detail').each(function(){
-        var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+        $('.js-addwish-detail').each(function () {
+            var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
 
-        $(this).on('click', function(){
-            swal(nameProduct, "is added to wishlist !", "success");
+            $(this).on('click', function () {
+                swal(nameProduct, "is added to wishlist !", "success");
 
-            $(this).addClass('js-addedwish-detail');
-            $(this).off('click');
+                $(this).addClass('js-addedwish-detail');
+                $(this).off('click');
+            });
         });
-    });
 
-    $('.js-addcart-detail').each(function () {
-        var $btn = $(this);
-        var nameProduct = $btn.closest('.product-detail').find('.js-name-detail').text() || 'Sản phẩm';
-        $btn.on('click', function () {
-            try { swal(nameProduct, 'đã được thêm vào giỏ hàng!', 'success'); } catch (e) { }
+        $('.js-addcart-detail').each(function () {
+            var $btn = $(this);
+            var nameProduct = $btn.closest('.product-detail').find('.js-name-detail').text() || 'Sản phẩm';
+            $btn.on('click', function () {
+                var productId = $btn.data('product-id');
+                var qty = 1;
+                var $qtyInput = $btn.closest('.size-204').find('input.num-product');
+                if ($qtyInput && $qtyInput.length) {
+                    var v = Number($qtyInput.val());
+                    if (!isNaN(v) && v > 0) qty = v;
+                }
 
-            var productId = $btn.data('product-id');
-            var qty = 1;
-            var $qtyInput = $btn.closest('.size-204').find('input.num-product');
-            if ($qtyInput && $qtyInput.length) {
-                var v = Number($qtyInput.val());
-                if (!isNaN(v) && v > 0) qty = v;
-            }
+                if (!productId) return;
 
-            if (!productId) return;
-
-            $.ajax({
-                url: '/cart/add',
-                method: 'POST',
-                data: { productId: productId, quantity: qty }
-            })
-                .done(function (totalQty) {
-                    updateCartBadge(totalQty);
-                    loadCart();
+                $.ajax({
+                    url: '/cart/add',
+                    method: 'POST',
+                    data: { productId: productId, quantity: qty }
                 })
-                .fail(function (xhr) {
-                    if (xhr.status === 401) {
-                        var current = window.location.pathname + window.location.search + window.location.hash;
-                        window.location.href = '/login?redirect=' + encodeURIComponent(current);
-                        return;
+                    .done(function (totalQty) {
+                        // Hiển thị thông báo thành công
+                        try { swal(nameProduct, 'đã được thêm vào giỏ hàng!', 'success'); } catch (e) { }
+                        updateCartBadge(totalQty);
+                        loadCart();
+                    })
+                    .fail(function (xhr) {
+                        if (xhr.status === 401) {
+                            var current = window.location.pathname + window.location.search + window.location.hash;
+                            window.location.href = '/login?redirect=' + encodeURIComponent(current);
+                            return;
+                        }
+                        // Xử lý lỗi tồn kho
+                        if (xhr.status === 409) {
+                            var msg = xhr.responseText;
+                            if (msg === 'OUT_OF_STOCK') {
+                                swal('Hết hàng', 'Sản phẩm này hiện đã hết hàng!', 'error');
+                            } else if (msg === 'INSUFFICIENT_STOCK') {
+                                swal('Không đủ hàng', 'Số lượng trong kho không đủ cho yêu cầu của bạn!', 'warning');
+                            }
+                            return;
+                        }
+                    });
+            });
+        });
+    </script>
+
+    <script th:src="@{/vendor/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+    <script>
+        $('.js-pscroll').each(function () {
+            $(this).css('position', 'relative');
+            $(this).css('overflow', 'hidden');
+            var ps = new PerfectScrollbar(this, {
+                wheelSpeed: 1,
+                scrollingThreshold: 1000,
+                wheelPropagation: false,
+            });
+
+            $(window).on('resize', function () {
+                ps.update();
+            })
+        });
+    </script>
+    <script th:src="@{/js/main.js}"></script>
+
+    <!-- ================= CSS FIXED ================= -->
+    <style>
+        /* Khung ảnh sản phẩm đồng nhất */
+        .product-img-frame {
+            width: 100%;
+            height: 260px;
+            /* giữ chiều cao cố định để grid đều */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .product-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            /* đảm bảo không méo ảnh, căn giữa */
+            display: block;
+        }
+
+        .user-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 8px;
+            min-width: 180px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 2001;
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown-content.show {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 4px 0;
+        }
+
+        #user-dropdown {
+            position: relative;
+        }
+
+        .user-info {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .user-info:hover {
+            background-color: #f5f5f5;
+        }
+
+        .user-name {
+            margin-left: 8px;
+            color: #000;
+            font-weight: 500;
+        }
+    </style>
+
+    <!-- ================= JS FIXED ================= -->
+    <script th:inline="javascript">
+        (function () {
+            // Prevent multiple initialization
+            if (window.__userDropdownInitialized) return;
+            window.__userDropdownInitialized = true;
+
+            console.log(' Initializing user dropdown...');
+
+            function initUserDropdown() {
+                const dropdownParent = document.getElementById('user-dropdown');
+                const dropdown = document.getElementById('user-dropdown-content');
+                const trigger = document.getElementById('user-trigger');
+
+                // Only initialize if user is logged in and elements exist
+                if (!dropdownParent || !dropdown || !trigger) {
+                    console.log(' User not logged in or elements not found');
+                    return;
+                }
+
+                console.log(' Dropdown elements found, initializing...');
+
+                function closeDropdown() {
+                    dropdown.classList.remove('show');
+                    dropdown.setAttribute('aria-hidden', 'true');
+                    trigger.setAttribute('aria-expanded', 'false');
+                }
+
+                function openDropdown() {
+                    dropdown.classList.add('show');
+                    dropdown.setAttribute('aria-hidden', 'false');
+                    trigger.setAttribute('aria-expanded', 'true');
+                }
+
+                function toggleDropdown(e) {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+
+                    if (dropdown.classList.contains('show')) {
+                        closeDropdown();
+                    } else {
+                        openDropdown();
+                    }
+                }
+
+                // Event listeners
+                trigger.addEventListener('click', toggleDropdown);
+
+                trigger.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        toggleDropdown(e);
                     }
                 });
-        });
-    });
-</script>
 
-<script th:src="@{/vendor/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
-<script>
-    $('.js-pscroll').each(function(){
-        $(this).css('position','relative');
-        $(this).css('overflow','hidden');
-        var ps = new PerfectScrollbar(this, {
-            wheelSpeed: 1,
-            scrollingThreshold: 1000,
-            wheelPropagation: false,
-        });
-
-        $(window).on('resize', function(){
-            ps.update();
-        })
-    });
-</script>
-<script th:src="@{/js/main.js}"></script>
-
-<!-- ================= CSS FIXED ================= -->
-<style>
-    /* Khung ảnh sản phẩm đồng nhất */
-    .product-img-frame {
-        width: 100%;
-        height: 260px; /* giữ chiều cao cố định để grid đều */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #fff;
-        overflow: hidden;
-    }
-    .product-img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain; /* đảm bảo không méo ảnh, căn giữa */
-        display: block;
-    }
-    .user-dropdown-content {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 100%;
-        margin-top: 8px;
-        min-width: 180px;
-        background: #fff;
-        border: 1px solid #eee;
-        border-radius: 4px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        z-index: 2001;
-        transition: all 0.3s ease;
-    }
-
-    .user-dropdown-content.show {
-        display: block;
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .dropdown-divider {
-        height: 1px;
-        background: #f0f0f0;
-        margin: 4px 0;
-    }
-
-    #user-dropdown {
-        position: relative;
-    }
-
-    .user-info {
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        padding: 8px 12px;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-
-    .user-info:hover {
-        background-color: #f5f5f5;
-    }
-
-    .user-name {
-        margin-left: 8px;
-        color: #000;
-        font-weight: 500;
-    }
-</style>
-
-<!-- ================= JS FIXED ================= -->
-<script th:inline="javascript">
-    (function(){
-        // Prevent multiple initialization
-        if(window.__userDropdownInitialized) return;
-        window.__userDropdownInitialized = true;
-
-        console.log(' Initializing user dropdown...');
-
-        function initUserDropdown(){
-            const dropdownParent = document.getElementById('user-dropdown');
-            const dropdown = document.getElementById('user-dropdown-content');
-            const trigger = document.getElementById('user-trigger');
-
-            // Only initialize if user is logged in and elements exist
-            if(!dropdownParent || !dropdown || !trigger) {
-                console.log(' User not logged in or elements not found');
-                return;
-            }
-
-            console.log(' Dropdown elements found, initializing...');
-
-            function closeDropdown(){
-                dropdown.classList.remove('show');
-                dropdown.setAttribute('aria-hidden','true');
-                trigger.setAttribute('aria-expanded','false');
-            }
-
-            function openDropdown(){
-                dropdown.classList.add('show');
-                dropdown.setAttribute('aria-hidden','false');
-                trigger.setAttribute('aria-expanded','true');
-            }
-
-            function toggleDropdown(e){
-                if(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-
-                if(dropdown.classList.contains('show')) {
-                    closeDropdown();
-                } else {
-                    openDropdown();
-                }
-            }
-
-            // Event listeners
-            trigger.addEventListener('click', toggleDropdown);
-
-            trigger.addEventListener('keydown', function(e){
-                if (e.key === 'Enter' || e.key === ' ') {
-                    toggleDropdown(e);
-                }
-            });
-
-            // Close when clicking outside
-            document.addEventListener('click', function(e){
-                if(!dropdownParent.contains(e.target)){
-                    closeDropdown();
-                }
-            });
-
-            // Close on Escape key
-            document.addEventListener('keydown', function(e){
-                if (e.key === 'Escape') {
-                    closeDropdown();
-                }
-            });
-
-            // Close when clicking on dropdown links
-            dropdown.addEventListener('click', function(e) {
-                if (e.target.tagName === 'A') {
-                    setTimeout(closeDropdown, 100);
-                }
-            });
-
-            console.log(' User dropdown initialized successfully');
-        }
-
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initUserDropdown);
-        } else {
-            initUserDropdown();
-        }
-
-    })();
-</script>
-<!-- ======= Notification Dropdown Style & Script ======= -->
-<style>
-    .notification-dropdown {
-        display: none;
-        position: absolute;
-        top: 40px;
-        right: 0;
-        background: #fff;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        border-radius: 8px;
-        width: 280px;
-        z-index: 999;
-        overflow: hidden;
-    }
-    .notification-item:hover {
-        background: #f8f8f8;
-    }
-</style>
-
-<script>
-    const bell = document.getElementById("notification-bell");
-    const dropdown = document.getElementById("notification-dropdown");
-
-    bell.addEventListener("click", (e) => {
-        e.stopPropagation();
-        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-    });
-
-    document.addEventListener("click", (e) => {
-        if (!bell.contains(e.target)) {
-            dropdown.style.display = "none";
-        }
-    });
-
-</script>
-<script th:inline="javascript">
-    (function(){
-        if (window.__hdrNotifyInit) return; window.__hdrNotifyInit = true;
-        try { console.log('[header-inline] init'); } catch(_){ }
-        var ctx = (function(){ try { return /*[[@{/}]]*/ ""; } catch(e){ return ""; } })();
-        if (ctx && ctx.endsWith('/') === false) ctx = ctx + '/';
-        var bell = document.getElementById('notification-bell');
-        var dd = document.getElementById('notification-dropdown');
-        if (bell && dd) {
-            try {
-                bell.addEventListener('click', function(ev){ try{ ev.stopPropagation(); }catch(_){ } dd.classList.toggle('show'); }, false);
-                document.addEventListener('click', function(){ try { dd.classList.remove('show'); } catch(_){ } }, false);
-            } catch(_){ }
-        }
-        document.addEventListener('click', function(e){
-            var item = e.target.closest && e.target.closest('#notification-dropdown .notification-item');
-            if (!item || !item.classList.contains('unread')) return;
-            var id = item.getAttribute('data-id'); if (!id) return;
-            try { console.log('[notify-inline] click id=', id); } catch(_){ }
-            fetch(ctx + 'nr', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain' },
-                body: 'id=' + encodeURIComponent(id),
-                credentials: 'same-origin'
-            })
-                .then(function(r){ return r.text(); })
-                .then(function(t){
-                    var remain = Number(t); if (isNaN(remain)) remain = 0;
-                    try {
-                        item.classList.remove('unread');
-                        item.classList.add('read');
-                        var b = document.getElementById('notification-bell');
-                        if (b) b.setAttribute('data-notify', remain);
-                        console.log('[notify-inline] ok remain=', remain);
-                    } catch(_){ }
-                })
-                .catch(function(err){ try { console.log('[notify-inline] error', err); } catch(_){ } });
-        }, false);
-    })();
-</script>
-
-<script>
-    (function() {
-        function formatVND(n){ try { return (Number(n)||0).toLocaleString('vi-VN') + 'đ'; } catch(e){ return n; } }
-        function updateBadge(total){
-            try {
-                var el = document.querySelector('.icon-header-noti.js-show-cart');
-                if (el) el.setAttribute('data-notify', Number(total||0));
-            } catch(e){}
-        }
-        function renderCart(items){
-            var list = document.getElementById('header-cart-list');
-            var totalEl = document.getElementById('header-cart-total');
-            if (!list || !totalEl) return;
-            list.innerHTML = '';
-            var total = 0;
-            if (Array.isArray(items) && items.length){
-                items.forEach(function(it){
-                    var p = it && it.product ? it.product : {};
-                    var qty = Number(it.quantity||0);
-                    var price = Number(p.price||0);
-                    total += qty * price;
-                    var img = p.firstImageFileName ? ('/images/' + p.firstImageFileName) : '/images/product-01.jpg';
-                    var li = document.createElement('li');
-                    li.className = 'header-cart-item flex-w flex-t m-b-12';
-                    li.setAttribute('data-product-id', p.id || '');
-                    li.innerHTML = ''+
-                        '<div class="header-cart-item-img">\n'+
-                        '  <img src="'+img+'" alt="IMG">\n'+
-                        '</div>\n'+
-                        '<div class="header-cart-item-txt p-t-8">\n'+
-                        '  <a href="#" class="header-cart-item-name m-b-12 hov-cl1 trans-04">'+ (p.name||'Sản phẩm') +'</a>\n'+
-                        '  <span class="header-cart-item-info d-block m-b-8">'+ qty +' x '+ formatVND(price) +'</span>\n'+
-                        '  <div class="header-cart-item-actions flex-w flex-m">\n'+
-                        '    <button class="btn-dec cl2 hov-cl1 trans-04 bor13 size-28 m-r-8" aria-label="Giảm">−</button>\n'+
-                        '    <input class="num-product stext-104 cl3 size-28 bor13 m-r-8 text-center" type="text" value="'+ qty +'" readonly>\n'+
-                        '    <button class="btn-inc cl2 hov-cl1 trans-04 bor13 size-28 m-r-12" aria-label="Tăng">+</button>\n'+
-                        '    <button class="btn-remove cl2 hov-cl1 trans-04" aria-label="Xóa"><i class="zmdi zmdi-delete"></i></button>\n'+
-                        '  </div>\n'+
-                        '</div>';
-                    list.appendChild(li);
+                // Close when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!dropdownParent.contains(e.target)) {
+                        closeDropdown();
+                    }
                 });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') {
+                        closeDropdown();
+                    }
+                });
+
+                // Close when clicking on dropdown links
+                dropdown.addEventListener('click', function (e) {
+                    if (e.target.tagName === 'A') {
+                        setTimeout(closeDropdown, 100);
+                    }
+                });
+
+                console.log(' User dropdown initialized successfully');
+            }
+
+            // Initialize when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initUserDropdown);
             } else {
-                var empty = document.createElement('li');
-                empty.className = 'p-2 text-muted';
-                empty.textContent = 'Giỏ hàng trống';
-                list.appendChild(empty);
+                initUserDropdown();
             }
-            totalEl.textContent = 'Total: ' + formatVND(total);
+
+        })();
+    </script>
+    <!-- ======= Notification Dropdown Style & Script ======= -->
+    <style>
+        .notification-dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            width: 280px;
+            z-index: 999;
+            overflow: hidden;
         }
-        function loadCart(){
-            fetch('/cart/items', { method: 'GET', credentials: 'same-origin' })
-                .then(function(r){ return r.text(); })
-                .then(function(t){ try { return JSON.parse(t); } catch(e){ return []; } })
-                .then(function(items){
-                    renderCart(items);
-                    var sum = 0; if (Array.isArray(items)) items.forEach(function(it){ sum += Number(it.quantity||0); });
-                    updateBadge(sum);
-                })
-                .catch(function(){});
+
+        .notification-item:hover {
+            background: #f8f8f8;
         }
-        function post(url, data){
-            var form = new URLSearchParams();
-            Object.keys(data||{}).forEach(function(k){ if (data[k] !== undefined) form.append(k, data[k]); });
-            return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: form, credentials: 'same-origin' })
-                .then(function(r){ return r.text(); })
-                .then(function(t){ var n = Number(t); return isNaN(n) ? 0 : n; });
-        }
-        document.addEventListener('click', function(e){
-            var inc = e.target.closest && e.target.closest('.btn-inc');
-            var dec = e.target.closest && e.target.closest('.btn-dec');
-            var rm  = e.target.closest && e.target.closest('.btn-remove');
-            if (!(inc||dec||rm)) return;
-            e.preventDefault();
-            var itemEl = e.target.closest('.header-cart-item');
-            if (!itemEl) return;
-            var productId = itemEl.getAttribute('data-product-id');
-            if (!productId) return;
-            if (inc) {
-                post('/cart/increase', { productId: productId })
-                    .then(function(){ loadCart(); })
-                    .catch(function(){});
-                return;
+    </style>
+
+    <script>
+        const bell = document.getElementById("notification-bell");
+        const dropdown = document.getElementById("notification-dropdown");
+
+        bell.addEventListener("click", (e) => {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!bell.contains(e.target)) {
+                dropdown.style.display = "none";
             }
-            if (dec) {
-                var qtyInput = itemEl.querySelector('input.num-product');
-                var current = Number((qtyInput && qtyInput.value) || '1');
-                if (current <= 1) { return; } // chặn giảm < 1 ở client
-                post('/cart/decrease', { productId: productId })
-                    .then(function(){ loadCart(); })
-                    .catch(function(){});
-                return;
-            }
-            if (rm) {
-                if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
-                post('/cart/remove', { productId: productId })
-                    .then(function(){ loadCart(); })
-                    .catch(function(){});
-                return;
-            }
-        }, false);
-        // Load when panel opens
-        document.addEventListener('click', function(e){
-            var btn = e.target.closest && e.target.closest('.js-show-cart');
-            if (btn) { setTimeout(loadCart, 0); }
-        }, false);
-        document.addEventListener('click', function(e){
-            var inc = e.target.closest && e.target.closest('.btn-inc');
-            var dec = e.target.closest && e.target.closest('.btn-dec');
-            var rm  = e.target.closest && e.target.closest('.btn-remove');
-            if (!(inc||dec||rm)) return;
-            e.preventDefault();
-            var itemEl = e.target.closest('.header-cart-item');
-            if (!itemEl) return;
-            var productId = itemEl.getAttribute('data-product-id');
-            if (!productId) return;
-            if (inc) {
-                post('/cart/increase', { productId: productId })
-                    .then(function(){ loadCart(); })
-                    .catch(function(){});
-                return;
-            }
-            if (dec) {
-                var qtyInput = itemEl.querySelector('input.num-product');
-                var current = Number((qtyInput && qtyInput.value) || '1');
-                if (current <= 1) { alert('Không thể giảm dưới 1'); return; } // chặn giảm < 1 ở client + thông báo
-                post('/cart/decrease', { productId: productId })
-                    .then(function(){ loadCart(); })
-                    .catch(function(){});
-                return;
-            }
-            if (rm) {
-                if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
-                post('/cart/remove', { productId: productId })
-                    .then(function(){ loadCart(); })
-                    .catch(function(){});
-                return;
-            }
-        }, false);
-        // Load when panel opens
-        document.addEventListener('click', function(e){
-            var btn = e.target.closest && e.target.closest('.js-show-cart');
-            if (btn) { setTimeout(loadCart, 0); }
-        }, false);
-        // Toggle notification dropdown visibility on bell click
-        (function(){
+        });
+
+    </script>
+    <script th:inline="javascript">
+        (function () {
+            if (window.__hdrNotifyInit) return; window.__hdrNotifyInit = true;
+            try { console.log('[header-inline] init'); } catch (_) { }
+            var ctx = (function () { try { return /*[[@{/}]]*/ ""; } catch (e) { return ""; } })();
+            if (ctx && ctx.endsWith('/') === false) ctx = ctx + '/';
             var bell = document.getElementById('notification-bell');
             var dd = document.getElementById('notification-dropdown');
-            if (!bell || !dd) return;
-            bell.addEventListener('click', function(ev){
-                try { ev.stopPropagation(); } catch(_){}
-                dd.classList.toggle('show');
-            }, false);
-            document.addEventListener('click', function(){
-                try { dd.classList.remove('show'); } catch(_){}
+            if (bell && dd) {
+                try {
+                    bell.addEventListener('click', function (ev) { try { ev.stopPropagation(); } catch (_) { } dd.classList.toggle('show'); }, false);
+                    document.addEventListener('click', function () { try { dd.classList.remove('show'); } catch (_) { } }, false);
+                } catch (_) { }
+            }
+            document.addEventListener('click', function (e) {
+                var item = e.target.closest && e.target.closest('#notification-dropdown .notification-item');
+                if (!item || !item.classList.contains('unread')) return;
+                var id = item.getAttribute('data-id'); if (!id) return;
+                try { console.log('[notify-inline] click id=', id); } catch (_) { }
+                fetch(ctx + 'nr', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain' },
+                    body: 'id=' + encodeURIComponent(id),
+                    credentials: 'same-origin'
+                })
+                    .then(function (r) { return r.text(); })
+                    .then(function (t) {
+                        var remain = Number(t); if (isNaN(remain)) remain = 0;
+                        try {
+                            item.classList.remove('unread');
+                            item.classList.add('read');
+                            var b = document.getElementById('notification-bell');
+                            if (b) b.setAttribute('data-notify', remain);
+                            console.log('[notify-inline] ok remain=', remain);
+                        } catch (_) { }
+                    })
+                    .catch(function (err) { try { console.log('[notify-inline] error', err); } catch (_) { } });
             }, false);
         })();
-        // Compute context path ("/" or "/app/") for safe URL building
-        var ctx = (function(){ try { return /*[[@{/}]]*/ ""; } catch(e){ return ""; } })();
-        if (ctx && ctx.endsWith('/') === false) { ctx = ctx + '/'; }
-        // Mark notification as read on click (server-backed)
-        document.addEventListener('click', function(e){
-            var item = e.target.closest && e.target.closest('#notification-dropdown .notification-item');
-            if (!item || !item.classList.contains('unread')) return;
-            try { e.stopPropagation && e.stopPropagation(); } catch(_){ }
-            var id = item.getAttribute('data-id');
-            if (!id) return;
-            try { console.log('[notify] click unread item id=', id); } catch(_){ }
-            try { if (window.Toastify) { Toastify({ text: 'Đang cập nhật thông báo...', duration: 1500 }).showToast(); } } catch(_){ }
-            // Use ultra-short path first to avoid blockers, then fallbacks
-            post(ctx + 'nr', { id: id })
-                .then(function(remain){
-                    try {
-                        console.log('[notify] server ok, remain=', remain);
-                        item.classList.remove('unread');
-                        item.classList.add('read');
-                        var bell = document.getElementById('notification-bell');
-                        if (bell) bell.setAttribute('data-notify', Number(remain||0));
-                    } catch(e){}
-                })
-                .catch(function(err1){
-                    try { console.log('[notify] /nr failed:', err1); } catch(_){ }
-                    try { console.log('[notify] fallback to /user/notifications/read'); } catch(_){ }
-                    // second attempt
-                    return post(ctx + 'user/notifications/read', { id: id })
-                        .then(function(remain){
-                            try {
-                                console.log('[notify] fallback /user/notifications/read ok, remain=', remain);
-                                item.classList.remove('unread');
-                                item.classList.add('read');
-                                var bell = document.getElementById('notification-bell');
-                                if (bell) bell.setAttribute('data-notify', Number(remain||0));
-                            } catch(e){}
-                        })
-                        .catch(function(){
-                            try { console.log('[notify] fallback to /notifications/read'); } catch(_){ }
-                            // fallback in case some route rewriting is different
-                            post(ctx + 'notifications/read', { id: id })
-                                .then(function(remain){
-                                    try {
-                                        console.log('[notify] fallback /notifications/read ok, remain=', remain);
-                                        item.classList.remove('unread');
-                                        item.classList.add('read');
-                                        var bell = document.getElementById('notification-bell');
-                                        if (bell) bell.setAttribute('data-notify', Number(remain||0));
-                                    } catch(e){}
-                                })
-                                .catch(function(){
-                                    // final fallback using GET (in case POST is blocked)
-                                    fetch(ctx + 'nr?id=' + encodeURIComponent(id), { method: 'GET', credentials: 'same-origin' })
-                                        .then(function(r){ return r.text(); })
-                                        .then(function(remain){
-                                            try {
-                                                console.log('[notify] final fallback ok, remain=', remain);
-                                                item.classList.remove('unread');
-                                                item.classList.add('read');
-                                                var bell = document.getElementById('notification-bell');
-                                                if (bell) bell.setAttribute('data-notify', Number(remain||0));
-                                            } catch(e){}
-                                        })
-                                        .catch(function(){ try { alert('Không thể cập nhật trạng thái thông báo. Vui lòng thử lại.'); } catch(_){} });
-                                });
-                        });
-                });
-        }, false);
-        function post(url, data) {
-            const params = new URLSearchParams();
-            Object.keys(data || {}).forEach(k => {
-                if (data[k] !== undefined && data[k] !== null)
-                    params.append(k, data[k]);
-            });
+    </script>
 
-            return fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                    'Accept': 'text/plain'
-                },
-                body: params.toString(),
-                credentials: 'same-origin',
-                cache: 'no-cache'
-            })
-                .then(r => r.text())
-                .then(t => {
-                    const n = Number(t);
-                    return isNaN(n) ? 0 : n;
-                })
-                .catch(err => {
-                    console.error('[notify] POST error:', err);
-                    return 0;
-                });
-        }
-
-        // Initial sync
-        try { setTimeout(loadCart, 0); } catch(e) {}
-        
-        // Xử lý sự kiện click nút tìm kiếm
-        var searchBtn = document.querySelector('.js-show-search');
-        var searchPanel = document.querySelector('.panel-search');
-        var searchClose = document.querySelector('.icon-close-search');
-        
-        if (searchBtn && searchPanel) {
-            searchBtn.addEventListener('click', function(e) {
+    <script>
+        (function () {
+            function formatVND(n) { try { return (Number(n) || 0).toLocaleString('vi-VN') + 'đ'; } catch (e) { return n; } }
+            function updateBadge(total) {
+                try {
+                    var el = document.querySelector('.icon-header-noti.js-show-cart');
+                    if (el) el.setAttribute('data-notify', Number(total || 0));
+                } catch (e) { }
+            }
+            function renderCart(items) {
+                var list = document.getElementById('header-cart-list');
+                var totalEl = document.getElementById('header-cart-total');
+                if (!list || !totalEl) return;
+                list.innerHTML = '';
+                var total = 0;
+                if (Array.isArray(items) && items.length) {
+                    items.forEach(function (it) {
+                        var p = it && it.product ? it.product : {};
+                        var qty = Number(it.quantity || 0);
+                        var price = Number(p.price || 0);
+                        total += qty * price;
+                        var img = p.firstImageFileName ? ('/images/' + p.firstImageFileName) : '/images/product-01.jpg';
+                        var li = document.createElement('li');
+                        li.className = 'header-cart-item flex-w flex-t m-b-12';
+                        li.setAttribute('data-product-id', p.id || '');
+                        li.innerHTML = '' +
+                            '<div class="header-cart-item-img">\n' +
+                            '  <img src="' + img + '" alt="IMG">\n' +
+                            '</div>\n' +
+                            '<div class="header-cart-item-txt p-t-8">\n' +
+                            '  <a href="#" class="header-cart-item-name m-b-12 hov-cl1 trans-04">' + (p.name || 'Sản phẩm') + '</a>\n' +
+                            '  <span class="header-cart-item-info d-block m-b-8">' + qty + ' x ' + formatVND(price) + '</span>\n' +
+                            '  <div class="header-cart-item-actions flex-w flex-m">\n' +
+                            '    <button class="btn-dec cl2 hov-cl1 trans-04 bor13 size-28 m-r-8" aria-label="Giảm">−</button>\n' +
+                            '    <input class="num-product stext-104 cl3 size-28 bor13 m-r-8 text-center" type="text" value="' + qty + '" readonly>\n' +
+                            '    <button class="btn-inc cl2 hov-cl1 trans-04 bor13 size-28 m-r-12" aria-label="Tăng">+</button>\n' +
+                            '    <button class="btn-remove cl2 hov-cl1 trans-04" aria-label="Xóa"><i class="zmdi zmdi-delete"></i></button>\n' +
+                            '  </div>\n' +
+                            '</div>';
+                        list.appendChild(li);
+                    });
+                } else {
+                    var empty = document.createElement('li');
+                    empty.className = 'p-2 text-muted';
+                    empty.textContent = 'Giỏ hàng trống';
+                    list.appendChild(empty);
+                }
+                totalEl.textContent = 'Total: ' + formatVND(total);
+            }
+            function loadCart() {
+                fetch('/cart/items', { method: 'GET', credentials: 'same-origin' })
+                    .then(function (r) { return r.text(); })
+                    .then(function (t) { try { return JSON.parse(t); } catch (e) { return []; } })
+                    .then(function (items) {
+                        renderCart(items);
+                        var sum = 0; if (Array.isArray(items)) items.forEach(function (it) { sum += Number(it.quantity || 0); });
+                        updateBadge(sum);
+                    })
+                    .catch(function () { });
+            }
+            function post(url, data) {
+                var form = new URLSearchParams();
+                Object.keys(data || {}).forEach(function (k) { if (data[k] !== undefined) form.append(k, data[k]); });
+                return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: form, credentials: 'same-origin' })
+                    .then(function (r) { return r.text(); })
+                    .then(function (t) { var n = Number(t); return isNaN(n) ? 0 : n; });
+            }
+            document.addEventListener('click', function (e) {
+                var inc = e.target.closest && e.target.closest('.btn-inc');
+                var dec = e.target.closest && e.target.closest('.btn-dec');
+                var rm = e.target.closest && e.target.closest('.btn-remove');
+                if (!(inc || dec || rm)) return;
                 e.preventDefault();
-                searchPanel.classList.toggle('dis-none');
-                // Toggle hiển thị icon search/close
-                var searchIcon = searchBtn.querySelector('.icon-search');
-                var closeIcon = searchBtn.querySelector('.icon-close-search');
-                if (searchIcon) searchIcon.classList.toggle('dis-none');
-                if (closeIcon) closeIcon.classList.toggle('dis-none');
-                // Focus vào ô tìm kiếm khi hiển thị
-                if (!searchPanel.classList.contains('dis-none')) {
-                    var searchInput = searchPanel.querySelector('input[name="q"]');
-                    if (searchInput) searchInput.focus();
+                var itemEl = e.target.closest('.header-cart-item');
+                if (!itemEl) return;
+                var productId = itemEl.getAttribute('data-product-id');
+                if (!productId) return;
+                if (inc) {
+                    post('/cart/increase', { productId: productId })
+                        .then(function () { loadCart(); })
+                        .catch(function () { });
+                    return;
+                }
+                if (dec) {
+                    var qtyInput = itemEl.querySelector('input.num-product');
+                    var current = Number((qtyInput && qtyInput.value) || '1');
+                    if (current <= 1) { return; } // chặn giảm < 1 ở client
+                    post('/cart/decrease', { productId: productId })
+                        .then(function () { loadCart(); })
+                        .catch(function () { });
+                    return;
+                }
+                if (rm) {
+                    if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+                    post('/cart/remove', { productId: productId })
+                        .then(function () { loadCart(); })
+                        .catch(function () { });
+                    return;
+                }
+            }, false);
+            // Load when panel opens
+            document.addEventListener('click', function (e) {
+                var btn = e.target.closest && e.target.closest('.js-show-cart');
+                if (btn) { setTimeout(loadCart, 0); }
+            }, false);
+            document.addEventListener('click', function (e) {
+                var inc = e.target.closest && e.target.closest('.btn-inc');
+                var dec = e.target.closest && e.target.closest('.btn-dec');
+                var rm = e.target.closest && e.target.closest('.btn-remove');
+                if (!(inc || dec || rm)) return;
+                e.preventDefault();
+                var itemEl = e.target.closest('.header-cart-item');
+                if (!itemEl) return;
+                var productId = itemEl.getAttribute('data-product-id');
+                if (!productId) return;
+                if (inc) {
+                    post('/cart/increase', { productId: productId })
+                        .then(function () { loadCart(); })
+                        .catch(function () { });
+                    return;
+                }
+                if (dec) {
+                    var qtyInput = itemEl.querySelector('input.num-product');
+                    var current = Number((qtyInput && qtyInput.value) || '1');
+                    if (current <= 1) { alert('Không thể giảm dưới 1'); return; } // chặn giảm < 1 ở client + thông báo
+                    post('/cart/decrease', { productId: productId })
+                        .then(function () { loadCart(); })
+                        .catch(function () { });
+                    return;
+                }
+                if (rm) {
+                    if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+                    post('/cart/remove', { productId: productId })
+                        .then(function () { loadCart(); })
+                        .catch(function () { });
+                    return;
+                }
+            }, false);
+            // Load when panel opens
+            document.addEventListener('click', function (e) {
+                var btn = e.target.closest && e.target.closest('.js-show-cart');
+                if (btn) { setTimeout(loadCart, 0); }
+            }, false);
+            // Toggle notification dropdown visibility on bell click
+            (function () {
+                var bell = document.getElementById('notification-bell');
+                var dd = document.getElementById('notification-dropdown');
+                if (!bell || !dd) return;
+                bell.addEventListener('click', function (ev) {
+                    try { ev.stopPropagation(); } catch (_) { }
+                    dd.classList.toggle('show');
+                }, false);
+                document.addEventListener('click', function () {
+                    try { dd.classList.remove('show'); } catch (_) { }
+                }, false);
+            })();
+            // Compute context path ("/" or "/app/") for safe URL building
+            var ctx = (function () { try { return /*[[@{/}]]*/ ""; } catch (e) { return ""; } })();
+            if (ctx && ctx.endsWith('/') === false) { ctx = ctx + '/'; }
+            // Mark notification as read on click (server-backed)
+            document.addEventListener('click', function (e) {
+                var item = e.target.closest && e.target.closest('#notification-dropdown .notification-item');
+                if (!item || !item.classList.contains('unread')) return;
+                try { e.stopPropagation && e.stopPropagation(); } catch (_) { }
+                var id = item.getAttribute('data-id');
+                if (!id) return;
+                try { console.log('[notify] click unread item id=', id); } catch (_) { }
+                try { if (window.Toastify) { Toastify({ text: 'Đang cập nhật thông báo...', duration: 1500 }).showToast(); } } catch (_) { }
+                // Use ultra-short path first to avoid blockers, then fallbacks
+                post(ctx + 'nr', { id: id })
+                    .then(function (remain) {
+                        try {
+                            console.log('[notify] server ok, remain=', remain);
+                            item.classList.remove('unread');
+                            item.classList.add('read');
+                            var bell = document.getElementById('notification-bell');
+                            if (bell) bell.setAttribute('data-notify', Number(remain || 0));
+                        } catch (e) { }
+                    })
+                    .catch(function (err1) {
+                        try { console.log('[notify] /nr failed:', err1); } catch (_) { }
+                        try { console.log('[notify] fallback to /user/notifications/read'); } catch (_) { }
+                        // second attempt
+                        return post(ctx + 'user/notifications/read', { id: id })
+                            .then(function (remain) {
+                                try {
+                                    console.log('[notify] fallback /user/notifications/read ok, remain=', remain);
+                                    item.classList.remove('unread');
+                                    item.classList.add('read');
+                                    var bell = document.getElementById('notification-bell');
+                                    if (bell) bell.setAttribute('data-notify', Number(remain || 0));
+                                } catch (e) { }
+                            })
+                            .catch(function () {
+                                try { console.log('[notify] fallback to /notifications/read'); } catch (_) { }
+                                // fallback in case some route rewriting is different
+                                post(ctx + 'notifications/read', { id: id })
+                                    .then(function (remain) {
+                                        try {
+                                            console.log('[notify] fallback /notifications/read ok, remain=', remain);
+                                            item.classList.remove('unread');
+                                            item.classList.add('read');
+                                            var bell = document.getElementById('notification-bell');
+                                            if (bell) bell.setAttribute('data-notify', Number(remain || 0));
+                                        } catch (e) { }
+                                    })
+                                    .catch(function () {
+                                        // final fallback using GET (in case POST is blocked)
+                                        fetch(ctx + 'nr?id=' + encodeURIComponent(id), { method: 'GET', credentials: 'same-origin' })
+                                            .then(function (r) { return r.text(); })
+                                            .then(function (remain) {
+                                                try {
+                                                    console.log('[notify] final fallback ok, remain=', remain);
+                                                    item.classList.remove('unread');
+                                                    item.classList.add('read');
+                                                    var bell = document.getElementById('notification-bell');
+                                                    if (bell) bell.setAttribute('data-notify', Number(remain || 0));
+                                                } catch (e) { }
+                                            })
+                                            .catch(function () { try { alert('Không thể cập nhật trạng thái thông báo. Vui lòng thử lại.'); } catch (_) { } });
+                                    });
+                            });
+                    });
+            }, false);
+            function post(url, data) {
+                const params = new URLSearchParams();
+                Object.keys(data || {}).forEach(k => {
+                    if (data[k] !== undefined && data[k] !== null)
+                        params.append(k, data[k]);
+                });
+
+                return fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                        'Accept': 'text/plain'
+                    },
+                    body: params.toString(),
+                    credentials: 'same-origin',
+                    cache: 'no-cache'
+                })
+                    .then(r => r.text())
+                    .then(t => {
+                        const n = Number(t);
+                        return isNaN(n) ? 0 : n;
+                    })
+                    .catch(err => {
+                        console.error('[notify] POST error:', err);
+                        return 0;
+                    });
+            }
+
+            // Initial sync
+            try { setTimeout(loadCart, 0); } catch (e) { }
+
+            // Xử lý sự kiện click nút tìm kiếm
+            var searchBtn = document.querySelector('.js-show-search');
+            var searchPanel = document.querySelector('.panel-search');
+            var searchClose = document.querySelector('.icon-close-search');
+
+            if (searchBtn && searchPanel) {
+                searchBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    searchPanel.classList.toggle('dis-none');
+                    // Toggle hiển thị icon search/close
+                    var searchIcon = searchBtn.querySelector('.icon-search');
+                    var closeIcon = searchBtn.querySelector('.icon-close-search');
+                    if (searchIcon) searchIcon.classList.toggle('dis-none');
+                    if (closeIcon) closeIcon.classList.toggle('dis-none');
+                    // Focus vào ô tìm kiếm khi hiển thị
+                    if (!searchPanel.classList.contains('dis-none')) {
+                        var searchInput = searchPanel.querySelector('input[name="q"]');
+                        if (searchInput) searchInput.focus();
+                    }
+                });
+            }
+
+            // Đóng tìm kiếm khi click ra ngoài
+            document.addEventListener('click', function (e) {
+                if (searchPanel && !searchPanel.contains(e.target) &&
+                    searchBtn && !searchBtn.contains(e.target) &&
+                    !searchPanel.classList.contains('dis-none')) {
+                    searchPanel.classList.add('dis-none');
+                    // Đặt lại icon
+                    var searchIcon = searchBtn.querySelector('.icon-search');
+                    var closeIcon = searchBtn.querySelector('.icon-close-search');
+                    if (searchIcon) searchIcon.classList.remove('dis-none');
+                    if (closeIcon) closeIcon.classList.add('dis-none');
                 }
             });
+        })();
+    </script>
+    <style>
+        /* Dropdown thông báo: đẹp hơn, dễ đọc, không ảnh hưởng logic */
+        #notification-dropdown.notification-dropdown {
+            position: absolute;
+            right: 0;
+            top: 140%;
+            width: 320px;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            z-index: 1000;
+            overflow: hidden;
         }
-        
-        // Đóng tìm kiếm khi click ra ngoài
-        document.addEventListener('click', function(e) {
-            if (searchPanel && !searchPanel.contains(e.target) && 
-                searchBtn && !searchBtn.contains(e.target) && 
-                !searchPanel.classList.contains('dis-none')) {
-                searchPanel.classList.add('dis-none');
-                // Đặt lại icon
-                var searchIcon = searchBtn.querySelector('.icon-search');
-                var closeIcon = searchBtn.querySelector('.icon-close-search');
-                if (searchIcon) searchIcon.classList.remove('dis-none');
-                if (closeIcon) closeIcon.classList.add('dis-none');
-            }
-        });
-    })();
-</script>
-<style>
-    /* Dropdown thông báo: đẹp hơn, dễ đọc, không ảnh hưởng logic */
-    #notification-dropdown.notification-dropdown{
-        position: absolute;
-        right: 0;
-        top: 140%;
-        width: 320px;
-        background: #fff;
-        border: 1px solid rgba(0,0,0,0.06);
-        border-radius: 10px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        z-index: 1000;
-        overflow: hidden;
-    }
-    #notification-dropdown .notification-list{
-        max-height: 360px;
-        overflow-y: auto;
-    }
-    #notification-dropdown h6{
-        font-size: 14px;
-        font-weight: 600;
-        color: #444;
-        background: #f9fafb;
-    }
-    #notification-dropdown .notification-item{
-        background: #fff;
-        transition: background 0.2s ease;
-    }
-    #notification-dropdown .notification-item:hover{
-        background: #f6f7f9;
-    }
-    #notification-dropdown .notification-item span{
-        font-size: 13px; /* nhỏ hơn cho dễ nhìn */
-        color: #111;
-        line-height: 1.35;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    #notification-dropdown .notification-item small{
-        font-size: 12px;
-        color: #6b7280 !important;
-        margin-top: 4px;
-    }
-    /* Phân biệt đã đọc/chưa đọc */
-    #notification-dropdown .notification-item.unread{
-        background: #f0f7ff;
-        border-left: 3px solid #3b82f6; /* xanh nhấn */
-    }
-    #notification-dropdown .notification-item.read{
-        opacity: 0.8;
-    }
-    /* Badge số lượng trên chuông: thu nhỏ cho cân đối */
-    #notification-bell.icon-header-noti::after{
-        font-size: 10px;
-        min-width: 16px;
-        height: 16px;
-        line-height: 16px;
-        top: -6px;
-        right: -6px;
-    }
-</style>
+
+        #notification-dropdown .notification-list {
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        #notification-dropdown h6 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #444;
+            background: #f9fafb;
+        }
+
+        #notification-dropdown .notification-item {
+            background: #fff;
+            transition: background 0.2s ease;
+        }
+
+        #notification-dropdown .notification-item:hover {
+            background: #f6f7f9;
+        }
+
+        #notification-dropdown .notification-item span {
+            font-size: 13px;
+            /* nhỏ hơn cho dễ nhìn */
+            color: #111;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        #notification-dropdown .notification-item small {
+            font-size: 12px;
+            color: #6b7280 !important;
+            margin-top: 4px;
+        }
+
+        /* Phân biệt đã đọc/chưa đọc */
+        #notification-dropdown .notification-item.unread {
+            background: #f0f7ff;
+            border-left: 3px solid #3b82f6;
+            /* xanh nhấn */
+        }
+
+        #notification-dropdown .notification-item.read {
+            opacity: 0.8;
+        }
+
+        /* Badge số lượng trên chuông: thu nhỏ cho cân đối */
+        #notification-bell.icon-header-noti::after {
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            line-height: 16px;
+            top: -6px;
+            right: -6px;
+        }
+    </style>
 </body>
+
 </html>

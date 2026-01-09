@@ -22,9 +22,9 @@ public class HomeController {
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/home")   // khi truy cập localhost:8080/
+    @GetMapping("/home") // khi truy cập localhost:8080/
     public String home(Model model,
-                       @RequestParam(value = "q", required = false) String q) {
+            @RequestParam(value = "q", required = false) String q) {
         Pageable topEight = PageRequest.of(0, 8);
         List<Product> products;
         if (q != null && !q.trim().isEmpty()) {
@@ -37,6 +37,6 @@ public class HomeController {
         model.addAttribute("homeProducts", products);
         model.addAttribute("homeCategories", categoryService.findAll());
         model.addAttribute("q", q);
-        return "user/home";  // Trả về file home.html trong /templates
+        return "user/home"; // Trả về file home.html trong /templates
     }
 }

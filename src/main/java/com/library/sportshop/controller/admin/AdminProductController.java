@@ -15,10 +15,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
 @RequestMapping("/adproduct")
-public class    AdminProductController {
+@PreAuthorize("hasRole('ADMIN')")
+public class AdminProductController {
 
     private static final Logger log = LoggerFactory.getLogger(AdminProductController.class);
 
@@ -30,15 +32,15 @@ public class    AdminProductController {
 
     @GetMapping
     public String listProducts(@RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "10") int size,
-                               @RequestParam(required = false) String keyword,
-                               @RequestParam(required = false) Integer categoryId,
-                               Model model) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer categoryId,
+            Model model) {
         try {
             Pageable pageable = PageRequest.of(page, size);
             Page<Product> products;
 
-            //  search
+            // search
             if ((keyword != null && !keyword.trim().isEmpty()) || (categoryId != null && categoryId > 0)) {
                 products = adminProductService.searchProducts(keyword, categoryId, pageable);
             } else {
@@ -68,16 +70,16 @@ public class    AdminProductController {
 
     @PostMapping("/save")
     public String saveProduct(@RequestParam(value = "name", required = false) String name,
-                              @RequestParam(value = "masp", required = false) String masp,
-                              @RequestParam(value = "price", required = false) String priceStr,
-                              @RequestParam(value = "quantity", required = false) String quantityStr,
-                              @RequestParam(value = "description", required = false) String description,
-                              @RequestParam(value = "size", required = false) String size,
-                              @RequestParam(value = "color", required = false) String color,
-                              @RequestParam(value = "categoryId", required = false) Integer categoryId,
-                              @RequestParam(value = "newImages", required = false) MultipartFile[] newImages,
-                              RedirectAttributes redirectAttributes,
-                              Model model) {
+            @RequestParam(value = "masp", required = false) String masp,
+            @RequestParam(value = "price", required = false) String priceStr,
+            @RequestParam(value = "quantity", required = false) String quantityStr,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "size", required = false) String size,
+            @RequestParam(value = "color", required = false) String color,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "newImages", required = false) MultipartFile[] newImages,
+            RedirectAttributes redirectAttributes,
+            Model model) {
         try {
             log.debug("Saving product - name: {}, masp: {}, price: {}, quantity: {}, categoryId: {}, images: {}",
                     name, masp, priceStr, quantityStr, categoryId, (newImages != null ? newImages.length : 0));
@@ -178,10 +180,10 @@ public class    AdminProductController {
 
     @PostMapping("/detail/{id}")
     public String updateDetail(@PathVariable Integer id,
-                               @ModelAttribute("product") Product product,
-                               @RequestParam(value = "categoryId", required = false) Integer categoryId,
-                               @RequestParam(value = "newImages", required = false) MultipartFile[] newImages,
-                               RedirectAttributes redirectAttributes) {
+            @ModelAttribute("product") Product product,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "newImages", required = false) MultipartFile[] newImages,
+            RedirectAttributes redirectAttributes) {
         try {
             // Validate dữ liệu đầu vào
             if (product.getName() == null || product.getName().trim().isEmpty()) {
@@ -237,7 +239,7 @@ public class    AdminProductController {
 
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Integer id,
-                                RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             adminProductService.deleteProduct(id);
             redirectAttributes.addFlashAttribute("success", "Xóa sản phẩm thành công!");

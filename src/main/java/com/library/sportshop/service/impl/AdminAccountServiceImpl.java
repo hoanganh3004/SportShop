@@ -26,6 +26,16 @@ public class AdminAccountServiceImpl implements AdminAccountService {
     }
 
     @Override
+    public List<Account> searchAccounts(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return accountRepository.findAll();
+        }
+        return accountRepository
+                .findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFullNameContainingIgnoreCase(keyword,
+                        keyword, keyword);
+    }
+
+    @Override
     public void updateRole(Long id, String role) {
         Account acc = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
@@ -40,7 +50,6 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         }
         accountRepository.save(acc);
     }
-
 
     @Override
     public void toggleStatus(Long id) {
@@ -59,7 +68,6 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         return accountRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
     }
-
 
     @Override
     public void updatePassword(Long id, String newPassword) {
@@ -93,7 +101,5 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (authentication != null) ? authentication.getName() : null;
     }
-
-
 
 }

@@ -16,8 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Controller
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private AccountService accountService;
@@ -50,9 +55,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(@ModelAttribute("account") @Valid Account account,
-                           BindingResult bindingResult,
-                           @RequestParam("confirmPassword") String confirmPassword,
-                           Model model) {
+            BindingResult bindingResult,
+            @RequestParam("confirmPassword") String confirmPassword,
+            Model model) {
 
         // Validate các field bắt buộc
         if (bindingResult.hasErrors()) {
@@ -73,6 +78,7 @@ public class AuthController {
             model.addAttribute("errorMessage", e.getMessage());
             return "acc/register";
         } catch (Exception e) {
+            log.error("Lỗi đăng ký tài khoản", e);
             model.addAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
             return "acc/register";
         }
@@ -86,10 +92,11 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public String forgotPasswordSubmit(@RequestParam("email") String email,
-                                       Model model) {
+            Model model) {
         boolean success = accountService.resetPasswordByEmail(email);
         if (success) {
-            model.addAttribute("success", "Mật khẩu mới đã được gửi về email của bạn. Vui lòng kiểm tra hộp thư (hoặc spam)");
+            model.addAttribute("success",
+                    "Mật khẩu mới đã được gửi về email của bạn. Vui lòng kiểm tra hộp thư (hoặc spam)");
         } else {
             model.addAttribute("error", "Email không tồn tại trong hệ thống");
         }

@@ -10,9 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
 @RequestMapping("/adcategory")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminCategoryController {
 
     @Autowired
@@ -23,8 +25,8 @@ public class AdminCategoryController {
     // Hiển thị danh sách + tìm kiếm + phân trang
     @GetMapping
     public String listCategories(@RequestParam(value = "page", defaultValue = "1") int page,
-                                 @RequestParam(value = "keyword", required = false) String keyword,
-                                 Model model) {
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Model model) {
         Page<Category> categories = categoryService.getAllCategories(keyword, PageRequest.of(page - 1, PAGE_SIZE));
 
         model.addAttribute("categories", categories);

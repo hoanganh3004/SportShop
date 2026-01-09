@@ -1,9 +1,6 @@
 package com.library.sportshop.controller.user;
 
 import com.library.sportshop.entity.CartItem;
-import com.library.sportshop.entity.Product;
-import com.library.sportshop.repository.CartItemRepository;
-import com.library.sportshop.repository.ProductRepository;
 import com.library.sportshop.service.AccountService;
 import com.library.sportshop.entity.Account;
 import com.library.sportshop.service.CartService;
@@ -23,12 +20,6 @@ import java.util.ArrayList;
 public class CartController {
 
     @Autowired
-    private CartItemRepository cartItemRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
     private AccountService accountService;
 
     @Autowired
@@ -38,34 +29,30 @@ public class CartController {
     @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<?> addToCart(@RequestParam Integer productId,
-                                       @RequestParam(defaultValue = "1") Integer quantity,
-                                       Principal principal,
-                                       HttpSession session) {
-        if (principal == null) return ResponseEntity.status(401).body("UNAUTHORIZED");
+            @RequestParam(defaultValue = "1") Integer quantity,
+            Principal principal,
+            HttpSession session) {
+        if (principal == null)
+            return ResponseEntity.status(401).body("UNAUTHORIZED");
 
         Account account = accountService.findByUsername(principal.getName());
-        if (account == null) return ResponseEntity.status(401).body("UNAUTHORIZED");
+        if (account == null)
+            return ResponseEntity.status(401).body("UNAUTHORIZED");
 
-        String userCode = account.getCode();
-
-        Product product = productRepository.findById(productId).orElse(null);
-        if (product == null) return ResponseEntity.badRequest().body("INVALID_PRODUCT");
-
-        CartItem item = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId)
-                .orElseGet(() -> {
-                    CartItem ci = new CartItem();
-                    ci.setUserCode(userCode);
-                    ci.setProduct(product);
-                    ci.setQuantity(0);
-                    return ci;
-                });
-
-        item.setQuantity(item.getQuantity() + quantity);
-        cartItemRepository.save(item);
-
-        Integer totalQty = cartItemRepository.countQuantityByUserCode(userCode);
-        session.setAttribute("cartQty", totalQty);
-        return ResponseEntity.ok(totalQty);
+        try {
+            Integer totalQty = cartService.addToCart(productId, quantity, account.getCode());
+            session.setAttribute("cartQty", totalQty);
+            return ResponseEntity.ok(totalQty);
+        } catch (RuntimeException e) {
+            String msg = e.getMessage();
+            if ("INVALID_PRODUCT".equals(msg))
+                return ResponseEntity.badRequest().body("INVALID_PRODUCT");
+            if ("OUT_OF_STOCK".equals(msg))
+                return ResponseEntity.status(409).body("OUT_OF_STOCK");
+            if ("INSUFFICIENT_STOCK".equals(msg))
+                return ResponseEntity.status(409).body("INSUFFICIENT_STOCK");
+            return ResponseEntity.status(500).body("INTERNAL_SERVER_ERROR");
+        }
     }
 
     // lấy danh sách item trong giỏ
@@ -95,74 +82,67 @@ public class CartController {
     @PostMapping("/increase")
     @ResponseBody
     public ResponseEntity<?> increaseQuantity(@RequestParam Integer productId,
-                                              Principal principal,
-                                              HttpSession session) {
-        if (principal == null) return ResponseEntity.status(401).body("UNAUTHORIZED");
+            Principal principal,
+            HttpSession session) {
+        if (principal == null)
+            return ResponseEntity.status(401).body("UNAUTHORIZED");
         Account account = accountService.findByUsername(principal.getName());
-        if (account == null) return ResponseEntity.status(401).body("UNAUTHORIZED");
-        String userCode = account.getCode();
+        if (account == null)
+            return ResponseEntity.status(401).body("UNAUTHORIZED");
 
-        CartItem item = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId).orElse(null);
-        if (item == null) return ResponseEntity.badRequest().body("ITEM_NOT_FOUND");
-
-        Product product = productRepository.findById(productId).orElse(null);
-        if (product == null) return ResponseEntity.badRequest().body("INVALID_PRODUCT");
-        Integer stock = product.getQuantity() == null ? Integer.MAX_VALUE : product.getQuantity();
-        if (item.getQuantity() >= stock) {
-            // Không cho vượt quá tồn kho
-            int totalQtyNoChange = cartItemRepository.countQuantityByUserCode(userCode);
-            session.setAttribute("cartQty", totalQtyNoChange);
-            return ResponseEntity.status(409).body("LIMIT_REACHED");
+        try {
+            Integer totalQty = cartService.increaseQuantity(productId, account.getCode());
+            session.setAttribute("cartQty", totalQty);
+            return ResponseEntity.ok(totalQty);
+        } catch (RuntimeException e) {
+            String msg = e.getMessage();
+            if ("ITEM_NOT_FOUND".equals(msg))
+                return ResponseEntity.badRequest().body("ITEM_NOT_FOUND");
+            if ("INVALID_PRODUCT".equals(msg))
+                return ResponseEntity.badRequest().body("INVALID_PRODUCT");
+            if ("LIMIT_REACHED".equals(msg))
+                return ResponseEntity.status(409).body("LIMIT_REACHED");
+            return ResponseEntity.status(500).body("INTERNAL_SERVER_ERROR");
         }
-
-        item.setQuantity(item.getQuantity() + 1);
-        cartItemRepository.save(item);
-
-        int totalQty = cartItemRepository.countQuantityByUserCode(userCode);
-        session.setAttribute("cartQty", totalQty);
-        return ResponseEntity.ok(totalQty);
     }
 
     // giảm số lượng 1 đơn vị (không dưới 1)
     @PostMapping("/decrease")
     @ResponseBody
     public ResponseEntity<?> decreaseQuantity(@RequestParam Integer productId,
-                                              Principal principal,
-                                              HttpSession session) {
-        if (principal == null) return ResponseEntity.status(401).body("UNAUTHORIZED");
+            Principal principal,
+            HttpSession session) {
+        if (principal == null)
+            return ResponseEntity.status(401).body("UNAUTHORIZED");
         Account account = accountService.findByUsername(principal.getName());
-        if (account == null) return ResponseEntity.status(401).body("UNAUTHORIZED");
-        String userCode = account.getCode();
+        if (account == null)
+            return ResponseEntity.status(401).body("UNAUTHORIZED");
 
-        CartItem item = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId).orElse(null);
-        if (item == null) return ResponseEntity.badRequest().body("ITEM_NOT_FOUND");
-
-        if (item.getQuantity() > 1) {
-            item.setQuantity(item.getQuantity() - 1);
-            cartItemRepository.save(item);
-        } else {
-            // không giảm dưới 1, giữ nguyên
+        try {
+            Integer totalQty = cartService.decreaseQuantity(productId, account.getCode());
+            session.setAttribute("cartQty", totalQty);
+            return ResponseEntity.ok(totalQty);
+        } catch (RuntimeException e) {
+            if ("ITEM_NOT_FOUND".equals(e.getMessage()))
+                return ResponseEntity.badRequest().body("ITEM_NOT_FOUND");
+            return ResponseEntity.status(500).body("INTERNAL_SERVER_ERROR");
         }
-
-        int totalQty = cartItemRepository.countQuantityByUserCode(userCode);
-        session.setAttribute("cartQty", totalQty);
-        return ResponseEntity.ok(totalQty);
     }
 
     // xoá sản phẩm khỏi giỏ
     @PostMapping("/remove")
     @ResponseBody
     public ResponseEntity<?> removeItem(@RequestParam Integer productId,
-                                        Principal principal,
-                                        HttpSession session) {
-        if (principal == null) return ResponseEntity.status(401).body("UNAUTHORIZED");
+            Principal principal,
+            HttpSession session) {
+        if (principal == null)
+            return ResponseEntity.status(401).body("UNAUTHORIZED");
         Account account = accountService.findByUsername(principal.getName());
-        if (account == null) return ResponseEntity.status(401).body("UNAUTHORIZED");
-        String userCode = account.getCode();
+        if (account == null)
+            return ResponseEntity.status(401).body("UNAUTHORIZED");
 
-        cartItemRepository.deleteByUserCodeAndProduct_Id(userCode, productId);
-
-        int totalQty = cartItemRepository.countQuantityByUserCode(userCode);
+        cartService.removeItem(productId, account.getCode());
+        Integer totalQty = cartService.countQuantityByUserCode(account.getCode());
         session.setAttribute("cartQty", totalQty);
         return ResponseEntity.ok(totalQty);
     }

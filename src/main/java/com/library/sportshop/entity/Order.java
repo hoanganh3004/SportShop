@@ -41,12 +41,27 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;
 
-    public Order() {}
+    public Order() {
+    }
 
+    // Constructor tiện lợi cho tạo đơn hàng mới (id tự generate, cancelReason mặc
+    // định null)
+    public Order(String userCode, String recipientName, String recipientPhone,
+            String recipientAddress, String recipientEmail) {
+        this.userCode = userCode;
+        this.recipientName = recipientName;
+        this.recipientPhone = recipientPhone;
+        this.recipientAddress = recipientAddress;
+        this.recipientEmail = recipientEmail;
+        this.orderDate = LocalDateTime.now();
+        this.status = "Chờ xác nhận";
+    }
+
+    // Constructor đầy đủ
     public Order(Integer id, String userCode, LocalDateTime orderDate, String status,
-                 String cancelReason, BigDecimal totalAmount,
-                 String recipientName, String recipientEmail,
-                 String recipientPhone, String recipientAddress) {
+            String cancelReason, BigDecimal totalAmount,
+            String recipientName, String recipientEmail,
+            String recipientPhone, String recipientAddress) {
         this.id = id;
         this.userCode = userCode;
         this.orderDate = orderDate;

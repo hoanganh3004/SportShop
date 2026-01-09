@@ -99,14 +99,14 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            // 1. Xử lý redirect (ưu tiên tham số 'redirect' nếu có)
+            // Xử lý redirect
             String redirect = request.getParameter("redirect");
             if (redirect != null && !redirect.isBlank() && redirect.startsWith("/")) {
                 response.sendRedirect(redirect);
                 return;
             }
 
-            // 2. Redirect dựa trên Role
+            // Redirect dựa trên Role
             boolean isAdmin = authentication.getAuthorities().stream()
                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
@@ -120,7 +120,8 @@ public class SecurityConfig {
 
     @Bean
     AccessDeniedHandler accessDeniedHandler() {
-        return (request, response, accessDeniedException) -> {
+        return (request, response, accessDeniedException) ->
+        {
             response.sendRedirect("/403");
         };
     }
