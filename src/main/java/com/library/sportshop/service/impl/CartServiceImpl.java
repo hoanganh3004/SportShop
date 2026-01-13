@@ -2,8 +2,11 @@ package com.library.sportshop.service.impl;
 
 import com.library.sportshop.dto.CartItemResponseDTO;
 import com.library.sportshop.entity.CartItem;
+import com.library.sportshop.entity.Product;
 import com.library.sportshop.repository.CartItemRepository;
+import com.library.sportshop.repository.ProductRepository;
 import com.library.sportshop.service.CartService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,12 +58,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Autowired
-    private com.library.sportshop.repository.ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public Integer addToCart(Integer productId, Integer quantity, String userCode) {
-        com.library.sportshop.entity.Product product = productRepository.findById(productId).orElse(null);
+        Product product = productRepository.findById(productId).orElse(null);
         if (product == null) {
             throw new RuntimeException("INVALID_PRODUCT");
         }
@@ -69,10 +72,12 @@ public class CartServiceImpl implements CartService {
         if (stock == null)
             stock = 0;
 
+        // ktra sp có chưa
         CartItem existingItem = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId).orElse(null);
         int currentInCart = (existingItem != null) ? existingItem.getQuantity() : 0;
         int newTotal = currentInCart + quantity;
 
+        // check tồn ko
         if (stock <= 0) {
             throw new RuntimeException("OUT_OF_STOCK");
         }
@@ -94,7 +99,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public Integer increaseQuantity(Integer productId, String userCode) {
         CartItem item = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId).orElse(null);
         if (item == null) {
@@ -118,7 +123,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public Integer decreaseQuantity(Integer productId, String userCode) {
         CartItem item = cartItemRepository.findByUserCodeAndProduct_Id(userCode, productId).orElse(null);
         if (item == null) {
@@ -134,7 +139,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public void removeItem(Integer productId, String userCode) {
         cartItemRepository.deleteByUserCodeAndProduct_Id(userCode, productId);
     }

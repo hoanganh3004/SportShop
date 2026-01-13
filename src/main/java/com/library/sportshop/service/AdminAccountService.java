@@ -19,4 +19,7 @@ public interface AdminAccountService {
     Account findByUsername(String username);
 
     List<Account> searchAccounts(String keyword);
+
+    // Đếm tổng số tài khoản
+    long countAccounts();
 }

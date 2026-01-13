@@ -102,4 +102,8 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         return (authentication != null) ? authentication.getName() : null;
     }
 
+    @Override
+    public long countAccounts() {
+        return accountRepository.count();
+    }
 }

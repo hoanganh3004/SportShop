@@ -13,12 +13,29 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     // Giữ nguyên các phương thức cơ bản
     Page<Product> findByNameContaining(String name, Pageable pageable);
+
     Page<Product> findByMaspContaining(String masp, Pageable pageable);
+
     Page<Product> findByCategoryId(Integer categoryId, Pageable pageable);
+
     Page<Product> findByNameContainingOrMaspContaining(String name, String masp, Pageable pageable);
 
-    // Trừ kho có điều kiện: chỉ trừ khi đủ hàng, trả về số bản ghi cập nhật (0 hoặc 1)
+    // Trừ kho có điều kiện: chỉ trừ khi đủ hàng, trả về số bản ghi cập nhật (0 hoặc
+    // 1)
     @Modifying
     @Query("update Product p set p.quantity = p.quantity - :qty where p.id = :id and p.quantity >= :qty")
     int decrementIfEnough(@Param("id") Integer id, @Param("qty") Integer qty);
+
+    // Tìm kiếm kết hợp tên/mã + khoảng giá + category
+    @Query("SELECT p FROM Product p WHERE " +
+            "(:name IS NULL OR :name = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(p.masp) LIKE LOWER(CONCAT('%', :name, '%'))) AND "
+            +
+            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
+            "(:maxPrice IS NULL OR p.price <= :maxPrice) AND " +
+            "(:categoryId IS NULL OR p.category.id = :categoryId)")
+    Page<Product> findByFilters(@Param("name") String name,
+            @Param("minPrice") Long minPrice,
+            @Param("maxPrice") Long maxPrice,
+            @Param("categoryId") Integer categoryId,
+            Pageable pageable);
 }

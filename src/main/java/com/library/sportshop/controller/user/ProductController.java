@@ -1,9 +1,8 @@
 package com.library.sportshop.controller.user;
 
 import com.library.sportshop.entity.Product;
-import com.library.sportshop.repository.ProductRepository;
-import com.library.sportshop.service.CategoryService;
 import com.library.sportshop.service.AdminProductService;
+import com.library.sportshop.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,32 +19,33 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     @Autowired
-    private ProductRepository productRepository;
+    private AdminProductService adminProductService;
 
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
-    private AdminProductService adminProductService;
-
     @GetMapping("/product") // khi truy cập localhost:8080/
     public String product(Model model,
             @RequestParam(value = "q", required = false) String q,
-            @RequestParam(value = "categoryId", required = false) Integer categoryId) {
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "minPrice", required = false) Long minPrice,
+            @RequestParam(value = "maxPrice", required = false) Long maxPrice) {
         Pageable firstPage = PageRequest.of(0, 20);
-        List<Product> products;
-        if (categoryId != null && categoryId > 0) {
-            products = productRepository.findByCategoryId(categoryId, firstPage).getContent();
-        } else if (q != null && !q.trim().isEmpty()) {
-            String s = q.trim();
-            products = productRepository.findByNameContainingOrMaspContaining(s, s, firstPage).getContent();
-        } else {
-            products = productRepository.findAll(firstPage).getContent();
-        }
+
+        // Sử dụng service thay vì repository trực tiếp
+        List<Product> products = adminProductService.findByFilters(
+                q != null && !q.trim().isEmpty() ? q.trim() : null,
+                minPrice,
+                maxPrice,
+                categoryId != null && categoryId > 0 ? categoryId : null,
+                firstPage).getContent();
+
         model.addAttribute("products", products);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("q", q);
         model.addAttribute("categoryId", categoryId);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
         return "user/product"; // Trả về file product.html trong /templates
     }
 
@@ -57,7 +57,7 @@ public class ProductController {
         List<Product> relatedProducts;
         if (product != null && product.getCategory() != null) {
             Pageable firstEight = PageRequest.of(0, 8);
-            relatedProducts = productRepository
+            relatedProducts = adminProductService
                     .findByCategoryId(product.getCategory().getId(), firstEight)
                     .getContent()
                     .stream()
@@ -65,7 +65,7 @@ public class ProductController {
                     .collect(Collectors.toList());
         } else {
             Pageable firstEight = PageRequest.of(0, 8);
-            relatedProducts = productRepository.findAll(firstEight)
+            relatedProducts = adminProductService.getAllProducts(firstEight)
                     .getContent()
                     .stream()
                     .filter(p -> p.getId() != null && !p.getId().equals(id))

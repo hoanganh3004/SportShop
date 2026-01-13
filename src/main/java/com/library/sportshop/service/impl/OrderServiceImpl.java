@@ -143,7 +143,6 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-
         Order order = new Order(userCode, recipientName, recipientPhone, recipientAddress, recipientEmail);
 
         BigDecimal total = BigDecimal.ZERO;
@@ -251,5 +250,10 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("userCode không hợp lệ");
         }
         return orderRepository.findByUserCodeOrderByOrderDateDesc(userCode, pageable);
+    }
+
+    @Override
+    public long countOrders() {
+        return orderRepository.count();
     }
 }

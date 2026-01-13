@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class AdController {
+public class AdminController {
     @GetMapping("/admin")   // khi truy cập localhost:8080/
     public String ad() {
         return "forward:/admin/ad";  // Forward để dùng logic set số liệu tại AuthController

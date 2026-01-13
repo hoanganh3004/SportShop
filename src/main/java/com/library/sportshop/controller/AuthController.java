@@ -2,10 +2,11 @@ package com.library.sportshop.controller;
 
 import com.library.sportshop.entity.Account;
 import com.library.sportshop.service.AccountService;
-import com.library.sportshop.repository.AccountRepository;
-import com.library.sportshop.repository.OrderRepository;
-import com.library.sportshop.repository.ProductRepository;
-import com.library.sportshop.repository.NotificationRepository;
+import com.library.sportshop.service.AdminAccountService;
+import com.library.sportshop.service.AdminProductService;
+import com.library.sportshop.service.CartService;
+import com.library.sportshop.service.NotificationService;
+import com.library.sportshop.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -28,19 +29,19 @@ public class AuthController {
     private AccountService accountService;
 
     @Autowired
-    private com.library.sportshop.repository.CartItemRepository cartItemRepository;
+    private CartService cartService;
 
     @Autowired
-    private ProductRepository productRepository;
+    private AdminProductService adminProductService;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderService orderService;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AdminAccountService adminAccountService;
 
     @Autowired
-    private NotificationRepository notificationRepository;
+    private NotificationService notificationService;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -108,10 +109,10 @@ public class AuthController {
         if (authentication != null && authentication.isAuthenticated()) {
             model.addAttribute("username", authentication.getName());
         }
-        model.addAttribute("totalProducts", productRepository.count());
-        model.addAttribute("totalOrders", orderRepository.count());
-        model.addAttribute("totalUsers", accountRepository.count());
-        model.addAttribute("totalNotifications", notificationRepository.count());
+        model.addAttribute("totalProducts", adminProductService.countProducts());
+        model.addAttribute("totalOrders", orderService.countOrders());
+        model.addAttribute("totalUsers", adminAccountService.countAccounts());
+        model.addAttribute("totalNotifications", notificationService.countAll());
         return "admin/ad";
     }
 
@@ -122,7 +123,7 @@ public class AuthController {
             Account account = accountService.findByUsername(authentication.getName());
             if (account != null) {
                 session.setAttribute("loggedInUsername", account.getCode());
-                Integer totalQty = cartItemRepository.countQuantityByUserCode(account.getCode());
+                Integer totalQty = cartService.countQuantityByUserCode(account.getCode());
                 session.setAttribute("cartQty", totalQty == null ? 0 : totalQty);
             }
         }

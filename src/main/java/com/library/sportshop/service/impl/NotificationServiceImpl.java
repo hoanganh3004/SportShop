@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,8 +23,7 @@ public class NotificationServiceImpl implements NotificationService {
     public Page<Notification> getAllNotifications(String keyword, Pageable pageable) {
         if (keyword != null && !keyword.trim().isEmpty()) {
             return notificationRepository.findByUserCodeContainingIgnoreCaseOrMessageContainingIgnoreCase(
-                    keyword, keyword, pageable
-            );
+                    keyword, keyword, pageable);
         }
         return notificationRepository.findAll(pageable);
     }
@@ -41,5 +42,28 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setRead(false);
         }
         return notificationRepository.save(notification);
+    }
+
+    // === Methods cho user notifications ===
+
+    @Override
+    public long countAll() {
+        return notificationRepository.count();
+    }
+
+    @Override
+    public long countUnreadByUserCode(String userCode) {
+        return notificationRepository.countByUserCodeAndIsReadFalse(userCode);
+    }
+
+    @Override
+    public List<Notification> findTop10ByUserCode(String userCode) {
+        return notificationRepository.findTop10ByUserCodeOrderByCreatedAtDesc(userCode);
+    }
+
+    @Override
+    @Transactional
+    public int markAsRead(Integer id, String userCode) {
+        return notificationRepository.markAsRead(id, userCode);
     }
 }

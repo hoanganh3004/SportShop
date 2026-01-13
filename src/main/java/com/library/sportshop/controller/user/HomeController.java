@@ -1,8 +1,8 @@
 package com.library.sportshop.controller.user;
 
 import com.library.sportshop.entity.Product;
+import com.library.sportshop.service.AdminProductService;
 import com.library.sportshop.service.CategoryService;
-import com.library.sportshop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +17,7 @@ import java.util.List;
 public class HomeController {
 
     @Autowired
-    private ProductRepository productRepository;
+    private AdminProductService adminProductService;
 
     @Autowired
     private CategoryService categoryService;
@@ -28,11 +28,11 @@ public class HomeController {
         Pageable topEight = PageRequest.of(0, 8);
         List<Product> products;
         if (q != null && !q.trim().isEmpty()) {
-            products = productRepository
-                    .findByNameContainingOrMaspContaining(q.trim(), q.trim(), topEight)
+            products = adminProductService
+                    .findByNameOrMasp(q.trim(), topEight)
                     .getContent();
         } else {
-            products = productRepository.findAll(topEight).getContent();
+            products = adminProductService.getAllProducts(topEight).getContent();
         }
         model.addAttribute("homeProducts", products);
         model.addAttribute("homeCategories", categoryService.findAll());

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequestMapping("/adproduct")
@@ -178,32 +179,50 @@ public class AdminProductController {
         }
     }
 
-    @PostMapping("/detail/{id}")
-    public String updateDetail(@PathVariable Integer id,
+    @GetMapping("/edit/{id}")
+    public String editProductForm(@PathVariable Integer id, Model model) {
+        try {
+            Product product = adminProductService.getProductByIdWithImages(id);
+            if (product == null) {
+                model.addAttribute("error", "Sản phẩm không tồn tại!");
+                return "redirect:/adproduct";
+            }
+            model.addAttribute("product", product);
+            model.addAttribute("categories", adminCategoryService.getAllCategories());
+            return "admin/productEdit";
+        } catch (Exception e) {
+            model.addAttribute("error", "Lỗi tải form sửa: " + e.getMessage());
+            return "redirect:/adproduct";
+        }
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateProduct(@PathVariable Integer id,
             @ModelAttribute("product") Product product,
             @RequestParam(value = "categoryId", required = false) Integer categoryId,
             @RequestParam(value = "newImages", required = false) MultipartFile[] newImages,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            Model model) { // Thêm Model để trả về view edit khi lỗi
         try {
             // Validate dữ liệu đầu vào
             if (product.getName() == null || product.getName().trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "Tên sản phẩm không được để trống!");
-                return "redirect:/adproduct/detail/" + id;
+                return "redirect:/adproduct/edit/" + id;
             }
 
             if (product.getMasp() == null || product.getMasp().trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "Mã sản phẩm không được để trống!");
-                return "redirect:/adproduct/detail/" + id;
+                return "redirect:/adproduct/edit/" + id;
             }
 
             if (product.getPrice() == null || product.getPrice().doubleValue() <= 0) {
                 redirectAttributes.addFlashAttribute("error", "Giá sản phẩm phải lớn hơn 0!");
-                return "redirect:/adproduct/detail/" + id;
+                return "redirect:/adproduct/edit/" + id;
             }
 
             if (product.getQuantity() == null || product.getQuantity() < 0) {
                 redirectAttributes.addFlashAttribute("error", "Số lượng sản phẩm không được âm!");
-                return "redirect:/adproduct/detail/" + id;
+                return "redirect:/adproduct/edit/" + id;
             }
 
             // Set ID cho product
@@ -220,9 +239,9 @@ public class AdminProductController {
             boolean hasNewImages = newImages != null && newImages.length > 0 && !newImages[0].isEmpty();
 
             if (hasNewImages) {
-                // Cập nhật sản phẩm với ảnh mới
+                // Cập nhật sản phẩm với ảnh mới (Service đã sửa để APPEND ảnh)
                 adminProductService.updateProductWithImages(product, newImages);
-                redirectAttributes.addFlashAttribute("success", " Cập nhật sản phẩm và ảnh thành công!");
+                redirectAttributes.addFlashAttribute("success", " Cập nhật sản phẩm và thêm ảnh mới thành công!");
             } else {
                 // Chỉ cập nhật thông tin sản phẩm, giữ nguyên ảnh cũ
                 adminProductService.saveProduct(product);
@@ -232,9 +251,20 @@ public class AdminProductController {
         } catch (Exception e) {
             log.error("Error updating product with id: {}", id, e);
             redirectAttributes.addFlashAttribute("error", " Cập nhật thất bại: " + e.getMessage());
-            return "redirect:/adproduct/detail/" + id;
+            return "redirect:/adproduct/edit/" + id;
         }
         return "redirect:/adproduct";
+    }
+
+    @DeleteMapping("/image/{imageId}")
+    @ResponseBody
+    public ResponseEntity<?> deleteImage(@PathVariable Integer imageId) {
+        try {
+            adminProductService.deleteImage(imageId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Lỗi xóa ảnh: " + e.getMessage());
+        }
     }
 
     @GetMapping("/delete/{id}")

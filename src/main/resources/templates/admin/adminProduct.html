@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-menu-fixed" dir="ltr"
-      data-theme="theme-default" data-assets-path="../assets/"
-      data-template="vertical-menu-template-free" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
+    data-template="vertical-menu-template-free" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <title>Quản lý sản phẩm</title>
 
     <!-- Favicon -->
@@ -27,187 +27,229 @@
     <script th:src="@{/assets/vendor/js/helpers.js}"></script>
     <script th:src="@{/assets/js/config.js}"></script>
 </head>
+
 <body>
-<div th:replace="~{admin/adHeader :: adHeader}"></div>
-<div class="layout-wrapper layout-content-navbar">
-    <div class="layout-container">
-        <div th:replace="~{admin/sidebar :: sidebar}"></div>
+    <div th:replace="~{admin/adHeader :: adHeader}"></div>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <div th:replace="~{admin/sidebar :: sidebar}"></div>
 
-        <div class="layout-page">
-            <div class="content-wrapper">
-                <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="layout-page">
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
 
-                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý sản phẩm</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý sản phẩm
+                        </h4>
 
-                    <!-- Tìm kiếm -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <form th:action="@{/adproduct}" method="get" class="row g-3 align-items-center">
-                                <div class="col-md-3">
-                                    <input type="text" name="keyword" class="form-control" placeholder="Tìm theo mã hoặc tên" th:value="${keyword ?: ''}">
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="form-select" name="categoryId">
-                                        <option value="">-- Tất cả danh mục --</option>
-                                        <option th:each="cate : ${categories}" th:value="${cate.id}" th:text="${cate.name}"
-                                                th:selected="${cate.id == categoryId}"></option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <button class="btn btn-primary" type="submit">Tìm kiếm</button>
-                                    <a th:href="@{/adproduct}" class="btn btn-secondary">Làm mới</a>
-                                </div>
-                                <div class="col-md-3 text-end">
-                                    <button type="button" class="btn btn-success btn-add">+ Thêm sản phẩm</button>
-                                </div>
-                            </form>
+                        <!-- Tìm kiếm -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <form th:action="@{/adproduct}" method="get" class="row g-3 align-items-center">
+                                    <div class="col-md-3">
+                                        <input type="text" name="keyword" class="form-control"
+                                            placeholder="Tìm theo mã hoặc tên" th:value="${keyword ?: ''}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" name="categoryId">
+                                            <option value="">-- Tất cả danh mục --</option>
+                                            <option th:each="cate : ${categories}" th:value="${cate.id}"
+                                                th:text="${cate.name}" th:selected="${cate.id == categoryId}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                                        <a th:href="@{/adproduct}" class="btn btn-secondary">Làm mới</a>
+                                    </div>
+                                    <div class="col-md-3 text-end">
+                                        <button type="button" class="btn btn-success btn-add">+ Thêm sản phẩm</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Danh sách sản phẩm -->
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Danh sách sản phẩm</h5>
-                        </div>
-                        <div class="table-responsive text-nowrap">
-                            <!-- Hiển thị thông báo -->
-                            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <!-- Danh sách sản phẩm -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Danh sách sản phẩm</h5>
+                            </div>
+                            <div class="table-responsive text-nowrap">
+                                <!-- Hiển thị thông báo -->
+                                <div th:if="${success}" class="alert alert-success alert-dismissible fade show"
+                                    role="alert">
+                                    <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+
+                                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show"
+                                    role="alert">
+                                    <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Mã SP</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Danh mục</th>
+                                            <th>Giá</th>
+                                            <th>Số lượng</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="p, iterStat : ${products.content}"
+                                            th:unless="${products == null or products.content.isEmpty()}">
+                                            <td th:text="${iterStat.index + 1}"></td>
+                                            <td th:text="${p.masp} ?: 'N/A'"></td>
+                                            <td th:text="${p.name} ?: 'N/A'"></td>
+                                            <td th:text="${p.category != null ? p.category.name : 'Chưa có danh mục'}">
+                                            </td>
+                                            <td
+                                                th:text="${p.price != null ? #numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT') + '₫' : 'N/A'}">
+                                            </td>
+                                            <td th:text="${p.quantity} ?: 0"></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info btn-view me-1" th:data-id="${p.id}"
+                                                    title="Xem chi tiết"><i class="bx bx-show"></i></button>
+                                                <button class="btn btn-sm btn-warning btn-switch-edit me-1"
+                                                    th:data-id="${p.id}" title="Sửa"><i class="bx bx-edit"></i></button>
+
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${products == null or products.content.isEmpty()}">
+                                            <td colspan="7" class="text-center">Không có sản phẩm nào.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
 
-                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <!-- Phân trang -->
+                            <div class="card-footer d-flex justify-content-between align-items-center"
+                                th:unless="${products == null or products.content.isEmpty()}">
+                                <span> Trang <span th:text="${currentPage} ?: 0"></span> / <span
+                                        th:text="${totalPages} ?: 0"></span></span>
+                                <ul class="pagination mb-0">
+                                    <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled'">
+                                        <a class="page-link"
+                                            th:href="@{/adproduct(page=${currentPage - 1}, keyword=${keyword}, categoryId=${categoryId})}">Trước</a>
+                                    </li>
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                                        th:classappend="${i == currentPage} ? 'active'">
+                                        <a class="page-link"
+                                            th:href="@{/adproduct(page=${i}, keyword=${keyword}, categoryId=${categoryId})}"
+                                            th:text="${i}"></a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
+                                        <a class="page-link"
+                                            th:href="@{/adproduct(page=${currentPage + 1}, keyword=${keyword}, categoryId=${categoryId})}">Sau</a>
+                                    </li>
+                                </ul>
                             </div>
-
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Mã SP</th>
-                                    <th>Tên sản phẩm</th>
-                                    <th>Danh mục</th>
-                                    <th>Giá</th>
-                                    <th>Số lượng</th>
-                                    <th>Hành động</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="p, iterStat : ${products.content}" th:unless="${products == null or products.content.isEmpty()}">
-                                    <td th:text="${iterStat.index + 1}"></td>
-                                    <td th:text="${p.masp} ?: 'N/A'"></td>
-                                    <td th:text="${p.name} ?: 'N/A'"></td>
-                                    <td th:text="${p.category != null ? p.category.name : 'Chưa có danh mục'}"></td>
-                                    <td th:text="${p.price != null ? #numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT') + '₫' : 'N/A'}"></td>
-                                    <td th:text="${p.quantity} ?: 0"></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-info btn-view" th:data-id="${p.id}">Xem chi tiết</button>
-                                    </td>
-                                </tr>
-                                <tr th:if="${products == null or products.content.isEmpty()}">
-                                    <td colspan="7" class="text-center">Không có sản phẩm nào.</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Phân trang -->
-                        <div class="card-footer d-flex justify-content-between align-items-center" th:unless="${products == null or products.content.isEmpty()}">
-                            <span> Trang <span th:text="${currentPage} ?: 0"></span> / <span th:text="${totalPages} ?: 0"></span></span>
-                            <ul class="pagination mb-0">
-                                <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled'">
-                                    <a class="page-link" th:href="@{/adproduct(page=${currentPage - 1}, keyword=${keyword}, categoryId=${categoryId})}">Trước</a>
-                                </li>
-                                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
-                                    th:classappend="${i == currentPage} ? 'active'">
-                                    <a class="page-link" th:href="@{/adproduct(page=${i}, keyword=${keyword}, categoryId=${categoryId})}" th:text="${i}"></a>
-                                </li>
-                                <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
-                                    <a class="page-link" th:href="@{/adproduct(page=${currentPage + 1}, keyword=${keyword}, categoryId=${categoryId})}">Sau</a>
-                                </li>
-                            </ul>
                         </div>
                     </div>
+
+                    <!-- Modal dùng chung -->
+                    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content" id="productModalContent">
+                                <!-- Nội dung form sẽ được load bằng AJAX -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer class="content-footer footer bg-footer-theme">
+                        <div
+                            class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                            <div class="mb-2 mb-md-0">
+                                ©
+                                <script>document.write(new Date().getFullYear());</script>, Admin
+                            </div>
+                            <div>
+                                <a href="#" class="footer-link me-4">Hỗ trợ</a>
+                                <a href="#" class="footer-link me-4">Tài liệu</a>
+                            </div>
+                        </div>
+                    </footer>
+                    <div class="content-backdrop fade"></div>
                 </div>
-
-                <!-- Modal dùng chung -->
-                <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content" id="productModalContent">
-                            <!-- Nội dung form sẽ được load bằng AJAX -->
-                        </div>
-                    </div>
-                </div>
-
-                <footer class="content-footer footer bg-footer-theme">
-                    <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-                        <div class="mb-2 mb-md-0">
-                            © <script>document.write(new Date().getFullYear());</script>, Admin
-                        </div>
-                        <div>
-                            <a href="#" class="footer-link me-4">Hỗ trợ</a>
-                            <a href="#" class="footer-link me-4">Tài liệu</a>
-                        </div>
-                    </div>
-                </footer>
-                <div class="content-backdrop fade"></div>
             </div>
         </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
     </div>
-    <div class="layout-overlay layout-menu-toggle"></div>
-</div>
 
-<!-- JS -->
-<script th:src="@{/assets/vendor/libs/jquery/jquery.js}"></script>
-<script th:src="@{/assets/vendor/libs/popper/popper.js}"></script>
-<script th:src="@{/assets/vendor/js/bootstrap.js}"></script>
-<script th:src="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js}"></script>
-<script th:src="@{/assets/vendor/js/menu.js}"></script>
-<script th:src="@{/assets/js/main.js}"></script>
+    <!-- JS -->
+    <script th:src="@{/assets/vendor/libs/jquery/jquery.js}"></script>
+    <script th:src="@{/assets/vendor/libs/popper/popper.js}"></script>
+    <script th:src="@{/assets/vendor/js/bootstrap.js}"></script>
+    <script th:src="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js}"></script>
+    <script th:src="@{/assets/vendor/js/menu.js}"></script>
+    <script th:src="@{/assets/js/main.js}"></script>
 
-<!-- Script AJAX -->
-// Script AJAX
-<script th:inline="javascript">
-    var contextPath = /*[[@{/}]]*/ "";
-    $(document).ready(function () {
-        // Xem chi tiết sản phẩm
-        $(document).on("click", ".btn-view", function () {
-            var id = $(this).data("id");
-            console.log("AJAX: Loading product detail for ID: " + id);
-            console.log("AJAX: URL: " + contextPath + "adproduct/detail/" + id);
+    <!-- Script AJAX -->
+    // Script AJAX
+    <script th:inline="javascript">
+        var contextPath = /*[[@{/}]]*/ "";
+        $(document).ready(function () {
+            // Xem chi tiết sản phẩm
+            $(document).on("click", ".btn-view", function () {
+                var id = $(this).data("id");
+                console.log("AJAX: Loading product detail for ID: " + id);
+                console.log("AJAX: URL: " + contextPath + "adproduct/detail/" + id);
 
-            $.ajax({
-                url: contextPath + "adproduct/detail/" + id,
-                type: "GET",
-                success: function (data) {
-                    console.log("AJAX: Success - Data received");
-                    $("#productModalContent").html(data);
-                    $("#productModal").modal("show");
-                },
-                error: function (xhr, status, error) {
-                    console.log("AJAX: Error - Status: " + status + ", Error: " + error);
-                    console.log("AJAX: Response: ", xhr.responseText);
-                    alert("Không thể tải thông tin sản phẩm! Lỗi: " + error + "\nChi tiết: " + xhr.responseText);
-                }
+                $.ajax({
+                    url: contextPath + "adproduct/detail/" + id,
+                    type: "GET",
+                    success: function (data) {
+                        console.log("AJAX: Success - Data received");
+                        $("#productModalContent").html(data);
+                        $("#productModal").modal("show");
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("AJAX: Error - Status: " + status + ", Error: " + error);
+                        console.log("AJAX: Response: ", xhr.responseText);
+                        alert("Không thể tải thông tin sản phẩm! Lỗi: " + error + "\nChi tiết: " + xhr.responseText);
+                    }
+                });
+            });
+
+            // Thêm sản phẩm
+            $(document).on("click", ".btn-add", function () {
+                $.ajax({
+                    url: contextPath + "adproduct/new",
+                    type: "GET",
+                    success: function (data) {
+                        $("#productModalContent").html(data);
+                        $("#productModal").modal("show");
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Không thể tải form thêm sản phẩm! Lỗi: " + error + "\nChi tiết: " + xhr.responseText);
+                    }
+                });
+            });
+
+            // Chuyển sang chế độ chỉnh sửa (từ nút trong bảng hoặc nút trong modal view)
+            $(document).on("click", ".btn-switch-edit", function () {
+                var id = $(this).data("id");
+                console.log("AJAX: Loading edit form for ID: " + id);
+
+                $.ajax({
+                    url: contextPath + "adproduct/edit/" + id,
+                    type: "GET",
+                    success: function (data) {
+                        $("#productModalContent").html(data);
+                        $("#productModal").modal("show"); // Show nếu chưa show
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Không thể tải form sửa! Lỗi: " + error);
+                    }
+                });
             });
         });
-
-        // Thêm sản phẩm
-        $(document).on("click", ".btn-add", function () {
-            $.ajax({
-                url: contextPath + "adproduct/new",
-                type: "GET",
-                success: function (data) {
-                    $("#productModalContent").html(data);
-                    $("#productModal").modal("show");
-                },
-                error: function (xhr, status, error) {
-                    alert("Không thể tải form thêm sản phẩm! Lỗi: " + error + "\nChi tiết: " + xhr.responseText);
-                }
-            });
-        });
-    });
-</script>
+    </script>
 </body>
+
 </html>

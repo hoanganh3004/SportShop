@@ -123,11 +123,7 @@ public class AdminProductServiceImpl implements AdminProductService {
             Product savedProduct = productRepository.save(existingProduct);
 
             if (images != null && images.length > 0) {
-                List<ProductImage> oldImages = productImageRepository.findByProductId(savedProduct.getId());
-                productImageRepository.deleteByProductId(savedProduct.getId());
-                for (ProductImage oldImage : oldImages) {
-                    fileUploadService.deleteFile(oldImage.getImageUrl());
-                }
+                // Logic mới: giữ ảnh cũ, chỉ thêm ảnh mới (APPEND)
                 List<String> uploadedPaths = fileUploadService.uploadMultipleFiles(images);
                 for (String imagePath : uploadedPaths) {
                     ProductImage productImage = new ProductImage();
@@ -140,5 +136,40 @@ public class AdminProductServiceImpl implements AdminProductService {
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi cập nhật sản phẩm và ảnh: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteImage(Integer imageId) {
+        ProductImage image = productImageRepository.findById(imageId).orElse(null);
+        if (image != null) {
+            // Xóa file vật lý
+            fileUploadService.deleteFile(image.getImageUrl());
+            // Xóa record trong DB
+            productImageRepository.delete(image);
+        }
+    }
+
+    // === Methods cho user product pages ===
+
+    @Override
+    public long countProducts() {
+        return productRepository.count();
+    }
+
+    @Override
+    public Page<Product> findByFilters(String name, Long minPrice, Long maxPrice, Integer categoryId,
+            Pageable pageable) {
+        return productRepository.findByFilters(name, minPrice, maxPrice, categoryId, pageable);
+    }
+
+    @Override
+    public Page<Product> findByCategoryId(Integer categoryId, Pageable pageable) {
+        return productRepository.findByCategoryId(categoryId, pageable);
+    }
+
+    @Override
+    public Page<Product> findByNameOrMasp(String keyword, Pageable pageable) {
+        return productRepository.findByNameContainingOrMaspContaining(keyword, keyword, pageable);
     }
 }

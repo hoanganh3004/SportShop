@@ -1,274 +1,110 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Chi tiết sản phẩm</title>
-    <link rel="stylesheet" th:href="@{/assets/vendor/css/core.css}" />
-    <link rel="stylesheet" th:href="@{/assets/vendor/css/theme-default.css}" />
     <style>
-        .image-preview {
+        .detail-images {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
-        .image-preview img {
-            width: 100px;
-            height: 100px;
+
+        .detail-images img {
+            width: 120px;
+            height: 120px;
             object-fit: cover;
             border: 2px solid #ddd;
             border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
-        .file-input-container {
-            position: relative;
+
+        .detail-images img:hover {
+            transform: scale(1.05);
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #566a7f;
+            width: 120px;
             display: inline-block;
-            width: 100%;
-        }
-        .file-input-label {
-            display: block;
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            transition: background-color 0.3s;
-        }
-        .file-input-label:hover {
-            background-color: #0056b3;
-        }
-        .file-input {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
         }
     </style>
 </head>
+
 <body>
-<div class="modal-header">
-    <h5 class="modal-title">Chi tiết sản phẩm</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-    <!-- Hiển thị thông báo -->
-    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="modal-header">
+        <h5 class="modal-title">Chi tiết sản phẩm</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
-
-    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
-    <div th:if="${product != null}">
-        <!-- Hiển thị thông tin chi tiết -->
-        <div class="mb-3">
-            <label class="form-label">Ảnh sản phẩm:</label>
-            <style>
-                .detail-images { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-                .detail-images img { width: 120px; height: 120px; object-fit: cover; border: 2px solid #ddd; border-radius: 5px; }
-            </style>
-            <div th:if="${product.images != null and !product.images.isEmpty()}" class="detail-images">
-                <img th:each="img : ${product.images}"
-                     th:src="@{'/images/' + ${img.fileName}}"
-                     alt="Ảnh sản phẩm">
-            </div>
-            <div th:if="${product.images == null or product.images.isEmpty()}" class="text-muted">Không có ảnh.</div>
+    <div class="modal-body">
+        <!-- Thông báo nếu có -->
+        <div th:if="${error}" class="alert alert-danger">
+            <span th:text="${error}"></span>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Tên sản phẩm:</label>
-            <p th:text="${product.name} ?: 'N/A'"></p>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Mã SP:</label>
-            <p th:text="${product.masp} ?: 'N/A'"></p>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Giá:</label>
-            <p th:text="${product.price != null ? #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + '₫' : 'N/A'}"></p>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Mô tả:</label>
-            <p th:text="${product.description} ?: 'N/A'"></p>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Size:</label>
-            <p th:text="${product.size} ?: 'N/A'"></p>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Màu sắc:</label>
-            <p th:text="${product.color} ?: 'N/A'"></p>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Số lượng:</label>
-            <p th:text="${product.quantity} ?: 0"></p>
-        </div>
-
-        <!-- Form chỉnh sửa -->
-        <hr>
-        <h6>Chỉnh sửa thông tin</h6>
-        <form th:action="@{/adproduct/detail/{id}(id=${product.id})}" method="post" enctype="multipart/form-data" id="updateProductForm">
-            <div class="mb-3">
-                <label class="form-label">Tên sản phẩm</label>
-                <input type="text" class="form-control" name="name" th:value="${product.name}" required/>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Mã SP</label>
-                <input type="text" class="form-control" name="masp" th:value="${product.masp}" required/>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Giá</label>
-                <input type="number" class="form-control" name="price" th:value="${product.price}" step="0.01" required/>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Mô tả</label>
-                <textarea class="form-control" name="description" th:text="${product.description}"></textarea>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Size</label>
-                <input type="text" class="form-control" name="size" th:value="${product.size}"/>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Màu sắc</label>
-                <input type="text" class="form-control" name="color" th:value="${product.color}"/>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Số lượng</label>
-                <input type="number" class="form-control" name="quantity" th:value="${product.quantity}" required/>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Danh mục</label>
-                <select class="form-select" name="categoryId">
-                    <option value="">-- Chọn danh mục --</option>
-                    <option th:each="category : ${categories}"
-                            th:value="${category.id}"
-                            th:text="${category.name}"
-                            th:selected="${product.category != null and product.category.id == category.id}"></option>
-                </select>
-            </div>
-
-            <!-- Thêm ảnh mới -->
-            <div class="mb-3">
-                <label class="form-label">Cập nhật ảnh sản phẩm</label>
-                <div class="file-input-container">
-                    <label for="newImages" class="file-input-label">
-                        📷 Chọn ảnh mới (sẽ thay thế ảnh cũ)
-                    </label>
-                    <input type="file"
-                           id="newImages"
-                           name="newImages"
-                           class="file-input"
-                           multiple
-                           accept="image/*"
-                           onchange="previewImages(this)"/>
+        <div th:if="${product != null}">
+            <!-- Ảnh cover / slider -->
+            <div class="mb-4">
+                <h6 class="fw-bold mb-2">Ảnh sản phẩm:</h6>
+                <div th:if="${product.images != null and !product.images.isEmpty()}" class="detail-images">
+                    <img th:each="img : ${product.images}" th:src="@{'/images/' + ${img.fileName}}" alt="Ảnh sản phẩm"
+                        onclick="window.open(this.src, '_blank')">
                 </div>
-                <small class="form-text text-muted">
-                    Để trống nếu không muốn thay đổi ảnh. Chấp nhận: JPG, PNG, GIF, BMP, WEBP.
-                </small>
-                <div id="imagePreview" class="image-preview"></div>
+                <div th:if="${product.images == null or product.images.isEmpty()}" class="text-muted fst-italic">
+                    Chưa có ảnh nào.
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-primary" id="updateBtn">
-                <i class="fas fa-save"></i> Lưu thay đổi
-            </button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                <i class="fas fa-times"></i> Đóng
-            </button>
-        </form>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <p><span class="info-label">Tên SP:</span> <span th:text="${product.name}"
+                            class="fw-bold text-primary"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><span class="info-label">Mã SP:</span> <span th:text="${product.masp}"
+                            class="badge bg-secondary"></span></p>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <p><span class="info-label">Giá:</span> <span
+                            th:text="${product.price != null ? #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + '₫' : '0₫'}"
+                            class="fw-bold text-success"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><span class="info-label">Số lượng:</span> <span th:text="${product.quantity}"></span></p>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <p><span class="info-label">Danh mục:</span> <span
+                            th:text="${product.category != null ? product.category.name : 'Chưa phân loại'}"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><span class="info-label">Size/Color:</span> <span
+                            th:text="${(product.size ?: '') + ' / ' + (product.color ?: '')}"></span></p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <span class="info-label d-block mb-1">Mô tả:</span>
+                <div class="p-3 bg-light rounded text-muted" th:text="${product.description ?: 'Không có mô tả'}"></div>
+            </div>
+        </div>
     </div>
-
-    <div th:if="${product == null and error == null}" class="alert alert-danger">
-        Sản phẩm không tồn tại!
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-switch-edit" th:data-id="${product.id}"
+            th:if="${product != null}">
+            <i class="bx bx-edit"></i> Chỉnh sửa
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
     </div>
-</div>
-
-<script>
-    function previewImages(input) {
-        const preview = document.getElementById('imagePreview');
-        preview.innerHTML = '';
-
-        if (input.files) {
-            Array.from(input.files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.alt = file.name;
-                        img.title = file.name;
-                        preview.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        // Cập nhật label
-        const label = document.querySelector('.file-input-label');
-        const fileCount = input.files.length;
-        if (fileCount > 0) {
-            label.textContent = `📷 Đã chọn ${fileCount} ảnh mới`;
-        } else {
-            label.textContent = '📷 Chọn ảnh mới (sẽ thay thế ảnh cũ)';
-        }
-    }
-
-    // Xử lý form submission cho update
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('updateProductForm');
-        const updateBtn = document.getElementById('updateBtn');
-
-        if (form && updateBtn) {
-            form.addEventListener('submit', function(e) {
-                // Hiển thị loading state
-                updateBtn.disabled = true;
-                updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
-
-                // Validate form trước khi submit
-                const name = form.querySelector('input[name="name"]').value.trim();
-                const masp = form.querySelector('input[name="masp"]').value.trim();
-                const price = form.querySelector('input[name="price"]').value;
-                const quantity = form.querySelector('input[name="quantity"]').value;
-
-                if (!name) {
-                    e.preventDefault();
-                    alert('Vui lòng nhập tên sản phẩm!');
-                    resetUpdateButton();
-                    return;
-                }
-
-                if (!masp) {
-                    e.preventDefault();
-                    alert('Vui lòng nhập mã sản phẩm!');
-                    resetUpdateButton();
-                    return;
-                }
-
-                if (!price || parseFloat(price) <= 0) {
-                    e.preventDefault();
-                    alert('Vui lòng nhập giá sản phẩm hợp lệ!');
-                    resetUpdateButton();
-                    return;
-                }
-
-                if (!quantity || parseInt(quantity) < 0) {
-                    e.preventDefault();
-                    alert('Vui lòng nhập số lượng hợp lệ!');
-                    resetUpdateButton();
-                    return;
-                }
-            });
-
-            function resetUpdateButton() {
-                updateBtn.disabled = false;
-                updateBtn.innerHTML = '<i class="fas fa-save"></i> Lưu thay đổi';
-            }
-        }
-    });
-</script>
 </body>
+
 </html>

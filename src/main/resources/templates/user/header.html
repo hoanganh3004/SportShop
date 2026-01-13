@@ -1,9 +1,7 @@
 <!-- ================= HEADER ================= -->
-<html lang="en" class="light-style layout-menu-fixed" dir="ltr"
-      data-theme="theme-default" data-assets-path="../assets/"
-      data-template="vertical-menu-template-free"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
+    data-template="vertical-menu-template-free" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <header th:fragment="header">
     <!-- Header desktop -->
     <div class="container-menu-desktop">
@@ -28,15 +26,14 @@
 
                     <!-- Cart -->
                     <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
-                         th:attr="data-notify=${session.cartQty != null ? session.cartQty : 0}">
+                        th:attr="data-notify=${session.cartQty != null ? session.cartQty : 0}">
                         <i class="zmdi zmdi-shopping-cart"></i>
                     </div>
 
                     <!-- Notification bell -->
                     <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 position-relative icon-header-noti"
-                         th:attr="data-notify=${session.notificationCount != null ? session.notificationCount : 0}"
-                         id="notification-bell"
-                         style="cursor: pointer;">
+                        th:attr="data-notify=${session.notificationCount != null ? session.notificationCount : 0}"
+                        id="notification-bell" style="cursor: pointer;">
                         <i class="zmdi zmdi-notifications"></i>
 
                         <!-- Dropdown notifications -->
@@ -45,12 +42,13 @@
 
                             <div class="notification-list" th:if="${session.notifications != null}">
                                 <div th:each="n : ${session.notifications}"
-                                     class="notification-item p-2 border-bottom hov-cl1"
-                                     th:classappend="${n.read} ? ' read' : ' unread'"
-                                     th:attr="data-id=${n.id}">
-                                    <a th:href="@{/no/{id}(id=${n.id})}" class="d-block text-left" style="text-decoration: none; color: inherit;">
+                                    class="notification-item p-2 border-bottom hov-cl1"
+                                    th:classappend="${n.read} ? ' read' : ' unread'" th:attr="data-id=${n.id}">
+                                    <a th:href="@{/no/{id}(id=${n.id})}" class="d-block text-left"
+                                        style="text-decoration: none; color: inherit;">
                                         <span th:text="${n.message}">Nội dung thông báo</span>
-                                        <small class="d-block text-muted" th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></small>
+                                        <small class="d-block text-muted"
+                                            th:text="${n.createdAt != null ? #temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></small>
                                     </a>
                                 </div>
                             </div>
@@ -63,24 +61,27 @@
                     </div>
 
                     <!-- User account -->
-                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 position-relative" id="user-dropdown">
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 position-relative"
+                        id="user-dropdown">
                         <!-- Khi đã đăng nhập -->
                         <div sec:authorize="isAuthenticated()">
                             <div id="user-trigger" class="user-info"
-                                 style="cursor: pointer; display: flex; align-items: center;"
-                                 tabindex="0" aria-haspopup="true" aria-expanded="false">
+                                style="cursor: pointer; display: flex; align-items: center;" tabindex="0"
+                                aria-haspopup="true" aria-expanded="false">
                                 <i class="zmdi zmdi-account" style="color: #000 !important;"></i>
                                 <span sec:authentication="name" class="user-name ml-2"></span>
                             </div>
 
                             <!-- Dropdown content -->
-                            <div id="user-dropdown-content"
-                                 class="user-dropdown-content"
-                                 aria-hidden="true">
+                            <div id="user-dropdown-content" class="user-dropdown-content" aria-hidden="true">
                                 <a th:href="@{/profile}" class="d-block p-2 stext-107 cl2 hov-cl1">Tài khoản của tôi</a>
+                                <a th:href="@{/profile/change-password}" class="d-block p-2 stext-107 cl2 hov-cl1">
+                                   </i> Đổi mật khẩu
+                                </a>
                                 <a th:href="@{/order-history}" class="d-block p-2 stext-107 cl2 hov-cl1">Đơn hàng</a>
                                 <div class="dropdown-divider"></div>
-                                <a th:href="@{/logout}" class="d-block p-2 stext-107 cl2 hov-cl1">Đăng xuất</a>
+                                <a th:href="@{/logout}" onclick="return confirm('Bạn có chắc chắn muốn đăng xuất?');"
+                                    class="d-block p-2 stext-107 cl2 hov-cl1">Đăng xuất</a>
                             </div>
                         </div>
 
@@ -101,7 +102,8 @@
                 <img th:src="@{/images/icons/icon-close2.png}" alt="CLOSE">
             </button>
             <form class="wrap-search-header flex-w p-l-15" method="get" th:action="@{/product}">
-                <input class="plh3" type="text" name="q" placeholder="Tìm kiếm sản phẩm..." th:value="${param.q}" autocomplete="off">
+                <input class="plh3" type="text" name="q" placeholder="Tìm kiếm sản phẩm..." th:value="${param.q}"
+                    autocomplete="off">
                 <button class="flex-c-m trans-04" type="submit"><i class="zmdi zmdi-search"></i></button>
             </form>
         </div>
@@ -124,7 +126,9 @@
                 <div class="w-full">
                     <div id="header-cart-total" class="header-cart-total w-full p-tb-40"></div>
                     <div class="header-cart-buttons flex-w w-full">
-                        <a th:href="@{/checkout}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">Xem giỏ hàng</a>
+                        <a th:href="@{/checkout}"
+                            class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">Xem
+                            giỏ hàng</a>
                     </div>
                 </div>
             </div>
@@ -132,85 +136,119 @@
     </div>
 </header>
 <script th:inline="javascript">
-    (function(){
+    (function () {
         if (window.__hdrNotifyInit) return; window.__hdrNotifyInit = true;
-        try { console.log('[header-inline] init'); } catch(_){ }
-        var ctx = (function(){ try { return /*[[@{/}]]*/ ""; } catch(e){ return ""; } })();
+        try { console.log('[header-inline] init'); } catch (_) { }
+        var ctx = (function () { try { return /*[[@{/}]]*/ ""; } catch (e) { return ""; } })();
         if (ctx && ctx.endsWith('/') === false) ctx = ctx + '/';
         var bell = document.getElementById('notification-bell');
         var dd = document.getElementById('notification-dropdown');
         if (bell && dd) {
             try {
-                bell.addEventListener('click', function(ev){ try{ ev.stopPropagation(); }catch(_){ } dd.classList.toggle('show'); }, false);
-                document.addEventListener('click', function(){ try { dd.classList.remove('show'); } catch(_){ } }, false);
-            } catch(_){ }
+                bell.addEventListener('click', function (ev) { try { ev.stopPropagation(); } catch (_) { } dd.classList.toggle('show'); }, false);
+                document.addEventListener('click', function () { try { dd.classList.remove('show'); } catch (_) { } }, false);
+            } catch (_) { }
         }
-        document.addEventListener('click', function(e){
-            var item = e.target.closest && e.target.closest('#notification-dropdown .notification-item');
-            if (!item || !item.classList.contains('unread')) return;
-            var id = item.getAttribute('data-id'); if (!id) return;
-            try { console.log('[notify-inline] click id=', id); } catch(_){ }
+
+        // Fix: Chặn navigate trước khi gọi API markAsRead
+        document.addEventListener('click', function (e) {
+            // Tìm link trong notification item
+            var link = e.target.closest && e.target.closest('#notification-dropdown .notification-item a');
+            if (!link) return;
+
+            var item = link.closest('.notification-item');
+            if (!item) return;
+
+            // Lấy href đích
+            var href = link.getAttribute('href');
+            if (!href) return;
+
+            // Chỉ xử lý đặc biệt cho notification chưa đọc
+            if (!item.classList.contains('unread')) {
+                // Đã đọc rồi thì cho navigate bình thường
+                return;
+            }
+
+            // Chặn navigate ngay
+            e.preventDefault();
+            e.stopPropagation();
+
+            var id = item.getAttribute('data-id');
+            if (!id) {
+                window.location.href = href;
+                return;
+            }
+
+            try { console.log('[notify-inline] click unread id=', id, 'href=', href); } catch (_) { }
+
+            // Gọi API đánh dấu đã đọc trước
             fetch(ctx + 'nr', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain' },
                 body: 'id=' + encodeURIComponent(id),
                 credentials: 'same-origin'
             })
-            .then(function(r){ return r.text(); })
-            .then(function(t){
-                var remain = Number(t); if (isNaN(remain)) remain = 0;
-                try {
-                    item.classList.remove('unread');
-                    item.classList.add('read');
-                    var b = document.getElementById('notification-bell');
-                    if (b) b.setAttribute('data-notify', remain);
-                    console.log('[notify-inline] ok remain=', remain);
-                } catch(_){ }
-            })
-            .catch(function(err){ try { console.log('[notify-inline] error', err); } catch(_){ } });
-        }, false);
+                .then(function (r) { return r.text(); })
+                .then(function (t) {
+                    var remain = Number(t); if (isNaN(remain)) remain = 0;
+                    try {
+                        item.classList.remove('unread');
+                        item.classList.add('read');
+                        var b = document.getElementById('notification-bell');
+                        if (b) b.setAttribute('data-notify', remain);
+                        console.log('[notify-inline] marked as read, navigating to', href);
+                    } catch (_) { }
+                })
+                .catch(function (err) {
+                    try { console.log('[notify-inline] error marking as read', err); } catch (_) { }
+                })
+                .finally(function () {
+                    // Navigate đến trang đích sau khi API hoàn tất (hoặc lỗi)
+                    window.location.href = href;
+                });
+        }, true); // Dùng capturing phase để chặn trước
     })();
- </script>
+</script>
 
 <script th:inline="javascript">
-    (function() {
-        try { console.log('[header] script loaded'); } catch(_){ }
-        function formatVND(n){ try { return (Number(n)||0).toLocaleString('vi-VN') + 'đ'; } catch(e){ return n; } }
-        function updateBadge(total){
+    (function () {
+        try { console.log('[header] script loaded'); } catch (_) { }
+        function formatVND(n) { try { return (Number(n) || 0).toLocaleString('vi-VN') + 'đ'; } catch (e) { return n; } }
+        function updateBadge(total) {
             try {
                 var el = document.querySelector('.icon-header-noti.js-show-cart');
-                if (el) el.setAttribute('data-notify', Number(total||0));
-            } catch(e){}
+                if (el) el.setAttribute('data-notify', Number(total || 0));
+            } catch (e) { }
         }
-        function renderCart(items){
+        function renderCart(items) {
             var list = document.getElementById('header-cart-list');
             var totalEl = document.getElementById('header-cart-total');
             if (!list || !totalEl) return;
             list.innerHTML = '';
             var total = 0;
-            if (Array.isArray(items) && items.length){
-                items.forEach(function(it){
+            if (Array.isArray(items) && items.length) {
+                items.forEach(function (it) {
                     var p = it && it.product ? it.product : {};
-                    var qty = Number(it.quantity||0);
-                    var price = Number(p.price||0);
+                    var qty = Number(it.quantity || 0);
+                    var price = Number(p.price || 0);
                     total += qty * price;
                     var img = p.firstImageFileName ? ('/images/' + p.firstImageFileName) : '/images/product-01.jpg';
                     var li = document.createElement('li');
                     li.className = 'header-cart-item flex-w flex-t m-b-12';
                     li.setAttribute('data-product-id', p.id || '');
-                    li.innerHTML = ''+
-                        '<div class="header-cart-item-img">\n'+
-                        '  <img src="'+img+'" alt="IMG">\n'+
-                        '</div>\n'+
-                        '<div class="header-cart-item-txt p-t-8">\n'+
-                        '  <a href="#" class="header-cart-item-name m-b-12 hov-cl1 trans-04">'+ (p.name||'Sản phẩm') +'</a>\n'+
-                        '  <span class="header-cart-item-info d-block m-b-8">'+ qty +' x '+ formatVND(price) +'</span>\n'+
-                        '  <div class="header-cart-item-actions flex-w flex-m">\n'+
-                        '    <button class="btn-dec cl2 hov-cl1 trans-04 bor13 size-28 m-r-8" aria-label="Giảm">−</button>\n'+
-                        '    <input class="num-product stext-104 cl3 size-28 bor13 m-r-8 text-center" type="text" value="'+ qty +'" readonly>\n'+
-                        '    <button class="btn-inc cl2 hov-cl1 trans-04 bor13 size-28 m-r-12" aria-label="Tăng">+</button>\n'+
-                        '    <button class="btn-remove cl2 hov-cl1 trans-04" aria-label="Xóa"><i class="zmdi zmdi-delete"></i></button>\n'+
-                        '  </div>\n'+
+                    li.innerHTML = '' +
+                        '<div class="header-cart-item-img">\n' +
+                        '  <img src="' + img + '" alt="IMG">\n' +
+                        '</div>\n' +
+                        '<div class="header-cart-item-txt p-t-8">\n' +
+                        '  <a href="#" class="header-cart-item-name m-b-12 hov-cl1 trans-04">' + (p.name || 'Sản phẩm') + '</a>\n' +
+                        '  <span class="header-cart-item-info d-block m-b-8">' + qty + ' x ' + formatVND(price) + '</span>\n' +
+                        '  <div class="header-cart-item-actions flex-w flex-m">\n' +
+                        '    <button class="btn-dec cl2 hov-cl1 trans-04 bor13 size-28 m-r-8" aria-label="Giảm">−</button>\n' +
+                        '    <input class="num-product stext-104 cl3 size-28 bor13 m-r-8 text-center" type="text" value="' + qty + '" readonly>\n' +
+                        '    <button class="btn-inc cl2 hov-cl1 trans-04 bor13 size-28 m-r-12" aria-label="Tăng">+</button>\n' +
+                        '    <button class="btn-remove cl2 hov-cl1 trans-04" aria-label="Xóa"><i class="zmdi zmdi-delete"></i></button>\n' +
+                        '  </div>\n' +
                         '</div>';
                     list.appendChild(li);
                 });
@@ -222,24 +260,24 @@
             }
             totalEl.textContent = 'Tổng cộng: ' + formatVND(total);
         }
-        function loadCart(){
+        function loadCart() {
             fetch('/cart/items', { method: 'GET', credentials: 'same-origin' })
-                .then(function(r){ return r.text(); })
-                .then(function(t){ try { return JSON.parse(t); } catch(e){ return []; } })
-                .then(function(items){
+                .then(function (r) { return r.text(); })
+                .then(function (t) { try { return JSON.parse(t); } catch (e) { return []; } })
+                .then(function (items) {
                     renderCart(items);
-                    var sum = 0; if (Array.isArray(items)) items.forEach(function(it){ sum += Number(it.quantity||0); });
+                    var sum = 0; if (Array.isArray(items)) items.forEach(function (it) { sum += Number(it.quantity || 0); });
                     updateBadge(sum);
                 })
-                .catch(function(){});
+                .catch(function () { });
         }
-        function post(url, data){
+        function post(url, data) {
             var form = new URLSearchParams();
-            Object.keys(data||{}).forEach(function(k){ if (data[k] !== undefined) form.append(k, data[k]); });
+            Object.keys(data || {}).forEach(function (k) { if (data[k] !== undefined) form.append(k, data[k]); });
             return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: form, credentials: 'same-origin' })
-                .then(function(r){
+                .then(function (r) {
                     if (!r.ok) {
-                        return r.text().then(function(t){
+                        return r.text().then(function (t) {
                             if (r.status === 409) {
                                 alert('Không thể vượt quá sản phẩm trong kho');
                             }
@@ -248,13 +286,13 @@
                     }
                     return r.text();
                 })
-                .then(function(t){ var n = Number(t); return isNaN(n) ? 0 : n; });
+                .then(function (t) { var n = Number(t); return isNaN(n) ? 0 : n; });
         }
-        document.addEventListener('click', function(e){
+        document.addEventListener('click', function (e) {
             var inc = e.target.closest && e.target.closest('.btn-inc');
             var dec = e.target.closest && e.target.closest('.btn-dec');
-            var rm  = e.target.closest && e.target.closest('.btn-remove');
-            if (!(inc||dec||rm)) return;
+            var rm = e.target.closest && e.target.closest('.btn-remove');
+            if (!(inc || dec || rm)) return;
             e.preventDefault();
             var itemEl = e.target.closest('.header-cart-item');
             if (!itemEl) return;
@@ -262,8 +300,8 @@
             if (!productId) return;
             if (inc) {
                 post('/cart/increase', { productId: productId })
-                    .then(function(){ loadCart(); })
-                    .catch(function(){});
+                    .then(function () { loadCart(); })
+                    .catch(function () { });
                 return;
             }
             if (dec) {
@@ -271,102 +309,102 @@
                 var current = Number((qtyInput && qtyInput.value) || '1');
                 if (current <= 1) { alert('Không thể giảm dưới 1'); return; } // chặn giảm < 1 ở client + thông báo
                 post('/cart/decrease', { productId: productId })
-                    .then(function(){ loadCart(); })
-                    .catch(function(){});
+                    .then(function () { loadCart(); })
+                    .catch(function () { });
                 return;
             }
             if (rm) {
                 if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
                 post('/cart/remove', { productId: productId })
-                    .then(function(){ loadCart(); })
-                    .catch(function(){});
+                    .then(function () { loadCart(); })
+                    .catch(function () { });
                 return;
             }
         }, false);
         // Load when panel opens
-        document.addEventListener('click', function(e){
+        document.addEventListener('click', function (e) {
             var btn = e.target.closest && e.target.closest('.js-show-cart');
             if (btn) { setTimeout(loadCart, 0); }
         }, false);
         // Toggle notification dropdown visibility on bell click
-        (function(){
+        (function () {
             var bell = document.getElementById('notification-bell');
             var dd = document.getElementById('notification-dropdown');
             if (!bell || !dd) return;
-            bell.addEventListener('click', function(ev){
-                try { ev.stopPropagation(); } catch(_){}
+            bell.addEventListener('click', function (ev) {
+                try { ev.stopPropagation(); } catch (_) { }
                 dd.classList.toggle('show');
             }, false);
-            document.addEventListener('click', function(){
-                try { dd.classList.remove('show'); } catch(_){}
+            document.addEventListener('click', function () {
+                try { dd.classList.remove('show'); } catch (_) { }
             }, false);
         })();
         // Compute context path ("/" or "/app/") for safe URL building
-        var ctx = (function(){ try { return /*[[@{/}]]*/ ""; } catch(e){ return ""; } })();
+        var ctx = (function () { try { return /*[[@{/}]]*/ ""; } catch (e) { return ""; } })();
         if (ctx && ctx.endsWith('/') === false) { ctx = ctx + '/'; }
         // Mark notification as read on click (server-backed)
-        document.addEventListener('click', function(e){
+        document.addEventListener('click', function (e) {
             var item = e.target.closest && e.target.closest('#notification-dropdown .notification-item');
             if (!item || !item.classList.contains('unread')) return;
-            try { e.stopPropagation && e.stopPropagation(); } catch(_){ }
+            try { e.stopPropagation && e.stopPropagation(); } catch (_) { }
             var id = item.getAttribute('data-id');
             if (!id) return;
-            try { console.log('[notify] click unread item id=', id); } catch(_){ }
-            try { if (window.Toastify) { Toastify({ text: 'Đang cập nhật thông báo...', duration: 1500 }).showToast(); } } catch(_){ }
+            try { console.log('[notify] click unread item id=', id); } catch (_) { }
+            try { if (window.Toastify) { Toastify({ text: 'Đang cập nhật thông báo...', duration: 1500 }).showToast(); } } catch (_) { }
             // Use ultra-short path first to avoid blockers, then fallbacks
             post(ctx + 'nr', { id: id })
-                .then(function(remain){
+                .then(function (remain) {
                     try {
                         console.log('[notify] server ok, remain=', remain);
                         item.classList.remove('unread');
                         item.classList.add('read');
                         var bell = document.getElementById('notification-bell');
-                        if (bell) bell.setAttribute('data-notify', Number(remain||0));
-                    } catch(e){}
+                        if (bell) bell.setAttribute('data-notify', Number(remain || 0));
+                    } catch (e) { }
                 })
-                .catch(function(err1){
-                    try { console.log('[notify] /nr failed:', err1); } catch(_){ }
-                    try { console.log('[notify] fallback to /user/notifications/read'); } catch(_){ }
+                .catch(function (err1) {
+                    try { console.log('[notify] /nr failed:', err1); } catch (_) { }
+                    try { console.log('[notify] fallback to /user/notifications/read'); } catch (_) { }
                     // second attempt
                     return post(ctx + 'user/notifications/read', { id: id })
-                        .then(function(remain){
+                        .then(function (remain) {
                             try {
                                 console.log('[notify] fallback /user/notifications/read ok, remain=', remain);
                                 item.classList.remove('unread');
                                 item.classList.add('read');
                                 var bell = document.getElementById('notification-bell');
-                                if (bell) bell.setAttribute('data-notify', Number(remain||0));
-                            } catch(e){}
+                                if (bell) bell.setAttribute('data-notify', Number(remain || 0));
+                            } catch (e) { }
                         })
-                        .catch(function(){
-                            try { console.log('[notify] fallback to /notifications/read'); } catch(_){ }
-                    // fallback in case some route rewriting is different
-                    post(ctx + 'notifications/read', { id: id })
-                        .then(function(remain){
-                            try {
-                                console.log('[notify] fallback /notifications/read ok, remain=', remain);
-                                item.classList.remove('unread');
-                                item.classList.add('read');
-                                var bell = document.getElementById('notification-bell');
-                                if (bell) bell.setAttribute('data-notify', Number(remain||0));
-                            } catch(e){}
-                        })
-                        .catch(function(){
-                            // final fallback using GET (in case POST is blocked)
-                            fetch(ctx + 'nr?id=' + encodeURIComponent(id), { method: 'GET', credentials: 'same-origin' })
-                                .then(function(r){ return r.text(); })
-                                .then(function(remain){
+                        .catch(function () {
+                            try { console.log('[notify] fallback to /notifications/read'); } catch (_) { }
+                            // fallback in case some route rewriting is different
+                            post(ctx + 'notifications/read', { id: id })
+                                .then(function (remain) {
                                     try {
-                                        console.log('[notify] final fallback ok, remain=', remain);
+                                        console.log('[notify] fallback /notifications/read ok, remain=', remain);
                                         item.classList.remove('unread');
                                         item.classList.add('read');
                                         var bell = document.getElementById('notification-bell');
-                                        if (bell) bell.setAttribute('data-notify', Number(remain||0));
-                                    } catch(e){}
+                                        if (bell) bell.setAttribute('data-notify', Number(remain || 0));
+                                    } catch (e) { }
                                 })
-                                .catch(function(){ try { alert('Không thể cập nhật trạng thái thông báo. Vui lòng thử lại.'); } catch(_){} });
+                                .catch(function () {
+                                    // final fallback using GET (in case POST is blocked)
+                                    fetch(ctx + 'nr?id=' + encodeURIComponent(id), { method: 'GET', credentials: 'same-origin' })
+                                        .then(function (r) { return r.text(); })
+                                        .then(function (remain) {
+                                            try {
+                                                console.log('[notify] final fallback ok, remain=', remain);
+                                                item.classList.remove('unread');
+                                                item.classList.add('read');
+                                                var bell = document.getElementById('notification-bell');
+                                                if (bell) bell.setAttribute('data-notify', Number(remain || 0));
+                                            } catch (e) { }
+                                        })
+                                        .catch(function () { try { alert('Không thể cập nhật trạng thái thông báo. Vui lòng thử lại.'); } catch (_) { } });
+                                });
                         });
-                });
                 });
         }, false);
         function post(url, data) {
@@ -398,45 +436,55 @@
         }
 
         // Initial sync
-        try { setTimeout(loadCart, 0); } catch(e) {}
+        try { setTimeout(loadCart, 0); } catch (e) { }
     })();
 </script>
 
 <style>
     /* Dropdown thông báo: đẹp hơn, dễ đọc, không ảnh hưởng logic */
-    #notification-dropdown.notification-dropdown{
+    #notification-dropdown.notification-dropdown {
         position: absolute;
         right: 0;
         top: 140%;
         width: 320px;
         background: #fff;
-        border: 1px solid rgba(0,0,0,0.06);
+        border: 1px solid rgba(0, 0, 0, 0.06);
         border-radius: 10px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         z-index: 1000;
         overflow: hidden;
-        display: none; /* hidden by default */
+        display: none;
+        /* hidden by default */
     }
-    #notification-dropdown.notification-dropdown.show{ display: block; }
-    #notification-dropdown .notification-list{
+
+    #notification-dropdown.notification-dropdown.show {
+        display: block;
+    }
+
+    #notification-dropdown .notification-list {
         max-height: 360px;
         overflow-y: auto;
     }
-    #notification-dropdown h6{
+
+    #notification-dropdown h6 {
         font-size: 14px;
         font-weight: 600;
         color: #444;
         background: #f9fafb;
     }
-    #notification-dropdown .notification-item{
+
+    #notification-dropdown .notification-item {
         background: #fff;
         transition: background 0.2s ease;
     }
-    #notification-dropdown .notification-item:hover{
+
+    #notification-dropdown .notification-item:hover {
         background: #f6f7f9;
     }
-    #notification-dropdown .notification-item span{
-        font-size: 13px; /* nhỏ hơn cho dễ nhìn */
+
+    #notification-dropdown .notification-item span {
+        font-size: 13px;
+        /* nhỏ hơn cho dễ nhìn */
         color: #111;
         line-height: 1.35;
         display: -webkit-box;
@@ -444,21 +492,26 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-    #notification-dropdown .notification-item small{
+
+    #notification-dropdown .notification-item small {
         font-size: 12px;
         color: #6b7280 !important;
         margin-top: 4px;
     }
+
     /* Phân biệt đã đọc/chưa đọc */
-    #notification-dropdown .notification-item.unread{
+    #notification-dropdown .notification-item.unread {
         background: #f0f7ff;
-        border-left: 3px solid #3b82f6; /* xanh nhấn */
+        border-left: 3px solid #3b82f6;
+        /* xanh nhấn */
     }
-    #notification-dropdown .notification-item.read{
+
+    #notification-dropdown .notification-item.read {
         opacity: 0.8;
     }
+
     /* Badge số lượng trên chuông: thu nhỏ cho cân đối */
-    #notification-bell.icon-header-noti::after{
+    #notification-bell.icon-header-noti::after {
         font-size: 10px;
         min-width: 16px;
         height: 16px;

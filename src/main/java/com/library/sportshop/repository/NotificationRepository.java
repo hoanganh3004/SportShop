@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
 
     // Tìm kiếm theo userCode hoặc message
@@ -17,7 +19,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
     );
 
     // Lấy 10 thông báo mới nhất của user
-    java.util.List<Notification> findTop10ByUserCodeOrderByCreatedAtDesc(String userCode);
+    List<Notification> findTop10ByUserCodeOrderByCreatedAtDesc(String userCode);
 
     // Đếm thông báo chưa đọc
     long countByUserCodeAndIsReadFalse(String userCode);

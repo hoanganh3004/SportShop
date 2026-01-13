@@ -45,12 +45,16 @@ public class CartController {
             return ResponseEntity.ok(totalQty);
         } catch (RuntimeException e) {
             String msg = e.getMessage();
+            // Sản phẩm không tồn tại
             if ("INVALID_PRODUCT".equals(msg))
                 return ResponseEntity.badRequest().body("INVALID_PRODUCT");
+            // Hết hàng hoàn toàn
             if ("OUT_OF_STOCK".equals(msg))
                 return ResponseEntity.status(409).body("OUT_OF_STOCK");
+            // Không đủ số lượng theo yêu cầu
             if ("INSUFFICIENT_STOCK".equals(msg))
                 return ResponseEntity.status(409).body("INSUFFICIENT_STOCK");
+            // Lỗi không xác định
             return ResponseEntity.status(500).body("INTERNAL_SERVER_ERROR");
         }
     }

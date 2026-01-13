@@ -22,5 +22,21 @@ public interface AdminProductService {
 
     void updateProductWithImages(Product product, MultipartFile[] images);
 
+    void deleteImage(Integer imageId);
+
     Page<Product> getAllProductsForDropdown();
+
+    // === Methods cho user product pages ===
+
+    // Đếm tổng số sản phẩm
+    long countProducts();
+
+    // Tìm sản phẩm với filter (cho user product page)
+    Page<Product> findByFilters(String name, Long minPrice, Long maxPrice, Integer categoryId, Pageable pageable);
+
+    // Tìm sản phẩm theo category
+    Page<Product> findByCategoryId(Integer categoryId, Pageable pageable);
+
+    // Tìm sản phẩm theo tên hoặc mã
+    Page<Product> findByNameOrMasp(String keyword, Pageable pageable);
 }

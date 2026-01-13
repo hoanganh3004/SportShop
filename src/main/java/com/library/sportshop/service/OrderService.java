@@ -15,17 +15,19 @@ public interface OrderService {
 
     Order createOrderWithItem(Order order, Integer productId, Integer quantity);
 
-
-     //Tạo đơn hàng từ toàn bộ giỏ hàng của user và xóa giỏ hàng sau khi tạo.
+    // Tạo đơn hàng từ toàn bộ giỏ hàng của user và xóa giỏ hàng sau khi tạo.
     Order createOrderFromCart(String userCode,
-                              String recipientName,
-                              String recipientPhone,
-                              String recipientAddress,
-                              String recipientEmail);
+            String recipientName,
+            String recipientPhone,
+            String recipientAddress,
+            String recipientEmail);
 
     Order updateOrderStatus(Integer id, String status, String cancelReason);
 
     void deleteOrder(Integer id);
 
     Page<Order> getOrdersByUser(String userCode, Pageable pageable);
+
+    // Đếm tổng số đơn hàng
+    long countOrders();
 }
